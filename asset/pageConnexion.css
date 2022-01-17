@@ -1,5 +1,27 @@
-.bloc
+.bloc-inscription
 {
-	width: 50%;
+	margin-top: 5%;
+	width: 45%;
 	height: auto;
+	float: right;
+}
+
+.bloc-connexion
+{
+	margin-top: 5%;
+	width: 45%;
+	height: auto;
+	float: left;
+}
+
+#titrePage
+{
+	text-align: center;
+	margin-top: 5%;
+	font-size: 20px;
+}
+
+body
+{
+	background-color: #008db1;
 }
