@@ -9,12 +9,43 @@
 <body>
   <p id="titrePage"> Page de Connexion </p>
   <div clas="d-flex">
-  <div class="bloc-connexion">
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus id sapien ac leo semper lacinia ut sed odio. Fusce nec metus maximus, euismod arcu ut, eleifend nunc. Morbi vehicula, diam a pretium sagittis, sapien massa elementum felis, at placerat lacus augue vel mauris. Proin nunc arcu, tincidunt ultricies velit ut, consequat consequat metus. Cras congue metus et viverra commodo. Etiam non felis lobortis, egestas neque sit amet, porttitor arcu. Aliquam scelerisque rhoncus purus vel condimentum.
-  </div>
-  <div class="bloc-inscription">
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus id sapien ac leo semper lacinia ut sed odio. Fusce nec metus maximus, euismod arcu ut, eleifend nunc. Morbi vehicula, diam a pretium sagittis, sapien massa elementum felis, at placerat lacus augue vel mauris. Proin nunc arcu, tincidunt ultricies velit ut, consequat consequat metus. Cras congue metus et viverra commodo. Etiam non felis lobortis, egestas neque sit amet, porttitor arcu. Aliquam scelerisque rhoncus purus vel condimentum.
-  </div>
+    <div class="bloc-connexion">
+          <form action="" method="get" class="form-connexion">
+          <div class="form-connexion">
+            <label for="Identifiant">Identifiant :</label>
+            <input type="text" name="Identifiant" id="Identifiant" required>
+          </div>
+          <div class="form-connexion">
+            <label for="password">Mot de passe :</label>
+            <input type="text" name="password" id="password" required>
+          </div>
+          <div class="form-connexion">
+            <input type="submit" value="Connexion">
+          </div>
+        </form>
+    </div>
+    <div class="bloc-inscription">
+        <form action="" method="get" class="form-inscription">
+        <div class="form-inscription">
+          <label for="Identifiant">Identifiant :</label>
+          <input type="text" name="Identifiant" id="Identifiant" required>
+        </div>
+        <div class="form-inscription">
+          <label for="email">E-mail :</label>
+          <input type="text" name="email" id="email" required>
+        </div>
+         <div class="form-connexion">
+          <label for="password">Mot de passe :</label>
+          <input type="text" name="password" id="password" required>
+        </div>
+         <div class="form-connexion">
+          <label for="passwordConfirm"> Confirmer mot de passe :</label>
+          <input type="text" name="passwordConfirm" id="passwordConfirm" required>
+        </div>
+        <div class="form-example">
+          <input type="submit" value="Inscription">
+        </div>
+    </div>
 </div>
 </body>
 </html>
