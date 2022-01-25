@@ -4,6 +4,9 @@
 	width: 45%;
 	height: auto;
 	float: right;
+	text-align: center;
+	border-left: solid 2px black !important;
+
 	
 }
 
@@ -13,8 +16,8 @@
 	width: 45%;
 	height: auto;
 	float: left;
-	
-}
+	text-align: center;	
+	}
 
 #titrePage
 {
@@ -28,6 +31,12 @@ body
 	background-color: #008db1 !important;
 }
 
-.bordure {
-	border-right: solid 2px black;
+.form-connexion
+{
+	margin-top: 10px !important;
+}
+
+.form-inscription
+{
+	margin-top: 10px !important;
 }
