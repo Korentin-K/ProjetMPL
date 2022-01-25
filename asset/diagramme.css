@@ -1,13 +1,23 @@
 html, body {
-    height: 100%;
+    height: auto;
+    max-height: 150%;
     width: 100%;
 }
 
 .levelStyle {
-    width: 10%;
+    width: 200px;
     border-right: solid 2px black;
 }
 
 .titleLevel {
     height: 20px;
+}
+
+.displayDiagramme {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.divlevel {
+    height: auto;
 }
