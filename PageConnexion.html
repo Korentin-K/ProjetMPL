@@ -11,6 +11,7 @@
   <p id="titrePage"> Page de Connexion </p>
   <div class="d-flex row flex-wrap">
     <div class="bloc-connexion col-6" >
+       <p>Déjà Inscrit ?</p>
           <form action="Authentification.php" method="POST" class="form-connexion" >
           <div class="form-connexion">
             <input type="text" class="form-control" placeholder="Identifiant" arial-label="Identifiant" name="identifiant" required>
@@ -24,6 +25,8 @@
         </form>
     </div>
     <div class="bloc-inscription col-6">
+      <p>Vous n'avez pas encore de compte ?
+         Inscrivez en complétant les champs ci-dessous :</p>
         <form  action="Authentification.php" method="POST" class="form-inscription">
         <div class="form-inscription">
           <input type="text" class="form-control" placeholder="Identifiant" arial-label="Identifiant" name="identifiantI" required>
