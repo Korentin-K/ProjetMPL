@@ -25,5 +25,9 @@
 
 body
 {
-	background-color: #008db1;
+	background-color: #008db1 !important;
+}
+
+.bordure {
+	border-right: solid 2px black;
 }
