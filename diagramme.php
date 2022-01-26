@@ -2,7 +2,7 @@
 require_once "fonctions.php";
 writeHeaderHtml("diagramme MPM",2);
 ?>
-<body >
+<body >    
     <div class="container-fluid mx-0 px-0">
         <?php writeNavBar(); ?>
     </div>

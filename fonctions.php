@@ -98,7 +98,7 @@ function writeNavBar(){
 //========================================================
 // FONCTIONS : page diagramme
 //========================================================
-require_once "Modèles/Tache.php";
+require_once "models/Tache.php";
 // Ajout d'un niveau
 function addLevel($levelNbr,$nbrTask=0){
     $marginLeft = $levelNbr == 0 ? "mx-0" : "";
@@ -122,7 +122,8 @@ function addTask($n){
         <div class='task-content w-100'>Une courte description..</div>
         </div>";
     }
-    $t = new Tache;
-    $t->test();
+    // $t = new Tache;
+    // $t->query_update("niveau","nom","Niveau 6","id_niveau='6'");
+
     return $html;
 }

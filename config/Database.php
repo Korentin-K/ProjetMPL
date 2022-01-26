@@ -2,7 +2,7 @@
 require_once "config.php";
 
 class Database extends PDO {
-    private $instance = null;
+    protected static $instance = null;
     private $key ="efkd16456fezf7z!ee#";
     private $servername = "";
     private $username = "";
@@ -15,27 +15,40 @@ class Database extends PDO {
         $this->username = $user;
         $this->password =  openssl_decrypt($pwd,"AES-128-ECB",$this->key); // decryption du mdp
         $this->dbname = $dbname;
-        self::getConnexion();
+        $this->getInstance();
     }
 
-    private function getConnexion(){
-        try {
-            $dbc = new PDO("mysql:host=".$this->servername.";dbname=".$this->dbname, $this->username, $this->password);
-            $dbc->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->instance = $dbc;
-            // echo "Connected successfully";
-          } catch(PDOException $e) {
-            $this->instance = null;
-            // echo "Connection failed: " . $e->getMessage();
-          }
+    //Initialise connexion BDD
+    private function getConnexion() {
+        // try {
+        //     $dbc = new PDO("mysql:host=".$this->servername.";dbname=".$this->dbname, $this->username, $this->password);
+        //     $dbc->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        //     echo "Connected successfully";
+        //     return $dbc;
+        //   } catch(PDOException $e) {
+        //     echo "Connection failed: " . $e->getMessage();
+        //     return null;
+        //   }
     }
 
+    // Deconnexion de la BDD
+    function disconnect(){
+        $self::$instance = null;
+    }
+
+    // Recupere instance de la connexion
     public function getInstance(){
-        if($this->instance != null){
-            return $this->instance;
+        if(self::$instance === null){
+            try {
+                $dbc = new PDO("mysql:host=".$this->servername.";dbname=".$this->dbname, $this->username, $this->password);
+                $dbc->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                //echo "Connected successfully";
+                self::$instance = $dbc;
+              } catch(PDOException $e) {
+                //echo "Connection failed: " . $e->getMessage();
+                self::$instance = null;
+              }
         }
-        else {
-            $this->instance = new Database();
-        }
-    }
+        return self::$instance;
+    }    
 }
