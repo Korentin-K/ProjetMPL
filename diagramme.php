@@ -2,17 +2,17 @@
 require_once "fonctions.php";
 writeHeaderHtml("diagramme MPM",2);
 ?>
-<body class="">
+<body >
     <div class="container-fluid mx-0 px-0">
         <?php writeNavBar(); ?>
     </div>
-    <div class="row col-12 divlevel">
-        <div class="d-flex col-3">  </div>
-        <div class="d-flex col-9 displayDiagramme">
+    <div class="row col-12 mx-0 divlevel">
+        <div class="d-flex col-2">  </div>
+        <div class="d-flex col-10 displayDiagramme">
         <?php 
         $nbrCol = 10;
         for($i=0;$i<$nbrCol;$i++){
-            addLevel($i);
+            addLevel($i,3);
         } ?>
         </div>
     </div>
