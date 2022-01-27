@@ -1,10 +1,11 @@
 <?php
 require_once "Models.php";
+require_once "./fonctions.php";
 
 class Datafaker extends Models {
 
     public function __contruct(){
-
+        
     }
 
     public function insert_data($table, $fields, $arrayTemplateValue, $maxline){

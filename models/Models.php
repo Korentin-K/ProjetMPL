@@ -70,7 +70,7 @@ class Models extends Database {
         if( $idParentArray != null){
             $repetition = $idParentArray[1];
             $startRep = $idParentArray[0];
-            if(isset($idParentArray[2])) $itemById = $idParentArray[2];
+            if(isset($idParentArray[2]) && $table=="tache") $itemById = $idParentArray[2];
         }else{            
             $startRep = 0;
             $repetition = $repetition == null ? 1 : $repetition;
@@ -78,19 +78,23 @@ class Models extends Database {
         $multiLoop = $repetition == null ? false : true;  
         //boucle nombre de repetitions  
         for($r=$startRep;$r<$repetition;$r++){
+            $n = 0;
             //boucle nombre de ligne a completer
             for($i=0;$i<$maxLine;$i++){
                 $data = array();
+                if($n == $itemById[$startRep]) $n = 0;
                 //boucle par colonne a completer
-                for($j=0;$j<sizeof($arrayValues);$j++){  
-                    //Si presence de $, remplacer par incrementation 
+                for($j=0;$j<sizeof($arrayValues);$j++){ 
+                    //Si presence de $, remplacer par une incrementation 
                     if(stripos($arrayValues[$j],"$") != false) {                       
                         $extract = strstr($arrayValues[$j],"$");
-                        if($extract == "$$" && $multiLoop == true) $data[$j] = str_replace("$$",$r,$arrayValues[$j]); 
+                        if($table == "tache" && $j == 2) $data[$j] = str_replace("$",$n,$arrayValues[$j]);
+                        else if($extract == "$$" && $multiLoop == true) $data[$j] = str_replace("$$",$r,$arrayValues[$j]); 
                         else $data[$j] = str_replace("$",$i,$arrayValues[$j]); 
                     }else $data[$j] = $arrayValues[$j];
                 }
                 $this->query_insert($table, $columns, $data);
+                $n += 1;
             }
         }
     }
@@ -103,7 +107,7 @@ class Models extends Database {
     //========================================================
     // REQUETE : manipulation de donnees
     //========================================================    
-    // requete de mise à jour de ligne
+    // requete de mise ï¿½ jour de ligne
     protected function query_update($table, $field, $value, $condition){
         $sql = "update ".strval($table)." set ".strval($field)."='".strval($value)."' where ".strval($condition);
         $query = self::$pdo->prepare($sql);
