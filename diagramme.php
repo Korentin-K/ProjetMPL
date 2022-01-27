@@ -1,6 +1,13 @@
 <?php
 require_once "fonctions.php";
+require_once "models/Niveau.php";
 writeHeaderHtml("diagramme MPM",2);
+$t = new Niveau;
+
+$data = $t->findBy("nom","id_niveau>0");
+foreach ($data as $row) {
+    echo $row['nom']."<br />\n";
+}
 ?>
 <body >    
     <div class="container-fluid mx-0 px-0">

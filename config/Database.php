@@ -20,15 +20,15 @@ class Database extends PDO {
 
     //Initialise connexion BDD
     private function getConnexion() {
-        // try {
-        //     $dbc = new PDO("mysql:host=".$this->servername.";dbname=".$this->dbname, $this->username, $this->password);
-        //     $dbc->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        //     echo "Connected successfully";
-        //     return $dbc;
-        //   } catch(PDOException $e) {
-        //     echo "Connection failed: " . $e->getMessage();
-        //     return null;
-        //   }
+        try {
+            $dbc = new PDO("mysql:host=".$this->servername.";dbname=".$this->dbname, $this->username, $this->password);
+            $dbc->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            //echo "Connected successfully";
+            return self::$instance = $dbc;
+          } catch(PDOException $e) {
+            //echo "Connection failed: " . $e->getMessage();
+            return self::$instance = null;
+          }
     }
 
     // Deconnexion de la BDD
@@ -39,15 +39,7 @@ class Database extends PDO {
     // Recupere instance de la connexion
     public function getInstance(){
         if(self::$instance === null){
-            try {
-                $dbc = new PDO("mysql:host=".$this->servername.";dbname=".$this->dbname, $this->username, $this->password);
-                $dbc->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                //echo "Connected successfully";
-                self::$instance = $dbc;
-              } catch(PDOException $e) {
-                //echo "Connection failed: " . $e->getMessage();
-                self::$instance = null;
-              }
+            self::$instance = $this->getConnexion();
         }
         return self::$instance;
     }    

@@ -122,8 +122,5 @@ function addTask($n){
         <div class='task-content w-100'>Une courte description..</div>
         </div>";
     }
-    // $t = new Tache;
-    // $t->query_update("niveau","nom","Niveau 6","id_niveau='6'");
-
     return $html;
 }
