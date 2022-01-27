@@ -1,0 +1,50 @@
+html, body {
+    height: auto;
+    max-height: 150%;
+    width: 100%;
+}
+
+.displayDiagramme {
+    background-color: #F5F5F5;
+    max-width: 100%;
+    min-height: 80vh;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    border: solid 2px black;
+
+}
+
+.divlevel {
+    height: auto;
+}
+/* Style des niveaux */
+.levelStyle {
+    background-color: #BFFBE0B0;
+    width: 200px;
+    border-right: solid 2px black;
+    border-left: solid 2px black;
+    margin-left: 50px;
+
+}
+
+.titleLevel {
+    height: 20px;
+    border-bottom: dashed 2px black;
+    padding-bottom: 30px !important;
+}
+
+/* Style des tâches */
+.task-item {
+    background-color: #FFF5D8;
+    max-height: 100px;
+    border-radius: 10px;
+    border: solid 2px white;
+    box-shadow: 2px 2px black;
+}
+.task-title {
+    font-size: 15px;
+    font-style: italic  ;
+}
+.task-content {
+    font-size: 12px;
+}
