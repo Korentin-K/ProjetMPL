@@ -40,7 +40,7 @@ function writeFooterHtml(){
 }
 // Ecris la barre de navigation de l'application
 function writeNavBar(){
-    $is_authenticate = true;
+    $is_authenticate = false;
     if($is_authenticate){
         $html = "<nav class='navbar navbar-expand-lg navbar-light bg-light py-0'>
                 <div class='container-fluid'>
