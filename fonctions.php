@@ -1,4 +1,8 @@
 <?php
+require_once "models/Projet.php";
+require_once "models/Niveau.php";
+require_once "models/Tache.php";
+
 //========================================================
 // FONCTIONS : généralistes strucuture HTML
 //========================================================
@@ -106,7 +110,7 @@ function addLevel($levelNbr,$nbrTask=0){
                 <div class='row d-flex justify-content-center'>
                     <div class='d-flex mt-1 col-10 justify-content-around titleLevel ' >
                         <div class='col-8 d-flex justify-content-center'>Niveau ".strval($levelNbr)."</div>
-                        <a id='addTaskLevel_".$levelNbr."' class='col-2 d-flex justify-content-end pt-1' title='Ajouter une tâche' onclick=''><i class='fas fa-plus-square'></i></a>
+                        <a id='addTaskLevel_".$levelNbr."' class='col-2 d-flex justify-content-end ' title='Ajouter une tâche' onclick=''><i id='iconPlus' class='fas fa-plus'></i></a>
                     </div>
                     ".addTask($nbrTask)."
                 </div>       

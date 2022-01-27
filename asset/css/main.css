@@ -1,8 +1,17 @@
 body {
-    background-color: #F5F5F5;
+    background-color: #f5f5f5;
 }
 
 .navbar {
     border-bottom: solid 2px rgb(94, 94, 94);
     box-shadow: 0px 2px rgb(94, 94, 94);
+    background-color: #343434 !important;
+}
+
+.navbar * {
+    color: white !important;
+}
+
+a {
+    text-decoration: none;
 }

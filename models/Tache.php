@@ -3,7 +3,7 @@ require_once "Models.php";
 
 class Tache extends Models {
     private $table = "tache";
-    private $columns = ["id_tache", "nom_tache", "duree_tache", "contenu_tache", "debutPlusTot_tache", "debutPlusTard_tache", "margeLibre_tache", "margeTotale_tache", "tacheAnterieur_tache", "id_diagramme", "id_niveau"];
+    private $columns = ["id_tache", "nom_tache", "niveau_tache","duree_tache", "contenu_tache", "debutPlusTot_tache", "debutPlusTard_tache", "margeLibre_tache", "margeTotale_tache", "tacheAnterieur_tache", "id_projet"];
     
     private $nom_tache;
     private $duree_tache;
@@ -18,6 +18,17 @@ class Tache extends Models {
 
     public function __construct(){
         new Models;
+        if($this->reloadDataFake === true) {
+            $this->deleteAllData($this->table);
+            $this->addDataFake(10,2);
+        }
+    }
+    //========================================================
+    // DATA : insertion de fausses donnees
+    //======================================================== 
+    private function addDataFake($maxLine,$repetition){
+        $values = ["","Tache $"," $","","courte description","","","","",""," $$"];
+        $this->insertDataFake($this->table, $this->columns, $values, $maxLine, $repetition);
     }
     //========================================================
     // REQUETE : manipulation de donnees

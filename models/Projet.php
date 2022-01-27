@@ -1,24 +1,27 @@
 <?php
 require_once "Models.php";
 
-class Niveau extends Models {
-    private $table = "niveau";
-    private $columns = ["id_niveau","nom_niveau","id_projet"];
-    private $id_niveu = "";
-    private $nom_niveau = "";
+class Projet extends Models {
+    private $table = "projet";
+    private $columns = ["id_projet", "titre_projet", "dateCreation_projet", "dateModification_projet"];
+    
+    private $titre_diagramme;
+    private $dateCreation_diagramme;
+    private $dateModification_diagramme;
 
     public function __construct(){
         new Models;
         if($this->reloadDataFake === true) {
             $this->deleteAllData($this->table);
-            $this->addDataFake(5,2);
+            $this->addDataFake(10,1);
         }
     }
     //========================================================
     // DATA : insertion de fausses donnees
     //======================================================== 
     private function addDataFake($maxLine,$repetition){
-        $this->insertDataFake($this->table, $this->columns, ["","Niveau $"," $$"], $maxLine,$repetition);
+        $values = ["","Projet $","NOW()",""];
+        $this->insertDataFake($this->table, $this->columns, $values, $maxLine, $repetition);
     }
     //========================================================
     // REQUETE : manipulation de donnees
@@ -30,7 +33,7 @@ class Niveau extends Models {
         $this->query_insert($this->table, $this->columns, $value, $condition);
     }    
     public function delete($condition){
-        $this->query_delete($this->table,$condition);
+        query_delete($this->table,$condition);
     }
     //========================================================
     // REQUETE : recuperation de donnees

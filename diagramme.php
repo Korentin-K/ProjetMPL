@@ -1,8 +1,7 @@
 <?php
 require_once "fonctions.php";
-require_once "models/Niveau.php";
 writeHeaderHtml("diagramme MPM",2);
-
+$t = new Tache;
 ?>
 <body >    
     <div class="container-fluid mx-0 px-0">

@@ -5,12 +5,15 @@ html, body {
 }
 
 .displayDiagramme {
-    background-color: #F5F5F5;
+    background-color: #D8A48F;
+    /* background-color: #BED3C3; */
     max-width: 100%;
-    min-height: 80vh;
+    min-height: 92vh;
     overflow-x: auto;
     scrollbar-width: thin;
-    border: solid 2px black;
+    border-left : solid 5px black;
+    border-bottom : solid 5px black;
+    /* border: solid 2px black; */
 
 }
 
@@ -19,23 +22,37 @@ html, body {
 }
 /* Style des niveaux */
 .levelStyle {
-    background-color: #BFFBE0B0;
+    /* color: white; */
+    margin-top: 10px;
+    border-radius: 20px 20px 0px 0px;
+    background-color: #779CAB;
+    /* background-color: #525E7D; */
     width: 200px;
-    border-right: solid 2px black;
-    border-left: solid 2px black;
-    margin-left: 50px;
-
+    border: solid 2px white;
+    margin-left: 80px;
 }
 
 .titleLevel {
+    color: white;
+    font-weight: 700;
     height: 20px;
-    border-bottom: dashed 2px black;
+    border-bottom: dashed 2px white;
     padding-bottom: 30px !important;
+}
+
+#iconPlus {
+    font-size : 25px;
+    color: white;
+}
+
+#iconPlus:hover {
+    color: #D6CE93;
 }
 
 /* Style des tâches */
 .task-item {
-    background-color: #FFF5D8;
+    background-color: #D6CE93; /*#EFEBCE #D6CE93*/
+    /* background-color: #4A919E; */
     max-height: 100px;
     border-radius: 10px;
     border: solid 2px white;
@@ -43,8 +60,9 @@ html, body {
 }
 .task-title {
     font-size: 15px;
-    font-style: italic  ;
+    font-weight: 600;
 }
 .task-content {
     font-size: 12px;
+    font-style: italic;
 }

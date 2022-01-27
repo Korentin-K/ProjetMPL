@@ -4,7 +4,7 @@
 -- * DB-MAIN version: 11.0.2              
 -- * Generator date: Sep 14 2021              
 -- * Generation date: Tue Jan 25 17:38:19 2022 
--- * LUN file: C:\Users\Ben\Desktop\MPM_project_equipe_5 .lun 
+-- * LUN file: C:\xampp\htdocs\mpm\sql\modele_donnee\modele_mpm_v0 .0.lun 
 -- * Schema: MPM_MLD/-1 
 -- ********************************************* 
 
