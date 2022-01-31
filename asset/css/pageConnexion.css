@@ -40,3 +40,10 @@ body
 {
 	margin-top: 10px !important;
 }
+
+input
+{
+	width: 200px !important;
+	height: 35px !important;
+	border-radius: 20px 20px 20px 20px;
+}

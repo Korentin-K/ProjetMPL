@@ -212,4 +212,18 @@ class Models extends Database {
             return false;
         }
     }
+
+    //======================================================================
+    //REQUETE : Récupération de données des projets
+    //======================================================================
+
+    public function recuperationProjet($nomUser)
+    {
+        //passage par la table posséder
+        $sql= "";
+        $query = self::$pdo->prepare($sql);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }

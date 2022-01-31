@@ -1,11 +1,23 @@
 <?php
 require_once "fonctions.php";
-writeHeaderHtml("dashboard",3);
+writeHeaderHtml("dashboard",4);
 ?>
 <body >    
-    <div class="container-fluid mx-0 px-0">
-        <?php writeNavBar(); ?>
-        
+    <?php writeNavBar(); ?>
+    <div class="d-flex row flex-wrap">
+        <div class="bloc-panel col-4">
+
+        </div>
+        <div class="bloc-list col">
+            <table>
+                <tr>
+                    <td>Nom du Projet</td>
+                    <td>Date de création</td>
+                </tr>
+                <tr>
+                </tr>
+            </table>
+        </div>
     </div>
   </body>
 

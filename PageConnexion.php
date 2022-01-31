@@ -8,12 +8,12 @@ writeHeaderHtml("Connexion/Inscription",3);
     <div class="bloc-connexion col-6" >
        <p>Déjà Inscrit ?</p>
           <form action="Authentification.php" method="POST" class="form-connexion" >
+          <output type="text" class="form-control" name="erreurConnexion">fjiuffj</output>
           <div class="form-connexion">
-            <output type="text" class="form-control" name="erreurConnexion">fjiuffj</output>
-            <input type="text" class="form-control" placeholder="Identifiant" arial-label="Identifiant" name="identifiant" required>
+            <input type="text"  placeholder="Identifiant" arial-label="Identifiant" name="identifiant" required>
           </div>
           <div class="form-connexion">
-            <input type="text" class="form-control" placeholder="Mot de Passe" arial-label="password" name="passwordC" required>
+            <input type="text"  placeholder="Mot de Passe" arial-label="password" name="passwordC" required>
           </div>
           <div class="form-connexion">
             <input type="submit" value="Connexion">
@@ -22,21 +22,21 @@ writeHeaderHtml("Connexion/Inscription",3);
     </div>
     <div class="bloc-inscription col-6">
       <p>Vous n'avez pas encore de compte ?
-         Inscrivez en complétant les champs ci-dessous :</p>
+         Inscrivez vous en complétant les champs ci-dessous :</p>
 
         <form  action="Authentification.php" method="POST" class="form-inscription">
         <output type="text" class="form-control" name="erreurInscription">fjiuffj</output>
         <div class="form-inscription">
-          <input type="text" class="form-control" placeholder="Identifiant" arial-label="Identifiant" name="identifiantI" required>
+          <input type="text"  placeholder="Identifiant" arial-label="Identifiant" name="identifiantI" required>
         </div>
         <div class="form-inscription">
-          <input type="text" class="form-control" placeholder="E-mail" arial-label="email" name="email" required>
+          <input type="text"  placeholder="E-mail" arial-label="email" name="email" required>
         </div>
          <div class="form-inscription">
-          <input type="text" class="form-control" placeholder="Mot de Passe" arial-label="password" name="passwordI" required>
+          <input type="text"  placeholder="Mot de Passe" arial-label="password" name="passwordI" required>
         </div>
          <div class="form-inscription">
-          <input type="text" class="form-control" placeholder="Retaper Mot de Passe" arial-label="passwordI2" name="password2" required>
+          <input type="text"  placeholder="Retaper Mot de Passe" arial-label="passwordI2" name="password2" required>
         </div>
         <div class="form-inscription">
           <input type="submit" value="Inscription">
