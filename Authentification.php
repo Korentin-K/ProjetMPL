@@ -1,5 +1,5 @@
 <?php
-require_once'config/Models.php';
+require_once "models/Utilisateur.php";
 
 if(isset($_POST['identifiant'])) $nom = $_POST['identifiant'];
 else $nom = "";
@@ -18,10 +18,10 @@ else $passwordInscription= "";
 
 if(isset($_POST['passwordI2'])) $passwordInscription2 = $_POST['passwordI2'];
 else $passwordInscription2 = "";
+$t = new Utilisateur;
 
 if($nom!="")
 {
-
 	//$query= "SELECT * FROM `utilisateur` WHERE nom='$nom' and motdepasse='".hash('sha256', $passwordConnexion)."'";
 	 echo "test Connexion";
 	

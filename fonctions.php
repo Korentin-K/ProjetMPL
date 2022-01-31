@@ -14,7 +14,7 @@ function getDependances(int $codePage){
     $link .= "<link rel=\"stylesheet\" type='text/css' href=\"".$path_lib."/font_icon/css/all.css\">";
     $link .= "<link rel=\"stylesheet\" type='text/css' href=\"".$path_css."/main.css\">";
     if ($codePage == 2 ) $link .= "<link rel=\"stylesheet\" type='text/css' href=\"".$path_css."/diagramme.css\">";
-    if($codePage == 3) $link.= "<link rel=\"stylesheet\" type='text/css' href=\"".$path_css."/PageConnexion.css\">"
+    if($codePage == 3) $link.= "<link rel=\"stylesheet\" type='text/css' href=\"".$path_css."/PageConnexion.css\">";
     return $link;
 }
 // Répertorie les scripts JS

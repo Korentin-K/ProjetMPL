@@ -176,7 +176,7 @@ class Models extends Database {
         $sql= "select * from utilisateur where nom_utilisateur=".strval($nomUser)." mail_utilisateur=".strval($email)." mdp_utilisateur=".strval($mdp);
         $query = self::$pdo->prepare($sql);
         $query->execute();
-        if(query!=null)
+        if($query!=null)
         {
             //retourne false si le compte existe
             return false;
