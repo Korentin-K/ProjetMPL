@@ -22,7 +22,14 @@ $t = new Utilisateur;
 
 if($nom!="")
 {
-	//$query= "SELECT * FROM `utilisateur` WHERE nom='$nom' and motdepasse='".hash('sha256', $passwordConnexion)."'";
+	$leMotDePasse=password_hash($passwordConnexion, PASSWORD_DEFAULT);
+	 if(rechercheConnexion($nom,$leMotDePasse)==true){
+	 	header('Location: http://localhost/dashboard.php');
+  		exit();
+	 }
+	 else{
+	 	
+	 }
 	 echo "test Connexion";
 	
 	
@@ -34,8 +41,15 @@ if($nomI!="" and $nom=="")
 		if($passwordInscription==$passwordInscription2)
 		{
 		$leMotDePasse=password_hash($passwordInscription, PASSWORD_DEFAULT);
-		inscriptionSite($nomI,$email,$leMotDePasse);
+			inscriptionSite($nomI,$email,$leMotDePasse);
+			header('Location: http://localhost/dashboard.php');
+  			exit();
 		}
+		else
+		{
+
+		}
+
 	}
 	
 	echo "test Inscription";

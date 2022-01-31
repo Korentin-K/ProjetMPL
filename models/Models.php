@@ -195,5 +195,21 @@ class Models extends Database {
         $query->execute();
     }
 
-
+    //======================================================================
+    //REQUETE : Recherche si l'identifiant existe et connecte l'utilisateur
+    //======================================================================
+    public function rechercheConnexion($nomUser,$email,$mdp)
+    {
+        $sql= "select * from utilisateur where nom_utilisateur=".strval($nomUser)." mdp_utilisateur=".strval($mdp);
+        $query = self::$pdo->prepare($sql);
+        $query->execute();
+        if($query!=null)
+        {
+            //retourne true si cela correspond
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }
