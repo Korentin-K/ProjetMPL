@@ -220,10 +220,12 @@ class Models extends Database {
     public function recuperationProjet($nomUser)
     {
         //passage par la table posséder
-        $sql= "";
+        $sql= "select * from `projet` inner join posseder on projet.id_projet=posseder.id_projet
+        inner join utilisateur on posseder.id_utilisateur=utilisateur.id_utilisateur 
+        WHERE utilisateur.nom_utilisateur=".strval($nomUser) ;
         $query = self::$pdo->prepare($sql);
         $query->execute();
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+        
     }
 
 }
