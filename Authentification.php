@@ -1,5 +1,5 @@
 <?php
-require_once'config/Database.php';
+require_once'config/Models.php';
 
 if(isset($_POST['identifiant'])) $nom = $_POST['identifiant'];
 else $nom = "";
@@ -29,17 +29,14 @@ if($nom!="")
 }
 if($nomI!="" and $nom=="") 
 {	
-	//on regarde si l'identifiant n'est pas déjà utilisé
-	//$maRequete = $conn-> exec("SELECT * FROM utilisateur WHERE nom='$nomI'");
-	$maRequete = $conn-> prepare("INSERT INTO utilisateur(nom_utilisateur,mail_utilisateur,mdp_utilisateur) VALUE (name,email,mdp)");
-	$nomI = mysqli_real_escape_string($conn, $nom); 
-	$maRequete->bindParam('name', $nomI);
-	$email = mysqli_real_escape_string($conn, $email); 
-	$maRequete->bindParam('email', $email);
-	if($passwordInscription==$passwordInscription2)
+	if(rechercheCompteExiste($nomI,$email,$leMotDePasse)==true)
 	{
+		if($passwordInscription==$passwordInscription2)
+		{
 		$leMotDePasse=password_hash($passwordInscription, PASSWORD_DEFAULT);
-		$maRequete->bindParam('mdp', $leMotDePasse);
+		inscriptionSite($nomI,$email,$leMotDePasse);
+		}
 	}
+	
 	echo "test Inscription";
 }

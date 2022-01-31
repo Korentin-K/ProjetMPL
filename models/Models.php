@@ -167,4 +167,33 @@ class Models extends Database {
     {
         return self::$pdo;
     }
+
+    //======================================================================================
+    // REQUETE : Avant insertion de données par l'inscription pour vérifier si compte existe
+    //====================================================================================== 
+    public function rechercheCompteExiste($nomUser,$email,$mdp)
+    {
+        $sql= "select * from utilisateur where nom_utilisateur=".strval($nomUser)." mail_utilisateur=".strval($email)." mdp_utilisateur=".strval($mdp);
+        $query = self::$pdo->prepare($sql);
+        $query->execute();
+        if(query!=null)
+        {
+            //retourne false si le compte existe
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+    //========================================================
+    // REQUETE : insertion de données par l'inscription
+    //======================================================== 
+    public function inscriptionSite($nomUser,$email,$mdp)
+    {
+        $sql = "insert into utilisateur(nom_utilisateur,mail_utilisateur,mdp_utilisateur) VALUE (".strval($nomUser).",".strval($email).",".$mdp.")";
+        $query = self::$pdo->prepare($sql);
+        $query->execute();
+    }
+
+
 }
