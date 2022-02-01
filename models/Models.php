@@ -173,7 +173,7 @@ class Models extends Database {
     //====================================================================================== 
     public function rechercheCompteExiste($nomUser,$email,$mdp)
     {
-        $sql= "select * from utilisateur where nom_utilisateur=".strval($nomUser)." mail_utilisateur=".strval($email)." mdp_utilisateur=".strval($mdp);
+        $sql= "select * from utilisateur where nom_utilisateur=".strval($nomUser)."and mail_utilisateur=".strval($email)."and mdp_utilisateur=".strval($mdp);
         $query = self::$pdo->prepare($sql);
         $query->execute();
         if($query!=null)
@@ -198,9 +198,9 @@ class Models extends Database {
     //======================================================================
     //REQUETE : Recherche si l'identifiant existe et connecte l'utilisateur
     //======================================================================
-    public function rechercheConnexion($nomUser,$email,$mdp)
+    public function rechercheConnexion($email,$mdp)
     {
-        $sql= "select * from utilisateur where nom_utilisateur=".strval($nomUser)." mdp_utilisateur=".strval($mdp);
+        $sql= "select * from utilisateur where nom_utilisateur=".strval($email)."and mdp_utilisateur=".strval($mdp);
         $query = self::$pdo->prepare($sql);
         $query->execute();
         if($query!=null)
@@ -216,7 +216,6 @@ class Models extends Database {
     //======================================================================
     //REQUETE : Récupération de données des projets
     //======================================================================
-
     public function recuperationProjet($nomUser)
     {
         //passage par la table posséder

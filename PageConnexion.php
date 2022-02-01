@@ -3,12 +3,10 @@ require_once "fonctions.php";
 writeHeaderHtml("Connexion/Inscription",3);
 ?>
 <body>
-   <?php writeNavBar(); ?>
     <div class="d-flex row flex-wrap">
     <div class="bloc-connexion col-6" >
        <p>Déjà Inscrit ?</p>
           <form action="Authentification.php" method="POST" class="form-connexion" >
-          <output type="text" class="form-control" name="erreurConnexion">fjiuffj</output>
           <div class="form-connexion">
             <input type="text"  placeholder="Identifiant" arial-label="Identifiant" name="identifiant" required>
           </div>
@@ -24,8 +22,7 @@ writeHeaderHtml("Connexion/Inscription",3);
       <p>Vous n'avez pas encore de compte ?
          Inscrivez vous en complétant les champs ci-dessous :</p>
 
-        <form  action="Authentification.php" method="POST" class="form-inscription">
-        <output type="text" class="form-control" name="erreurInscription">fjiuffj</output>
+        <form  action="Authentification.php" method="POST" class="form-inscription"> 
         <div class="form-inscription">
           <input type="text"  placeholder="Identifiant" arial-label="Identifiant" name="identifiantI" required>
         </div>

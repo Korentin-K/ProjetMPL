@@ -1,8 +1,8 @@
 <?php
 require_once "models/Utilisateur.php";
 
-if(isset($_POST['identifiant'])) $nom = $_POST['identifiant'];
-else $nom = "";
+if(isset($_POST['identifiant'])) $emailId = $_POST['identifiant'];
+else $emailId = "";
 
 if(isset($_POST['passwordC'])) $passwordConnexion = $_POST['passwordC'];
 else $passwordConnexion = "";
@@ -18,39 +18,39 @@ else $passwordInscription= "";
 
 if(isset($_POST['passwordI2'])) $passwordInscription2 = $_POST['passwordI2'];
 else $passwordInscription2 = "";
-$t = new Utilisateur;
+$User = new Utilisateur;
 
-if($nom!="")
+if($emailId!="")
 {
 	$leMotDePasse=password_hash($passwordConnexion, PASSWORD_DEFAULT);
-	 if(rechercheConnexion($nom,$leMotDePasse)==true){
-	 	header('Location: http://localhost/dashboard.php');
+	 if($User->rechercheConnexion($emailId,$leMotDePasse)==true){
+	 	header('Location: ./dashboard.php');
   		exit();
 	 }
 	 else{
 	 	
 	 }
-	 echo "test Connexion";
+	 //echo "test Connexion";
 	
 	
 }
-if($nomI!="" and $nom=="") 
+
+//variable à la place de localhost
+if($nomI!="" and $emailId=="") 
 {	
-	if(rechercheCompteExiste($nomI,$email,$leMotDePasse)==true)
+	if($User->rechercheCompteExiste($nomI,$email,$leMotDePasse)==true)
 	{
 		if($passwordInscription==$passwordInscription2)
 		{
-		$leMotDePasse=password_hash($passwordInscription, PASSWORD_DEFAULT);
-			inscriptionSite($nomI,$email,$leMotDePasse);
-			header('Location: http://localhost/dashboard.php');
+		    $leMotDePasse=password_hash($passwordInscription, PASSWORD_DEFAULT);
+			$User->inscriptionSite($nomI,$email,$leMotDePasse);
+			header('Location: ./dashboard.php');
   			exit();
 		}
 		else
 		{
 
 		}
-
 	}
-	
-	echo "test Inscription";
+	//echo "test Inscription";
 }
