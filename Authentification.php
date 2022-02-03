@@ -28,7 +28,8 @@ if($emailId!="")
   		exit();
 	 }
 	 else{
-	 	
+	 	header('Location: ./PageConnexion.php');
+  			exit();
 	 }
 	 //echo "test Connexion";
 	
@@ -38,8 +39,8 @@ if($emailId!="")
 //variable à la place de localhost
 if($nomI!="" and $emailId=="") 
 {	
-	if($User->rechercheCompteExiste($nomI,$email,$leMotDePasse)==true)
-	{
+	//if($User->rechercheCompteExiste($email)==true)
+	//{
 		if($passwordInscription==$passwordInscription2)
 		{
 		    $leMotDePasse=password_hash($passwordInscription, PASSWORD_DEFAULT);
@@ -49,8 +50,11 @@ if($nomI!="" and $emailId=="")
 		}
 		else
 		{
+			header('Location: ./PageConnexion.php');
+  			exit();
 
 		}
-	}
+	//}
+	echo $passwordInscription.",".$passwordInscription2;
 	//echo "test Inscription";
 }

@@ -171,9 +171,9 @@ class Models extends Database {
     //======================================================================================
     // REQUETE : Avant insertion de données par l'inscription pour vérifier si compte existe
     //====================================================================================== 
-    public function rechercheCompteExiste($nomUser,$email,$mdp)
+    public function rechercheCompteExiste($email)
     {
-        $sql= "select * from utilisateur where nom_utilisateur=".strval($nomUser)."and mail_utilisateur=".strval($email)."and mdp_utilisateur=".strval($mdp);
+        $sql= "select * from utilisateur where  mail_utilisateur=".strval($email);
         $query = self::$pdo->prepare($sql);
         $query->execute();
         if($query!=null)
