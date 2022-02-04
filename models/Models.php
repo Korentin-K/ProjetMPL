@@ -173,6 +173,7 @@ class Models extends Database {
     //====================================================================================== 
     public function rechercheCompteExiste($email)
     {
+        //filter_validate_email
         $sql= "select * from utilisateur where  mail_utilisateur=".strval($email);
         $query = self::$pdo->prepare($sql);
         $query->execute();
@@ -190,9 +191,11 @@ class Models extends Database {
     //======================================================== 
     public function inscriptionSite($nomUser,$email,$mdp)
     {
-        $sql = "insert into utilisateur(nom_utilisateur,mail_utilisateur,mdp_utilisateur) VALUE (".strval($nomUser).",".strval($email).",".$mdp.")";
+        $sql = "insert into utilisateur(nom_utilisateur,mail_utilisateur,mdp_utilisateur) VALUES ('".strval($nomUser)."','".strval($email)."','".$mdp."')";
+        echo $sql;
         $query = self::$pdo->prepare($sql);
         $query->execute();
+
     }
 
     //======================================================================

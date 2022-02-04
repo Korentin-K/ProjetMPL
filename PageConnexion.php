@@ -33,7 +33,7 @@ writeHeaderHtml("Connexion/Inscription",3);
           <input type="text"  placeholder="Mot de Passe" arial-label="password" name="passwordI" required>
         </div>
          <div class="form-inscription">
-          <input type="text"  placeholder="Retaper Mot de Passe" arial-label="passwordI2" name="password2" required>
+          <input type="text"  placeholder="Retaper Mot de Passe" arial-label="passwordI2" name="passwordI2" required>
         </div>
         <div class="form-inscription">
           <input type="submit" value="Inscription">
