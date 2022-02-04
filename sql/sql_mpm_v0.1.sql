@@ -79,21 +79,21 @@ create table Utilisateur (
 -- Constraints Section
 -- ___________________ 
 
-alter table Niveau add constraint FKcomposer_FK
-     foreign key (id_projet)
-     references Projet (id_projet);
+-- alter table Niveau add constraint FKcomposer_FK
+--      foreign key (id_projet)
+--      references Projet (id_projet);
 
-alter table posseder add constraint FKpos_Uti_FK
-     foreign key (id_utilisateur)
-     references Utilisateur (id_utilisateur);
+-- alter table posseder add constraint FKpos_Uti_FK
+--      foreign key (id_utilisateur)
+--      references Utilisateur (id_utilisateur);
 
-alter table posseder add constraint FKpos_Pro
-     foreign key (id_projet)
-     references Projet (id_projet);
+-- alter table posseder add constraint FKpos_Pro
+--      foreign key (id_projet)
+--      references Projet (id_projet);
 
-alter table Tache add constraint FKcontenir_FK
-     foreign key (id_projet)
-     references Projet (id_projet);
+-- alter table Tache add constraint FKcontenir_FK
+--      foreign key (id_projet)
+--      references Projet (id_projet);
 
 -- alter table Utilisateur add constraint FKautoriser_FK
 --      foreign key (id_droit)

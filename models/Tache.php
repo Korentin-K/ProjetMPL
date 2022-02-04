@@ -20,7 +20,7 @@ class Tache extends Models {
         new Models;
         if($this->reloadDataFake === true) {
             $this->deleteAllData($this->table);
-            $this->addDataFake(10,2);
+            $this->addDataFake(10,3);
         }
     }
     //========================================================
