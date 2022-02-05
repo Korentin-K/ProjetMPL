@@ -4,7 +4,16 @@ require_once "models/Niveau.php";
 require_once "models/Tache.php";
 
 //========================================================
-// FONCTIONS : généralistes strucuture HTML
+// FONCTIONS : generations de fausses données
+//========================================================
+function loadFakeData(){
+    // $p = new Projet;
+    $n = new Niveau;
+    // $t = new Tache;
+}
+
+//========================================================
+// FONCTIONS : généralistes structure HTML
 //========================================================
 // Répertorie les liens CSS
 function getDependances(int $codePage){
@@ -104,15 +113,32 @@ function writeNavBar(){
 //========================================================
 // FONCTIONS : page diagramme
 //========================================================
-require_once "models/Tache.php";
+// recuperation des niveaux
+function getLevelByIdProjet($idProjet){
+    $level = new Niveau;
+    $getLevel = $level->findBy("nom_niveau","id_projet=".$idProjet);
+    $id = 0;
+    foreach($getLevel as $row){
+        addLevel($id,$row["nom_niveau"]);
+        $id += 1;
+    }
+}
+// recuperation des tâches par niveau
+function getTaskByLevel(){
+    $task = new Tache;
+    $getTask = $task->findy("nom_tache, niveau_tache","id_projet=".$idProjet);
+    foreach($getTask as $row){
+        
+    }
+}
 // Ajout d'un niveau
-function addLevel($levelNbr,$nbrTask=0){
-    $marginLeft = $levelNbr == 0 ? "mx-0" : "";
-    $html = " <div id='level_".$levelNbr."' class='d-flex col-12 h-100 justify-content-center levelStyle $marginLeft'>
+function addLevel($idLevel,$nameLevel){    
+    $marginLeft = $idLevel == 0 ? "mx-0" : "";
+    $html = " <div id='level_".$idLevel."' class='d-flex col-12 h-100 justify-content-center levelStyle $marginLeft'>
                 <div class='row d-flex justify-content-center'>
                     <div class='d-flex mt-1 col-10 justify-content-around titleLevel ' >
-                        <div class='col-8 d-flex justify-content-center'>Niveau ".strval($levelNbr)."</div>
-                        <a id='addTaskLevel_".$levelNbr."' class='col-2 d-flex justify-content-end ' title='Ajouter une tâche' onclick=''><i id='iconPlus' class='fas fa-plus'></i></a>
+                        <div class='col-8 d-flex justify-content-center'>".strval($nameLevel)."</div>
+                        <a id='addTaskLevel_".$idLevel."' class='col-2 d-flex justify-content-end ' title='Ajouter une tâche' onclick=''><i id='iconPlus' class='fas fa-plus'></i></a>
                     </div>
                     ".addTask($nbrTask)."
                 </div>       

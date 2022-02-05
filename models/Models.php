@@ -7,8 +7,6 @@ class Models extends Database {
     protected $reloadDataFake = true;
 
     protected function __construct(){
-        global $newDataFake;
-        $this->reloadDataFake = $newDataFake;
         if(self::$pdo === null){
             new Database;
             self::$pdo = Database::$instance;
@@ -20,14 +18,15 @@ class Models extends Database {
     //---------------------------------------------------------------
     //  determine le nombre de niveau par projet;
     //---------------------------------------------------------------
-    private function getMaxNiveauByProjet(){
-        $sql = "select count(*) as niveauCount, id_projet from niveau group by id_projet";
+    private function getNiveauByProjet(){
+        $sql = "select id_niveau, id_projet from niveau";
         $query = self::$pdo->prepare($sql);
         $query->execute();
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
         $data = array();
         foreach($result as $row){
-            $data[$row['id_projet']] = $row['niveauCount'];
+            if( !isset($data[$row['id_projet']])) $data[$row['id_projet']] = array();
+            array_push($data[$row['id_projet']], $row['id_niveau']);
         }
         return $data;
     }
@@ -35,7 +34,7 @@ class Models extends Database {
     //  determine la valeur MIN et MAX des ID de la table parente;
     //  La table parente est definie en fonction des cles etrangere;
     //---------------------------------------------------------------
-    private function getMinMaxIdParentTable($table){
+    private function getIdParentTable($table){
         $data = null;
         switch($table){
             case "niveau" : $parentTable = "projet";
@@ -47,15 +46,16 @@ class Models extends Database {
         }
         if($parentTable != null){
             $idParent = "id_".$parentTable;
-            $sql = "select MIN($idParent) as minId, MAX($idParent) as maxId from ".$parentTable;
+            $sql = "select ".$idParent." from ".$parentTable;
             $query = self::$pdo->prepare($sql);
             $query->execute();
-            $result = $query->fetchAll(PDO::FETCH_ASSOC);
-            $data = [$result[0]['minId'],$result[0]['maxId']];
-        }
-        if($table == "tache"){
-            $maxNiveau = $this->getMaxNiveauByProjet();
-            array_push($data,$maxNiveau);
+            $result = $query->fetchAll(PDO::FETCH_ASSOC); 
+            $data = array(); 
+            foreach($result as $row){
+                foreach($row as $key => $value){
+                    array_push($data, $value);
+                }
+            }          
         }
         return $data;
     }
@@ -65,38 +65,52 @@ class Models extends Database {
     //  Possibilite de repeter le nombre de ligne max avec une valeur differente;
     //----------------------------------------------------------------------------
     protected function insertDataFake($table, $columns, $arrayValues,$maxLine,$repetition=null){
-        $idParentArray = $this->getMinMaxIdParentTable($table);
+        $idParentTable = $this->getIdParentTable($table);
         //Si non null, recuperer les identifiants des cles primaires
-        if( $idParentArray != null){
-            $repetition = $idParentArray[1];
-            $startRep = $idParentArray[0];
-            if(isset($idParentArray[2]) && $table=="tache") $itemById = $idParentArray[2];
-        }else{            
+        if($table=="niveau"){
+            $repetition = sizeof($idParentTable)-1;
             $startRep = 0;
+        }elseif( $idParentTable != null){
+            $repetition = sizeof($idParentTable)-1;
+            $startRep = 0;
+            if( $table=="tache") $idNiveau = $this->getNiveauByProjet();
+        }else{            
             $repetition = $repetition == null ? 1 : $repetition;
+            $startRep = 0;
         }
-        $multiLoop = $repetition == null ? false : true;  
-        //boucle nombre de repetitions  
+        $multiLoop = $repetition == null ? false : true;
+        
+        // var_dump($idParentTable);
+        //boucle nombre de repetitions - projets
+        // echo "<br>table=".$table."-";
+        // echo "MAXrep=".$repetition."-" ;
+        // echo "STARTrep=".$startRep."-" ;
         for($r=$startRep;$r<$repetition;$r++){
+            // echo "r=".$r."/";
+            if($table == "tache" || $table == "niveau") $idProjet = $idParentTable[$r];
             $n = 0;
             //boucle nombre de ligne a completer
             for($i=0;$i<$maxLine;$i++){
+                if($table == "tache" && $n == (sizeof($idNiveau[$idProjet])) ) $n = 0;
                 $data = array();
-                if($n == $itemById[$startRep]) $n = 0;
                 //boucle par colonne a completer
                 for($j=0;$j<sizeof($arrayValues);$j++){ 
+                    // echo "j=".$j."/";
                     //Si presence de $, remplacer par une incrementation 
                     if(stripos($arrayValues[$j],"$") != false) {                       
                         $extract = strstr($arrayValues[$j],"$");
-                        if($table == "tache" && $j == 2) $data[$j] = str_replace("$",$n,$arrayValues[$j]);
+                        if( ($table=="niveau" && $j == 2) || ($table=="tache" && $j == 10) ) $data[$j] = str_replace("$$",$idProjet,$arrayValues[$j]); 
+                        elseif($table == "tache" && $j == 2) $data[$j] = str_replace("$",$idNiveau[$idProjet][$n],$arrayValues[$j]);
                         else if($extract == "$$" && $multiLoop == true) $data[$j] = str_replace("$$",$r,$arrayValues[$j]); 
                         else $data[$j] = str_replace("$",$i,$arrayValues[$j]); 
-                    }else $data[$j] = $arrayValues[$j];
+                    }
+                    else $data[$j] = $arrayValues[$j];
                 }
                 $this->query_insert($table, $columns, $data);
                 $n += 1;
             }
         }
+
     }
     //------------------------------------------
     // supprime toutes les donnees de la table
