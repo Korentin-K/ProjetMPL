@@ -177,8 +177,7 @@ class Models extends Database {
     //====================================================================================== 
     public function rechercheCompteExiste($email)
     {
-        //filter_validate_email
-        $sql= "select * from utilisateur where  mail_utilisateur=".strval($email);
+        $sql= "select * from utilisateur where  mail_utilisateur='".strval($email)."'";
         $query = self::$pdo->prepare($sql);
         $query->execute();
         if($query!=null)
@@ -207,7 +206,7 @@ class Models extends Database {
     //======================================================================
     public function rechercheConnexion($email,$mdp)
     {
-        $sql= "select * from utilisateur where nom_utilisateur=".strval($email)."and mdp_utilisateur=".strval($mdp);
+        $sql= "select * from utilisateur where nom_utilisateur='".strval($email)."' and mdp_utilisateur='".strval($mdp)."'";
         $query = self::$pdo->prepare($sql);
         $query->execute();
         if($query!=null)
