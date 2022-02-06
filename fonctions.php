@@ -8,7 +8,7 @@ require_once "models/Tache.php";
 //========================================================
 function loadFakeData(){
     // $p = new Projet;
-    $n = new Niveau;
+    // $n = new Niveau;
     // $t = new Tache;
 }
 

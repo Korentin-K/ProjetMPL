@@ -6,6 +6,8 @@ writeHeaderHtml("diagramme MPM",2);
 new Projet;
 new Niveau;
 new Tache;
+// $t = new Tache;
+// var_dump($t->getNiveauByProjet());
 // loadFakeData();
 ?>
 <body >  
@@ -17,7 +19,7 @@ new Tache;
         <div class="d-flex col-2">  </div>
         <div class="d-flex col-10 displayDiagramme">
         <?php 
-        getLevelByIdProjet("1");
+        // getLevelByIdProjet("1");
         // $nbrCol = 10;
         // for($i=0;$i<$nbrCol;$i++){
         //     addLevel($i,3);
