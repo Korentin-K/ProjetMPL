@@ -4,7 +4,7 @@ require_once "./config/Database.php";
 
 class Models extends Database {
     private static $pdo = null;
-    protected $reloadDataFake = true;
+    protected $reloadDataFake = false;
 
     protected function __construct(){
         if(self::$pdo === null){
@@ -131,7 +131,7 @@ class Models extends Database {
         }
         $sql = rtrim($sql,",");
         $sql .= ")";      
-        if($condition != null) $sql .= ") where ".strval($condition);
+        if($condition != null) $sql .= " where ".strval($condition);
         $sql .= ";";
         $query = self::$pdo->prepare($sql);
         $query->execute();

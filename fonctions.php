@@ -2,14 +2,13 @@
 require_once "models/Projet.php";
 require_once "models/Niveau.php";
 require_once "models/Tache.php";
+require_once "models/Datafaker.php";
 
 //========================================================
 // FONCTIONS : generations de fausses données
 //========================================================
 function loadFakeData(){
-    // $p = new Projet;
-    // $n = new Niveau;
-    // $t = new Tache;
+    $data = new Datafaker;
 }
 
 //========================================================
@@ -31,6 +30,7 @@ function getDependances(int $codePage){
 function getScript(){
     $path_js = "asset/js";
     $script = "<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p\" crossorigin=\"anonymous\"></script>";
+    $script .= "<script src='https://code.jquery.com/jquery-3.6.0.min.js' integrity='sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=' crossorigin='anonymous'></script>";
     return $script;
 }
 // Ecrit l'en-tête HTML de la page
@@ -114,25 +114,35 @@ function writeNavBar(){
 // FONCTIONS : page diagramme
 //========================================================
 // recuperation des niveaux
-function getLevelByIdProjet($idProjet){
+function getLevelByIdProjet($idProjet,$display){
     $level = new Niveau;
-    $getLevel = $level->findBy("nom_niveau","id_projet=".$idProjet);
-    $id = 0;
-    foreach($getLevel as $row){
-        addLevel($id,$row["nom_niveau"]);
-        $id += 1;
+    $getLevel = $level->findBy("id_niveau, nom_niveau","id_projet=".$idProjet);
+    $html="";
+    if($display == "view") {
+        foreach($getLevel as $row){
+            $html .= addLevel($idProjet,$row["id_niveau"],$row["nom_niveau"]);
+        }
+    }elseif ($display == "select") {
+        $html .= "<option value='-1' selected>Choix du niveau...</option>";
+        foreach($getLevel as $row){
+            $html .= "<option value=".$row['id_niveau'].">".$row['nom_niveau']."</option>";
+        }
     }
+    return $html;
 }
 // recuperation des tâches par niveau
-function getTaskByLevel(){
+function getTaskByLevel($idProjet,$idLevel){
+    $html = "";
     $task = new Tache;
-    $getTask = $task->findy("nom_tache, niveau_tache","id_projet=".$idProjet);
+    $getTask = $task->findBy("id_tache,nom_tache","id_projet=$idProjet and id_niveau_tache=$idLevel");
+    $nbrtask = count($getTask);
     foreach($getTask as $row){
-        
+        $html .= addTask($row["id_tache"],$row["nom_tache"]);
     }
+    return $html;
 }
 // Ajout d'un niveau
-function addLevel($idLevel,$nameLevel){    
+function addLevel($idProjet,$idLevel,$nameLevel){    
     $marginLeft = $idLevel == 0 ? "mx-0" : "";
     $html = " <div id='level_".$idLevel."' class='d-flex col-12 h-100 justify-content-center levelStyle $marginLeft'>
                 <div class='row d-flex justify-content-center'>
@@ -140,19 +150,25 @@ function addLevel($idLevel,$nameLevel){
                         <div class='col-8 d-flex justify-content-center'>".strval($nameLevel)."</div>
                         <a id='addTaskLevel_".$idLevel."' class='col-2 d-flex justify-content-end ' title='Ajouter une tâche' onclick=''><i id='iconPlus' class='fas fa-plus'></i></a>
                     </div>
-                    ".addTask($nbrTask)."
+                    ".getTaskByLevel($idProjet,$idLevel)."
                 </div>       
             </div>";
-    echo $html;
+    return $html;
 }
-// Ajout de tâche(s)
-function addTask($n){
+// Affichage d'une tache
+function addTask($id,$name){
     $html="";
-    for($i=1;$i<=$n;$i++){
-        $html .= "<div class='row d-flex col-10 mt-1 task-item'>
-        <div class=' task-title '>Tache n° ".$i."</div>
-        <div class='task-content w-100'>Une courte description..</div>
-        </div>";
-    }
+    $html .= "<div id='taskItem_$id' class='row d-flex col-10 mt-1 task-item'>
+    <div class=' task-title d-flex col-12 align-items-center'><span class='d-flex col-10'>".$name."</span>
+    <span class='col-2 d-flex justify-content-end ' type='button' id='taskMenu_$id' data-bs-toggle='dropdown' aria-expanded='false'>
+    <i class='fas fa-ellipsis-v'></i>
+    </span></div>
+    <div class='task-content w-100'>Une courte description..</div>
+    </div>";
+    $html .= "<ul class='dropdown-menu' aria-labelledby='taskMenu_$id'>
+        <li><a class='dropdown-item' href='#'>Action</a></li>
+        <li><a class='dropdown-item' href='#'>Another action</a></li>
+        <li><a class='dropdown-item' href='#'>Something else here</a></li>
+    </ul>";
     return $html;
 }

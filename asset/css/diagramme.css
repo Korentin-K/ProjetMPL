@@ -66,3 +66,66 @@ html, body {
     font-size: 12px;
     font-style: italic;
 }
+a {
+    text-decoration: none;
+}
+.left-menu {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 40px;
+    background-color: #b8b5b5b4;
+}
+
+.iconLeftMenu {
+    font-size: 25px;
+}
+
+.collapsible {
+    margin-top: 5px;
+    border-bottom: solid 2px red;
+    background-color: #777;
+    color: white;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.active, .collapsible:hover {
+    background-color: #555;
+}
+
+.content {
+    width: 100%;
+    padding: 10px 18px;
+    display: none;
+    overflow: hidden;
+    background-color: #f1f1f1;
+    border-bottom: solid 1px black;
+}
+
+.form-label{
+    display: flex;
+    justify-content: start;
+    margin: 0;
+    font-weight: 600;
+    padding-top: 10px;
+}
+.form-control {
+    padding-top: 0px;
+}
+
+.btnSubmitForm {
+    color: white;
+    background-color: #779cab;
+}
+
+.btnSubmitForm:hover {
+    color: white;
+    background-color: #d8a48f;
+}
