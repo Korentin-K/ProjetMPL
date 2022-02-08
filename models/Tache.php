@@ -40,7 +40,7 @@ class Tache extends Models {
         $this->query_insert($this->table, $this->columns, $value, $condition);
     }    
     public function delete($condition){
-        query_delete($this->table,$condition);
+        $this->query_delete($this->table,$condition);
     }
     //========================================================
     // REQUETE : recuperation de donnees

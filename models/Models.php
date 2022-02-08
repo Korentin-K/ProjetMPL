@@ -140,6 +140,7 @@ class Models extends Database {
     protected function query_delete($table,$condition=null){
         $sql = "delete from ".strval($table);
         $sql .= $condition == null ? "" : " where ".strval($condition);
+        $sql .= ";";
         $query = self::$pdo->prepare($sql);
         $query->execute();
     }

@@ -144,11 +144,19 @@ function getTaskByLevel($idProjet,$idLevel){
 // Ajout d'un niveau
 function addLevel($idProjet,$idLevel,$nameLevel){    
     $marginLeft = $idLevel == 0 ? "mx-0" : "";
+    $dropdown = "<ul class='dropdown-menu ' aria-labelledby='taskMenu_$idLevel'>
+        <li><a class='dropdown-item'  onclick='modifyLevel($idLevel)' >Modifier</a></li>
+        <li><a class='dropdown-item'  onclick='deleteLevel($idLevel);'>Supprimer</a></li>
+    </ul>";
     $html = " <div id='level_".$idLevel."' class='d-flex col-12 h-100 justify-content-center levelStyle $marginLeft'>
-                <div class='row d-flex justify-content-center'>
-                    <div class='d-flex mt-1 col-10 justify-content-around titleLevel ' >
-                        <div class='col-8 d-flex justify-content-center'>".strval($nameLevel)."</div>
-                        <a id='addTaskLevel_".$idLevel."' class='col-2 d-flex justify-content-end ' title='Ajouter une tâche' onclick=''><i id='iconPlus' class='fas fa-plus'></i></a>
+                <div class='row d-flex justify-content-center levelCol'>
+                    <div class='d-flex mt-1 col-10 justify-content-around titleLevel' >
+                        <div class=' task-title d-flex col-12 '>
+                            <span class='d-flex col-10 '>".strval($nameLevel)."</span>
+                            <a class='col-2 d-flex justify-content-end ' id='levelMenu_$idLevel' data-bs-toggle='dropdown' aria-expanded='false' data-toggle='dropdown' aria-haspopup='true' data-offset='10,20'>
+                            <i class='levelIcon fas fa-cog'></i>
+                            </a>$dropdown
+                        </div>
                     </div>
                     ".getTaskByLevel($idProjet,$idLevel)."
                 </div>       
@@ -158,17 +166,16 @@ function addLevel($idProjet,$idLevel,$nameLevel){
 // Affichage d'une tache
 function addTask($id,$name){
     $html="";
+    $dropdown = "<ul class='dropdown-menu' aria-labelledby='taskMenu_$id'>
+        <li><a class='dropdown-item'  onclick='modifyTask($id)' >Modifier</a></li>
+        <li><a class='dropdown-item'  onclick='deleteTask($id);'>Supprimer</a></li>
+    </ul>";
     $html .= "<div id='taskItem_$id' class='row d-flex col-10 mt-1 task-item'>
     <div class=' task-title d-flex col-12 align-items-center'><span class='d-flex col-10'>".$name."</span>
-    <span class='col-2 d-flex justify-content-end ' type='button' id='taskMenu_$id' data-bs-toggle='dropdown' aria-expanded='false'>
-    <i class='fas fa-ellipsis-v'></i>
-    </span></div>
+    <a class='col-2 d-flex justify-content-end ' id='taskMenu_$id' data-bs-toggle='dropdown' aria-expanded='false'>
+    <i class='fas fa-ellipsis-h'></i></a>$dropdown</div>
     <div class='task-content w-100'>Une courte description..</div>
     </div>";
-    $html .= "<ul class='dropdown-menu' aria-labelledby='taskMenu_$id'>
-        <li><a class='dropdown-item' href='#'>Action</a></li>
-        <li><a class='dropdown-item' href='#'>Another action</a></li>
-        <li><a class='dropdown-item' href='#'>Something else here</a></li>
-    </ul>";
+    
     return $html;
 }

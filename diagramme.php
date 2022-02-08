@@ -14,7 +14,7 @@ $idProjet = "11";
         <div class="d-flex flex-wrap align-content-start col-2 px-0"> 
             <!-- Ajouter un niveau au projet -->
             <button type="button" class="d-flex col-12 collapsible" >
-                <div class="col-10 ps-4">Ajouter niveau</div>
+                <div class="col-10 ps-4">Ajouter un niveau</div>
                 <div class="col-2 d-flex justify-content-end align-items-center pe-4"><i class="iconLeftMenu far fa-plus-square"></i></div>
             </button>                
             <div class="content col-12">
@@ -48,9 +48,7 @@ $idProjet = "11";
             </div>
         </div>
         <div id="projetView" class="d-flex col-10 displayDiagramme">
-        <?php 
-            echo getLevelByIdProjet($idProjet,"view");
-        ?>
+        <?php echo getLevelByIdProjet($idProjet,"view");  ?>
         </div>
     </div>
 </body>
@@ -134,7 +132,49 @@ $idProjet = "11";
                 console.log(erreur)
             }
         });     
-    }   
+    } 
+    // modification tache
+    function modifyTask(idTask){
+        console.log("modification de : "+idTask)
+    }
+    // suprresion de niveau
+    function deleteLevel(id){
+        $.ajax({
+            url : 'ajax_treatment.php',
+            type : 'POST',
+            data : {
+                delete : 1,
+                idLevel : id,              
+                projet : <?php echo $idProjet;?>} ,
+            success : function(data){   
+                document.getElementById('projetView').innerHTML = "";
+                document.getElementById('projetView').innerHTML = data;                
+            },
+            error : function(resultat, statut, erreur){
+                console.log("error :")
+                console.log(erreur)
+            }
+        });   
+    }  
+    // suprresion de tache
+    function deleteTask(id){
+        $.ajax({
+            url : 'ajax_treatment.php',
+            type : 'POST',
+            data : {
+                delete : 1,
+                idTask : id,              
+                projet : <?php echo $idProjet;?>} ,
+            success : function(data){   
+                document.getElementById('projetView').innerHTML = "";
+                document.getElementById('projetView').innerHTML = data;                
+            },
+            error : function(resultat, statut, erreur){
+                console.log("error :")
+                console.log(erreur)
+            }
+        });   
+    }  
 </script>
 
 <?php writeFooterHtml(); ?>

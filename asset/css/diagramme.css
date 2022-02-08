@@ -22,7 +22,6 @@ html, body {
 }
 /* Style des niveaux */
 .levelStyle {
-    /* color: white; */
     margin-top: 10px;
     border-radius: 20px 20px 0px 0px;
     background-color: #779CAB;
@@ -31,13 +30,17 @@ html, body {
     border: solid 2px white;
     margin-left: 80px;
 }
-
+.levelCol{
+    width: 100%;
+}
 .titleLevel {
+    padding: 0 20px;
     color: white;
     font-weight: 700;
     height: 20px;
     border-bottom: dashed 2px white;
     padding-bottom: 30px !important;
+    width: 100%;
 }
 
 #iconPlus {
@@ -62,6 +65,13 @@ html, body {
     font-size: 15px;
     font-weight: 600;
 }
+.task-title > a {
+    padding-top: 5px;
+    color: black;
+}
+.task-title  .levelIcon {
+    color: white !important;
+}
 .task-content {
     font-size: 12px;
     font-style: italic;
@@ -69,6 +79,7 @@ html, body {
 a {
     text-decoration: none;
 }
+/* Style du menu de gauche */
 .left-menu {
     display: flex;
     align-items: center;

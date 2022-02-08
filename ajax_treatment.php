@@ -4,7 +4,15 @@ require_once "./fonctions.php";
 $idProjet="";
 if(isset($_POST['projet']) && $_POST['projet'] != "") $idProjet = htmlspecialchars($_POST['projet']);
 
-//Ajout d'une élément
+//-------------------------------Rafraichissement niveau select-------------------------------
+if(isset($_POST['reload']) && $_POST['reload'] == 1) {
+    $data="";
+    if(isset($_POST['type']) && $_POST['type'] != "") $type = htmlspecialchars($_POST['type']);
+    if($type == "level") $data = getLevelByIdProjet($idProjet,"select");
+    echo $data;
+    exit;
+}
+//-------------------------------Ajout d'un élément-------------------------------
 if(isset($_POST['add']) && $_POST['add'] == 1) {
     $html="";
     //  Ajout niveau
@@ -35,11 +43,32 @@ if(isset($_POST['add']) && $_POST['add'] == 1) {
         exit;
     }
 }
-// rafraichissement niveau select
-if(isset($_POST['reload']) && $_POST['reload'] == 1) {
-    $data="";
-    if(isset($_POST['type']) && $_POST['type'] != "") $type = htmlspecialchars($_POST['type']);
-    if($type == "level") $data = getLevelByIdProjet($idProjet,"select");
-    echo $data;
-    exit;
+//-------------------------------Suppression d'un élément-------------------------------
+
+if(isset($_POST['delete']) && $_POST['delete'] == 1) {
+    $html="";
+    //  Suppression niveau
+    if(isset($_POST['idLevel'])) {
+        $idLevel="";
+        if(isset($_POST['idLevel']) && $_POST['idLevel'] != "") $idLevel = htmlspecialchars($_POST['idLevel']);
+        // perssistance des données
+        $task = new Niveau;
+        $task->delete("id_niveau='".$idLevel."' and id_projet='".$idProjet."'");
+        // rafraichissement de l'affichage
+        $html = getLevelByIdProjet($idProjet,"view");
+        echo $html;
+        exit;
+    }
+    //  Suppression tache
+    if(isset($_POST['idTask'])) {
+        $idTask="";
+        if(isset($_POST['idTask']) && $_POST['idTask'] != "") $idTask = htmlspecialchars($_POST['idTask']);
+        // perssistance des données
+        $task = new Tache;
+        $task->delete("id_tache='".$idTask."' and id_projet='".$idProjet."'");
+        // rafraichissement de l'affichage
+        $html = getLevelByIdProjet($idProjet,"view");
+        echo $html;
+        exit;
+    }
 }
