@@ -134,16 +134,20 @@ function getLevelByIdProjet($idProjet,$display){
 function getTaskByLevel($idProjet,$idLevel){
     $html = "";
     $task = new Tache;
-    $getTask = $task->findBy("id_tache,nom_tache","id_projet=$idProjet and id_niveau_tache=$idLevel");
+    $getTask = $task->findBy("id_tache,nom_tache,contenu_tache","id_projet=$idProjet and id_niveau_tache=$idLevel");
     $nbrtask = count($getTask);
     foreach($getTask as $row){
-        $html .= addTask($row["id_tache"],$row["nom_tache"]);
+        $dataTask = array();
+        array_push($dataTask,$row["nom_tache"]);
+        array_push($dataTask,$row["contenu_tache"]);
+        $html .= addTask($row["id_tache"],$dataTask);
     }
     return $html;
 }
 // Ajout d'un niveau
 function addLevel($idProjet,$idLevel,$nameLevel){    
     $marginLeft = $idLevel == 0 ? "mx-0" : "";
+    $nameLevel = $nameLevel == "" ? "sans nom" : $nameLevel;
     $dropdown = "<ul class='dropdown-menu ' aria-labelledby='taskMenu_$idLevel'>
         <li><a class='dropdown-item'  onclick='modifyLevel($idLevel)' >Modifier</a></li>
         <li><a class='dropdown-item'  onclick='deleteLevel($idLevel);'>Supprimer</a></li>
@@ -164,17 +168,34 @@ function addLevel($idProjet,$idLevel,$nameLevel){
     return $html;
 }
 // Affichage d'une tache
-function addTask($id,$name){
+function addTask($id,$data){
+    $data[0] = $data[0] == "" ? "sans nom" : $data[0];
     $html="";
     $dropdown = "<ul class='dropdown-menu' aria-labelledby='taskMenu_$id'>
         <li><a class='dropdown-item'  onclick='modifyTask($id)' >Modifier</a></li>
         <li><a class='dropdown-item'  onclick='deleteTask($id);'>Supprimer</a></li>
     </ul>";
     $html .= "<div id='taskItem_$id' class='row d-flex col-10 mt-1 task-item'>
-    <div class=' task-title d-flex col-12 align-items-center'><span class='d-flex col-10'>".$name."</span>
+    <table>
+        <tbody>
+            <tr >    
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr>    
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr>    
+                <td>0</td>
+                <td>0</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class=' task-title d-flex col-12 align-items-center'><span class='d-flex col-10'>".$data[0]."</span>
     <a class='col-2 d-flex justify-content-end ' id='taskMenu_$id' data-bs-toggle='dropdown' aria-expanded='false'>
     <i class='fas fa-ellipsis-h'></i></a>$dropdown</div>
-    <div class='task-content w-100'>Une courte description..</div>
+    <div class='task-content w-100'>".$data[1]."</div>
     </div>";
     
     return $html;
