@@ -1,6 +1,6 @@
 <?php
 require_once "models/Utilisateur.php";
-
+session_start();
 if(isset($_POST['identifiant'])) $emailId = $_POST['identifiant'];
 else $emailId = "";
 
@@ -26,6 +26,8 @@ if($emailId!="")
 			$leMotDePasse=password_hash($passwordConnexion, PASSWORD_DEFAULT);
 	 if($User->rechercheConnexion($emailId,$leMotDePasse)==true){
 	 	header('Location: ./dashboard.php');
+	 	$nameUser=$User->rechercheNom($emailId);
+	 	$_SESSION['user']=$nameUser;
   		exit();
 	 }
 	 else{
@@ -53,6 +55,7 @@ if($nomI!="" and $emailId=="")
 		    	$leMotDePasse=password_hash($passwordInscription, PASSWORD_DEFAULT);
 				$User->inscriptionSite($nomI,$email,$leMotDePasse);
 				header('Location: ./dashboard.php');
+				$_SESSION['user']=$nomI;
   				exit();
 			}
 			else
