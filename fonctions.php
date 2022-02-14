@@ -8,7 +8,7 @@ require_once "models/Datafaker.php";
 // FONCTIONS : generations de fausses données
 //========================================================
 function loadFakeData(){
-    $data = new Datafaker;
+    return new Datafaker;
 }
 
 //========================================================
