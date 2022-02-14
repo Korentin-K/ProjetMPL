@@ -79,7 +79,7 @@ class Models extends Database {
 
         // boucle nombre de repetitions - id_projet
         for($r=$startRep;$r<$repetition;$r++){
-            if($table == "tache" || $table == "niveau") $idProjet = $idParentTable[$r];
+            if($table == "tache" || $table == "niveau") $idProjet = $idParentTable[$r];            
             $n = 0;
             //boucle nombre de ligne a completer
             for($i=0;$i<$maxLine;$i++){
@@ -97,6 +97,8 @@ class Models extends Database {
                     }
                     else $data[$j] = $arrayValues[$j];
                 }
+                // var_dump($data);
+                // exit;
                 $this->query_insert($table, $columns, $data);
                 $n += 1;
             }

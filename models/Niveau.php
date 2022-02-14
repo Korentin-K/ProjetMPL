@@ -7,9 +7,9 @@ class Niveau extends Models {
     private $id_niveu = "";
     private $nom_niveau = "";
 
-    public function __construct(){
+    public function __construct($reload=false){
         new Models;
-        if($this->reloadDataFake === true) {
+        if($this->reloadDataFake === true || $reload) {
             $this->deleteAllData($this->table);
             $this->addDataFake(5,2);
         }

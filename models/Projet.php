@@ -9,9 +9,9 @@ class Projet extends Models {
     private $dateCreation_diagramme;
     private $dateModification_diagramme;
 
-    public function __construct(){
+    public function __construct($reload=false){
         new Models;
-        if($this->reloadDataFake === true) {
+        if($this->reloadDataFake === true || $reload) {
             $this->deleteAllData($this->table);
             $this->addDataFake(10,1);
         }

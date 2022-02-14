@@ -16,9 +16,9 @@ class Tache extends Models {
     private $id_diagramme;
     private $id_niveau;
 
-    public function __construct(){
+    public function __construct($reload=false){
         new Models;
-        if($this->reloadDataFake === true) {
+        if($this->reloadDataFake === true || $reload) {
             $this->deleteAllData($this->table);
             $this->addDataFake(10,3);
         }

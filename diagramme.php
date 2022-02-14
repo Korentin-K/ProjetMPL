@@ -2,7 +2,7 @@
 require_once "fonctions.php";
 session_start()
 writeHeaderHtml("diagramme MPM",2);
-$idProjet = "11";
+$idProjet = "21";
 // loadFakeData();
 ?>
 <body >  
