@@ -30,7 +30,8 @@ function getDependances(int $codePage){
 function getScript(){
     $path_js = "asset/js";
     $script = "<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p\" crossorigin=\"anonymous\"></script>";
-    $script .= "<script src='https://code.jquery.com/jquery-3.6.0.min.js' integrity='sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=' crossorigin='anonymous'></script>";
+    $script .= "<script src=\"https://code.jquery.com/jquery-3.6.0.js\"></script>";
+    $script .= "<script src=\"https://code.jquery.com/ui/1.13.1/jquery-ui.js\"></script>";
     return $script;
 }
 // Ecrit l'en-tête HTML de la page
@@ -44,13 +45,14 @@ function writeHeaderHtml(string $title,int $codePage=0){
             <meta name='viewport' content='width=device-width, initial-scale=1.0'>
             <title>".$title."</title>";
     $html .= getDependances($codePage);
+    $html .= getScript();
     $html .= "</head>";
     echo $html;
 }
 // Ecris le pied de la page HTML
 function writeFooterHtml(){
-    $html = getScript();
-    $html .= "</html>";
+    // $html = getScript();
+    $html = "</html>";
     echo $html;
 }
 // Ecris la barre de navigation de l'application
@@ -134,15 +136,34 @@ function getLevelByIdProjet($idProjet,$display){
 function getTaskByLevel($idProjet,$idLevel){
     $html = "";
     $task = new Tache;
-    $getTask = $task->findBy("id_tache,nom_tache,contenu_tache","id_projet=$idProjet and id_niveau_tache=$idLevel");
+    $getTask = $task->findBy("*","id_projet=$idProjet and id_niveau_tache=$idLevel");
     $nbrtask = count($getTask);
     foreach($getTask as $row){
         $dataTask = array();
         array_push($dataTask,$row["nom_tache"]);
         array_push($dataTask,$row["contenu_tache"]);
+        array_push($dataTask,$row["duree_tache"]);
+        array_push($dataTask,$row["tacheAnterieur_tache"]);
+        $dureePlusTot = calculTask($row["tacheAnterieur_tache"]);
         $html .= addTask($row["id_tache"],$dataTask);
     }
     return $html;
+}
+// calcul des durées
+function calculTask($parentTask){
+    if($parentTask == null) return 0;
+    require_once "models/Models.php";
+    $arrayParent = explode(",",$parentTask);
+    foreach($arrayParent as $key => $value){
+        $arrayParent[$key] = ltrim($value,"T");
+    }
+    $arrayParent = implode(",",$arrayParent);
+    $sql="SELECT SUM(duree_tache) as sumDuree FROM tache WHERE id_tache in ($arrayParent);";
+    $m = new Models;
+    $data = $m->customQuery($sql)[0]["sumDuree"];
+    if($data != NULL) return $data;
+    else return 0;
+
 }
 // Ajout d'un niveau
 function addLevel($idProjet,$idLevel,$nameLevel){    
@@ -176,11 +197,11 @@ function addTask($id,$data){
         <li><a class='dropdown-item'  onclick='deleteTask($id);'>Supprimer</a></li>
     </ul>";
     $html .= "<div id='taskItem_$id' class='row d-flex col-10 mt-1 task-item'>
-    <table>
+    <table class='tableTask'>
         <tbody>
             <tr >    
-                <td>0</td>
-                <td>0</td>
+                <td>T$id</td>
+                <td>".$data[2]."</td>
             </tr>
             <tr>    
                 <td>0</td>
@@ -189,6 +210,9 @@ function addTask($id,$data){
             <tr>    
                 <td>0</td>
                 <td>0</td>
+            </tr>
+            <tr>    
+                <td colspan=2>".$data[3]."</td>
             </tr>
         </tbody>
     </table>

@@ -52,7 +52,7 @@ html, body {
     color: #D6CE93;
 }
 
-/* Style des tâches */
+/* Style des tï¿½ches */
 .task-item {
     background-color: #D6CE93; /*#EFEBCE #D6CE93*/
     /* background-color: #4A919E; */
@@ -64,6 +64,9 @@ html, body {
 }
 .task-item > table {
     height: 80px;
+}
+.tableTask >tbody > tr > td{
+    width: 50%;
 }
 .task-item > table > tbody > tr > td {
     border: solid 1px white;

@@ -6,7 +6,7 @@ class Models extends Database {
     private static $pdo = null;
     protected $reloadDataFake = false;
 
-    protected function __construct(){
+    public function __construct(){
         if(self::$pdo === null){
             new Database;
             self::$pdo = Database::$instance;
@@ -167,6 +167,11 @@ class Models extends Database {
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function customQuery($sql){
+        $query = self::$pdo->prepare($sql);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
     /**
      * Get the value of pdo
      */ 

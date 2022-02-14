@@ -52,7 +52,9 @@ $idProjet = "21";
                             <input type="text" class="form-control" id="dureeTask" name="dureeTask" >
                         </div>                        
                     </div>
-                    <div class="d-flex col-12 justify-content-between">
+                    <label for="parentTask" class="form-label">Tache antérieur (TXX,..)</label>
+                    <input type="text" class="form-control" id="parentTask" name="parentTask" >
+                    <!-- <div class="d-flex col-12 justify-content-between">
                         <div class="col-5 d-flex flex-wrap">
                             <label for="plusTotTask" class="form-label">Plus tôt</label>
                             <input type="text" class="form-control" id="plusTotTask" name="plusTotTask" >
@@ -61,7 +63,7 @@ $idProjet = "21";
                             <label for="plusTardTask" class="form-label">Plus Tard</label>
                             <input type="text" class="form-control" id="plusTardTask" name="plusTotTask" >
                         </div>
-                    </div>                    
+                    </div>                     -->
                     <label for="descTask" class="form-label">Description</label>
                     <div class="form-floating">
                         <textarea class="form-control pt-1" id="descTask" name="descTask" ></textarea>
@@ -137,6 +139,8 @@ $idProjet = "21";
         var idLevel = document.getElementById('idLevelAddTask')
         var name = document.getElementById('nameTask')
         var desc = document.getElementById('descTask')
+        var duree = document.getElementById('dureeTask')
+        var parent = document.getElementById('parentTask')
         $.ajax({
             url : 'ajax_treatment.php',
             type : 'POST',
@@ -144,6 +148,8 @@ $idProjet = "21";
                 add : 1,
                 task : name.value,
                 desc : desc.value,
+                time : duree.value,
+                parent : parent.value,
                 idLevel : idLevel.value,
                 projet : <?php echo $idProjet;?>
                 } ,
@@ -181,6 +187,8 @@ $idProjet = "21";
                 document.getElementById('idLevelAddTask').value = json['id_niveau_tache'] 
                 document.getElementById('nameTask').value = json['nom_tache'] 
                 document.getElementById('descTask').value = json['contenu_tache']
+                document.getElementById('dureeTask').value = json['duree_tache']
+                document.getElementById('parentTask').value = json['tacheAnterieur_tache']
                 document.getElementById('btnSubmitTask').innerHTML = "Modifier"
                 document.getElementById('btnSubmitTask').setAttribute('onclick', 'updateTask('+id+');')
             },
@@ -195,6 +203,8 @@ $idProjet = "21";
         var idLevel = document.getElementById('idLevelAddTask')
         var name = document.getElementById('nameTask')
         var desc = document.getElementById('descTask')
+        var duree = document.getElementById('dureeTask')
+        var parent = document.getElementById('parentTask')
         $.ajax({
             url : 'ajax_treatment.php',
             type : 'POST',
@@ -204,6 +214,8 @@ $idProjet = "21";
                 idTask : id,
                 task : name.value,
                 desc : desc.value,
+                time : duree.value,
+                parent : parent.value,
                 idTaskLevel : idLevel.value,             
                 projet : <?php echo $idProjet;?>} ,
             success : function(data){ 
@@ -289,6 +301,8 @@ $idProjet = "21";
         document.getElementById('idLevelAddTask').value = ""
         document.getElementById('nameTask').value = ""
         document.getElementById('descTask').value = ""
+        document.getElementById('dureeTask').value = ""
+        document.getElementById('parentTask').value = ""
         document.getElementById('btnSubmitTask').innerHTML = "Ajouter"
         document.getElementById('btnSubmitTask').setAttribute('onclick', 'addTask();')
     }
@@ -329,7 +343,25 @@ $idProjet = "21";
                 console.log(erreur)
             }
         });   
-    }  
+    } 
+    $("document").ready(function() {
+        $(".task-item").draggable({
+            revert: true,
+            zIndex: 100,
+            helper: "clone",
+            
+            start: function( event, ui ) {
+                console.log(event)
+                console.log(ui.helper)
+            }
+        })
+        $(".levelStyle").droppable({
+            accept: '.task-item',
+            drop: function(event, ui) {
+            $(this).append($(ui.draggable));
+            }
+        })
+    }) 
 </script>
 
 <?php writeFooterHtml(); ?>
