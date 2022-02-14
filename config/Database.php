@@ -24,10 +24,10 @@ class Database extends PDO {
             $dbc = new PDO("mysql:host=".$this->servername.";dbname=".$this->dbname, $this->username, $this->password);
             // $dbc = new PDO("mysql:host=".$this->servername.";dbname=".$this->dbname, $this->username, $this->password);
             $dbc->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo "Connected successfully";
+            // echo "Connected successfully";
             return self::$instance = $dbc;
           } catch(PDOException $e) {
-            echo "Connection failed: " . $e->getMessage();
+            // echo "Connection failed: " . $e->getMessage();
             return self::$instance = null;
           }
     }

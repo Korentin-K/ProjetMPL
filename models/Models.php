@@ -4,7 +4,7 @@ require_once "./config/Database.php";
 
 class Models extends Database {
     private static $pdo = null;
-    protected $reloadDataFake = true;
+    protected $reloadDataFake = false;
 
     protected function __construct(){
         if(self::$pdo === null){
@@ -67,10 +67,7 @@ class Models extends Database {
     protected function insertDataFake($table, $columns, $arrayValues,$maxLine,$repetition=null){
         $idParentTable = $this->getIdParentTable($table);
         //Si non null, recuperer les identifiants des cles primaires
-        if($table=="niveau"){
-            $repetition = sizeof($idParentTable)-1;
-            $startRep = 0;
-        }elseif( $idParentTable != null){
+        if( $idParentTable != null){
             $repetition = sizeof($idParentTable)-1;
             $startRep = 0;
             if( $table=="tache") $idNiveau = $this->getNiveauByProjet();
@@ -79,14 +76,9 @@ class Models extends Database {
             $startRep = 0;
         }
         $multiLoop = $repetition == null ? false : true;
-        
-        // var_dump($idParentTable);
-        //boucle nombre de repetitions - projets
-        // echo "<br>table=".$table."-";
-        // echo "MAXrep=".$repetition."-" ;
-        // echo "STARTrep=".$startRep."-" ;
+
+        // boucle nombre de repetitions - id_projet
         for($r=$startRep;$r<$repetition;$r++){
-            // echo "r=".$r."/";
             if($table == "tache" || $table == "niveau") $idProjet = $idParentTable[$r];
             $n = 0;
             //boucle nombre de ligne a completer
@@ -95,7 +87,6 @@ class Models extends Database {
                 $data = array();
                 //boucle par colonne a completer
                 for($j=0;$j<sizeof($arrayValues);$j++){ 
-                    // echo "j=".$j."/";
                     //Si presence de $, remplacer par une incrementation 
                     if(stripos($arrayValues[$j],"$") != false) {                       
                         $extract = strstr($arrayValues[$j],"$");
@@ -110,7 +101,6 @@ class Models extends Database {
                 $n += 1;
             }
         }
-
     }
     //------------------------------------------
     // supprime toutes les donnees de la table
@@ -141,7 +131,7 @@ class Models extends Database {
         }
         $sql = rtrim($sql,",");
         $sql .= ")";      
-        if($condition != null) $sql .= ") where ".strval($condition);
+        if($condition != null) $sql .= " where ".strval($condition);
         $sql .= ";";
         $query = self::$pdo->prepare($sql);
         $query->execute();
@@ -150,6 +140,7 @@ class Models extends Database {
     protected function query_delete($table,$condition=null){
         $sql = "delete from ".strval($table);
         $sql .= $condition == null ? "" : " where ".strval($condition);
+        $sql .= ";";
         $query = self::$pdo->prepare($sql);
         $query->execute();
     }

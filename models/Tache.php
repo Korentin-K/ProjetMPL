@@ -3,7 +3,7 @@ require_once "Models.php";
 
 class Tache extends Models {
     private $table = "tache";
-    private $columns = ["id_tache", "nom_tache", "niveau_tache","duree_tache", "contenu_tache", "debutPlusTot_tache", "debutPlusTard_tache", "margeLibre_tache", "margeTotale_tache", "tacheAnterieur_tache", "id_projet"];
+    private $columns = ["id_tache", "nom_tache", "id_niveau_tache","duree_tache", "contenu_tache", "debutPlusTot_tache", "debutPlusTard_tache", "margeLibre_tache", "margeTotale_tache", "tacheAnterieur_tache", "id_projet"];
     
     private $nom_tache;
     private $duree_tache;
@@ -40,7 +40,7 @@ class Tache extends Models {
         $this->query_insert($this->table, $this->columns, $value, $condition);
     }    
     public function delete($condition){
-        query_delete($this->table,$condition);
+        $this->query_delete($this->table,$condition);
     }
     //========================================================
     // REQUETE : recuperation de donnees
@@ -49,7 +49,7 @@ class Tache extends Models {
         return $this->query_findAll($this->table,$column=null);
     }
     public function findBy($column=null,$condition){
-        return $this->query_findBy($this->table,$column=null,$condition);
+        return $this->query_findBy($this->table,$column,$condition);
     }
 
 }
