@@ -26,6 +26,14 @@ new Tache;
         </div>
     </div>
 </body>
-
+<?php //j'ai mis ça ici en attendant je sais que c'est à mettre dans les fonctions mais 
+        // je voulais revoir avec toi ce qui est draggable ou non ?>
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#draggable" ).draggable();
+  } );
+  </script>
 <?php writeFooterHtml(); ?>
 
