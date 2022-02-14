@@ -3,7 +3,6 @@ require_once "models/Projet.php";
 require_once "models/Niveau.php";
 require_once "models/Tache.php";
 require_once "models/Datafaker.php";
-
 //========================================================
 // FONCTIONS : generations de fausses données
 //========================================================
@@ -54,9 +53,9 @@ function writeFooterHtml(){
     echo $html;
 }
 // Ecris la barre de navigation de l'application
-function writeNavBar(){
-    $is_authenticate = false;
-    if($is_authenticate){
+function writeNavBar($nomUser){
+    $is_authenticate = $nomUser;
+    if($is_authenticate!=null or $is_authenticate!=''){
         $html = "<nav class='navbar navbar-expand-lg navbar-light bg-light py-0'>
                 <div class='container-fluid'>
                     <a class='navbar-brand' href='#'>MPM</a>
@@ -72,7 +71,7 @@ function writeNavBar(){
                         <a class='nav-link' href='#'>Features</a>
                         </li>
                         <li class='nav-item'>
-                        <span class='mx-2' >Nom Prenom</span>
+                        <span class='mx-2' >".$is_authenticate."</span>
                         </li>
                         <li class='nav-item'>
                         <a class='nav-link fw-bolder py-auto my-0'><i class='far fa-user-circle fa-3x'></i></a>

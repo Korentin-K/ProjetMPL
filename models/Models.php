@@ -207,7 +207,7 @@ class Models extends Database {
     //======================================================================
     public function rechercheConnexion($email,$mdp)
     {
-        $sql= "select * from utilisateur where nom_utilisateur='".strval($email)."' and mdp_utilisateur='".strval($mdp)."'";
+        $sql= "select * from utilisateur where mail_utilisateur='".strval($email)."' and mdp_utilisateur='".strval($mdp)."'";
         $query = self::$pdo->prepare($sql);
         $query->execute();
         if($query!=null)
@@ -219,6 +219,17 @@ class Models extends Database {
             return false;
         }
     }
+    //======================================================================
+    //REQUETE : Recherche le nom de l'utilisateur grâce à l'email
+    //======================================================================
+    public function rechercheNom($email)
+    {
+        $sql= "select nom_utilisateur from utilisateur where mail_utilisateur='".strval($email)."'";
+        $query = self::$pdo->prepare($sql);
+        $query->execute();
+         return $query->fetch(PDO::FETCH_ASSOC);
+    }
+
 
     //======================================================================
     //REQUETE : Récupération de données des projets
