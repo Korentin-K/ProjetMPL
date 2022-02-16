@@ -1,9 +1,10 @@
 <?php
+session_start();
 require_once "fonctions.php";
 writeHeaderHtml("dashboard",4);
 ?>
 <body >    
-    <?php writeNavBar(); ?>
+    <?php writeNavBar($_SESSION['User']); ?>
     <div class="d-flex row flex-wrap">
         <div class="bloc-panel col-4">
 

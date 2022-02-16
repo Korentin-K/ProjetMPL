@@ -170,16 +170,17 @@ function getTaskByLevel($idProjet,$idLevel,$positionLevel){
         array_push($dataTask,$row["duree_tache"]);
         // $parentTask = $positionLevel == 0 ? "" : $row["tacheAnterieur_tache"];
         array_push($dataTask,$row["tacheAnterieur_tache"]);
-        $dureePlusTot = calculTask($row["tacheAnterieur_tache"]);
+        $dureePlusTot = calculTask($row["tacheAnterieur_tache"],$row["id_tache"]);
         array_push($dataTask,$dureePlusTot);
         $html .= addTask($row["id_tache"],$dataTask,$positionLevel);
     }
     return $html;
 }
 // calcul des durées
-function calculTask($parentTask){
+function calculTask($parentTask,$idTask){
     if($parentTask == null) return 0;
     require_once "models/Models.php";
+    // recuperation ids taches antérieures
     $arrayParent = explode(",",$parentTask);
     foreach($arrayParent as $key => $value){
         if($value != ""){
@@ -189,11 +190,21 @@ function calculTask($parentTask){
         }
     }
     $arrayParent = implode(",",$arrayParent);
-    $sql="SELECT MAX(duree_tache) as maxDuree FROM tache WHERE id_tache in ($arrayParent);";
+    $sql="SELECT id_tache, duree_tache, debutPlusTot_tache FROM tache WHERE id_tache in ($arrayParent);";
     $m = new Models;
-    $data = $m->customQuery($sql)[0]["maxDuree"];
-    if($data != NULL) return $data;
-    else return 0;
+    $data = $m->customQuery($sql);
+    if($data == NULL) return 0;
+    else{
+        $duree = array();
+        foreach($data as $row){
+            $sum = intval($row["debutPlusTot_tache"]) + intval($row["duree_tache"]);
+            array_push($duree,$sum);
+        }
+        $dureePlusTot = max($duree);
+        $t = new Tache;
+        $t->update("debutPlusTot_tache","$dureePlusTot","id_tache='".$idTask."'");
+        return $dureePlusTot;
+    }
 
 }
 // Affichage d'une tache

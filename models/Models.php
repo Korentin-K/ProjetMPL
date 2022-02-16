@@ -188,7 +188,8 @@ class Models extends Database {
         $sql= "select * from utilisateur where  mail_utilisateur='".strval($email)."'";
         $query = self::$pdo->prepare($sql);
         $query->execute();
-        if($query!=null)
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+        if($result!=null)
         {
             //retourne false si le compte existe
             return false;
