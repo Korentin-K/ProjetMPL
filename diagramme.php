@@ -11,6 +11,9 @@ $idProjet = "21";
 <?php   ?>
     <div class="container-fluid mx-0 px-0">
         <?php writeNavBar($idUser); ?>
+     <!-- <?php writeNavBar($_SESSION['User']); ?> !-->
+     <?php writeNavBar(); ?>
+
     </div>
     <div class="row col-12 mx-0 divlevel">
         <div class="d-flex flex-wrap align-content-start col-2 px-0"> 
@@ -348,17 +351,29 @@ $idProjet = "21";
     } 
     $("document").ready(function() {
         $(".task-item").draggable({
-            revert: true,
+            revert: "invalid",
+            revertDuration:0,
             zIndex: 100,
             helper: "clone",
-            
+              helper: function(e) {
+                var original = $(e.target).hasClass("ui-draggable") ? $(e.target) :  $(e.target).closest(".ui-draggable");
+                return original.clone().css({
+                width: original.width()
+                });                
+            },
             start: function( event, ui ) {
+                $(".ui-draggable").not(ui.helper.css("z-index", "1")).css("z-index", "0");
                 console.log(event)
                 console.log(ui.helper)
+
             }
+
+
         })
         $(".levelStyle").droppable({
             accept: '.task-item',
+            activeClass: "ui-hover",
+            hoverClass: "ui-active",
             drop: function(event, ui) {
             $(this).append($(ui.draggable));
             }
