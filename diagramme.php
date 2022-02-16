@@ -351,9 +351,10 @@ $idProjet = "1";
     } 
     $("document").ready(function() {
         $(".task-item").draggable({
-            revert: "invalid",
+            revert: true,
             revertDuration:0,
             zIndex: 100,
+            refreshPositions: true,
             helper: "clone",
               helper: function(e) {
                 var original = $(e.target).hasClass("ui-draggable") ? $(e.target) :  $(e.target).closest(".ui-draggable");
@@ -363,14 +364,11 @@ $idProjet = "1";
             },
             start: function( event, ui ) {
                 $(".ui-draggable").not(ui.helper.css("z-index", "1")).css("z-index", "0");
-                console.log(event)
-                console.log(ui.helper)
-
-            }
-
+            },
+          
 
         })
-        $(".levelStyle").droppable({
+        $(".levelCol").droppable({
             accept: '.task-item',
             activeClass: "ui-hover",
             hoverClass: "ui-active",
