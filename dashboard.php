@@ -15,8 +15,6 @@ writeHeaderHtml("dashboard",4);
                     <td>Nom du Projet</td>
                     <td>Date de création</td>
                 </tr>
-                <tr>
-                </tr>
             </table>
         </div>
     </div>

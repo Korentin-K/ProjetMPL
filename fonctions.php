@@ -57,9 +57,8 @@ function writeFooterHtml(){
 // Ecris la barre de navigation de l'application
 //function writeNavBar($nomUser)
 function writeNavBar(){
-    //$is_authenticate = $nomUser;
-    //if($is_authenticate!=null or $is_authenticate!='')
     $is_authenticate=false;
+    if(isset($_SESSION['User']) && $_SESSION['User'] != "" ) $is_authenticate=true;
     if($is_authenticate==true){
         $html = "<nav class='navbar navbar-expand-lg navbar-light bg-light py-0'>
                 <div class='container-fluid'>
@@ -70,13 +69,13 @@ function writeNavBar(){
                     <div class='collapse navbar-collapse d-flex justify-content-end' id='navbarNav'>
                     <ul class='navbar-nav align-items-center'>
                         <li class='nav-item'>
-                        <a class='nav-link active' aria-current='page' href='#'>Home</a>
+                        <a class='nav-link active' aria-current='page' href='dashboard.php'>Tableau de bord</a>
                         </li>
                         <li class='nav-item'>
-                        <a class='nav-link' href='#'>Features</a>
+                        <a class='nav-link' href='#'>Mon compte</a>
                         </li>
                         <li class='nav-item'>
-                        <span class='mx-2' >".$is_authenticate."</span>
+                        <span class='mx-2' >".$_SESSION['User']."</span>
                         </li>
                         <li class='nav-item'>
                         <a class='nav-link fw-bolder py-auto my-0'><i class='far fa-user-circle fa-3x'></i></a>
@@ -95,16 +94,7 @@ function writeNavBar(){
                 <div class='collapse navbar-collapse d-flex justify-content-end' id='navbarNav'>
                 <ul class='navbar-nav'>
                     <li class='nav-item'>
-                    <a class='nav-link active' aria-current='page' href='#'>Home</a>
-                    </li>
-                    <li class='nav-item'>
-                    <a class='nav-link' href='#'>Features</a>
-                    </li>
-                    <li class='nav-item'>
-                    <a class='nav-link' href='#'></a>
-                    </li>
-                    <li class='nav-item'>
-                    <a class='nav-link disabled'>Mon compte</a>
+                    <a class='nav-link' href='PageConnexion.php'>Connexion</a>
                     </li>
                 </ul>
                 </div>
@@ -311,10 +301,12 @@ function calculAllData($idProjet){
     //recuperer tous les niveaux du projet par ordre ASCENDANT
     $getLevel = $level->findBy("id_niveau, nom_niveau","id_projet=".$idProjet);
     //recuperer toutes les taches de chaque niveau
-    foreach($getLevel as $row){
-        $getTask = $task->findBy("*","id_projet=$idProjet and id_niveau_tache=".$row["id_niveau"]);
-        foreach($getTask as $row){
-            calculTask($row["tacheAnterieur_tache"],$row["id_tache"]); // MAJ des durees au plus tot de chaque tache
+    if($getTaskDesc != NULL){
+        foreach($getLevel as $row){
+            $getTask = $task->findBy("*","id_projet=$idProjet and id_niveau_tache=".$row["id_niveau"]);
+            foreach($getTask as $row){
+                calculTask($row["tacheAnterieur_tache"],$row["id_tache"]); // MAJ des durees au plus tot de chaque tache
+            }
         }
     }
     //------------------------------------------------------------------------------------
@@ -324,37 +316,39 @@ function calculAllData($idProjet){
     $idLastLevel = $level->getMaxLevelByProject($idProjet);
     //recuperer toutes les taches triee par niveaux en ordre DESCENDANT     
     $getTaskDesc = $task->findBy("*","id_projet=".$idProjet." order by id_niveau_tache DESC");
-    foreach($getTaskDesc as $row){
-        if($row['id_niveau_tache'] == $idLastLevel){
-            $dureePlusTard = intval($dureeTotale) - intval($row['duree_tache']);
-            $margeLibre = intval($dureeTotale) - intval($row['debutPlusTot_tache']) - intval($row['duree_tache']);            
-        }
-        else { // rechercher les taches enfants
-            $dureePlusTardChildAvailable = array();
-            $dureePlusTotChildAvailable = array();
-            $childTask = getIdChildTask($row['id_tache']);
-            foreach($childTask as $array => $content){
-                foreach($content as $key => $idChild){ // pour chaque tache enfant, calculer la duree au plus tard possible
-                    $getDureeChild = $task->findBy("debutPlusTard_tache,debutPlusTot_tache","id_projet=$idProjet and id_tache=".$idChild)[0];
-                    $dureeForThisChild = intval($getDureeChild["debutPlusTard_tache"]) - intval($row['duree_tache']);
-                    array_push($dureePlusTardChildAvailable,$dureeForThisChild);
-                    array_push($dureePlusTotChildAvailable,$getDureeChild["debutPlusTot_tache"]);
-                }
+    if($getTaskDesc != NULL){
+        foreach($getTaskDesc as $row){
+            if($row['id_niveau_tache'] == $idLastLevel){
+                $dureePlusTard = intval($dureeTotale) - intval($row['duree_tache']);
+                $margeLibre = intval($dureeTotale) - intval($row['debutPlusTot_tache']) - intval($row['duree_tache']);            
             }
-            $dureePlusTard = min($dureePlusTardChildAvailable);
-            $dureePlusTotChild = min($dureePlusTotChildAvailable);
-            $margeLibre = intval($dureePlusTotChild) - intval($row['debutPlusTot_tache']) - intval($row['duree_tache']);
+            else { // rechercher les taches enfants
+                $dureePlusTardChildAvailable = array();
+                $dureePlusTotChildAvailable = array();
+                $childTask = getIdChildTask($row['id_tache']);
+                foreach($childTask as $array => $content){
+                    foreach($content as $key => $idChild){ // pour chaque tache enfant, calculer la duree au plus tard possible
+                        $getDureeChild = $task->findBy("debutPlusTard_tache,debutPlusTot_tache","id_projet=$idProjet and id_tache=".$idChild)[0];
+                        $dureeForThisChild = intval($getDureeChild["debutPlusTard_tache"]) - intval($row['duree_tache']);
+                        array_push($dureePlusTardChildAvailable,$dureeForThisChild);
+                        array_push($dureePlusTotChildAvailable,$getDureeChild["debutPlusTot_tache"]);
+                    }
+                }
+                $dureePlusTard = min($dureePlusTardChildAvailable);
+                $dureePlusTotChild = min($dureePlusTotChildAvailable);
+                $margeLibre = intval($dureePlusTotChild) - intval($row['debutPlusTot_tache']) - intval($row['duree_tache']);
+            }
+            $task->update("debutPlusTard_tache","$dureePlusTard","id_tache='".$row['id_tache']."'");
+            $task->update("MargeLibre_tache","$margeLibre","id_tache='".$row['id_tache']."'");
         }
-        $task->update("debutPlusTard_tache","$dureePlusTard","id_tache='".$row['id_tache']."'");
-        $task->update("MargeLibre_tache","$margeLibre","id_tache='".$row['id_tache']."'");
-    }
-    //------------------------------------------------------------------------------------
-    // CALCUL : MARGE TOTALE
-    //------------------------------------------------------------------------------------
-    $getTaskOfProject = $task->findBy("*","id_projet=".$idProjet);
-    foreach($getTaskOfProject as $row){
-        $margeTotale = intval($row['debutPlusTard_tache']) - intval($row['debutPlusTot_tache']);
-        $task->update("MargeTotale_tache","$margeTotale","id_tache='".$row['id_tache']."'");
+        //------------------------------------------------------------------------------------
+        // CALCUL : MARGE TOTALE
+        //------------------------------------------------------------------------------------
+        $getTaskOfProject = $task->findBy("*","id_projet=".$idProjet);
+        foreach($getTaskOfProject as $row){
+            $margeTotale = intval($row['debutPlusTard_tache']) - intval($row['debutPlusTot_tache']);
+            $task->update("MargeTotale_tache","$margeTotale","id_tache='".$row['id_tache']."'");
+        }
     }
     return $dureeTotale;
 }

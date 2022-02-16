@@ -54,8 +54,10 @@ if(isset($_POST['delete']) && $_POST['delete'] == 1) {
         $idLevel="";
         if(isset($_POST['idLevel']) && $_POST['idLevel'] != "") $idLevel = htmlspecialchars($_POST['idLevel']);
         // perssistance des donn�es
-        $task = new Niveau;
-        $task->delete("id_niveau='".$idLevel."' and id_projet='".$idProjet."'");
+        $level = new Niveau;
+        $level->delete("id_niveau='".$idLevel."' and id_projet='".$idProjet."'");
+        $task = new Tache;
+        $task->delete("id_tache='".$idTask."' and id_niveau_tache='".$idLevel."'");
         // rafraichissement de l'affichage
         $html = getLevelByIdProjet($idProjet,"view");
         echo $html;
