@@ -8,6 +8,7 @@ class Datafaker extends Models {
         new Projet(true);
         new Niveau(true);
         new Tache(true);
+        
     }
 
 }

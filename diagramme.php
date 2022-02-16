@@ -1,14 +1,16 @@
 <?php
 require_once "fonctions.php";
-session_start()
+session_start();
 writeHeaderHtml("diagramme MPM",2);
+// $idUser=$_SESSION['User'];
+$idUser=0;
 $idProjet = "21";
 // loadFakeData();
 ?>
 <body >  
 <?php   ?>
     <div class="container-fluid mx-0 px-0">
-        <?php writeNavBar($_SESSION['User']); ?>
+        <?php writeNavBar($idUser); ?>
     </div>
     <div class="row col-12 mx-0 divlevel">
         <div class="d-flex flex-wrap align-content-start col-2 px-0"> 

@@ -120,8 +120,10 @@ function getLevelByIdProjet($idProjet,$display){
     $getLevel = $level->findBy("id_niveau, nom_niveau","id_projet=".$idProjet);
     $html="";
     if($display == "view") {
+        $position=0;
         foreach($getLevel as $row){
-            $html .= addLevel($idProjet,$row["id_niveau"],$row["nom_niveau"]);
+            $html .= addLevel($idProjet,$row["id_niveau"],$row["nom_niveau"],$position);
+            $position += 1;
         }
     }elseif ($display == "select") {
         $html .= "<option value='-1' selected>Choix du niveau...</option>";
@@ -131,41 +133,8 @@ function getLevelByIdProjet($idProjet,$display){
     }
     return $html;
 }
-// recuperation des tâches par niveau
-function getTaskByLevel($idProjet,$idLevel){
-    $html = "";
-    $task = new Tache;
-    $getTask = $task->findBy("*","id_projet=$idProjet and id_niveau_tache=$idLevel");
-    $nbrtask = count($getTask);
-    foreach($getTask as $row){
-        $dataTask = array();
-        array_push($dataTask,$row["nom_tache"]);
-        array_push($dataTask,$row["contenu_tache"]);
-        array_push($dataTask,$row["duree_tache"]);
-        array_push($dataTask,$row["tacheAnterieur_tache"]);
-        $dureePlusTot = calculTask($row["tacheAnterieur_tache"]);
-        $html .= addTask($row["id_tache"],$dataTask);
-    }
-    return $html;
-}
-// calcul des durées
-function calculTask($parentTask){
-    if($parentTask == null) return 0;
-    require_once "models/Models.php";
-    $arrayParent = explode(",",$parentTask);
-    foreach($arrayParent as $key => $value){
-        $arrayParent[$key] = ltrim($value,"T");
-    }
-    $arrayParent = implode(",",$arrayParent);
-    $sql="SELECT SUM(duree_tache) as sumDuree FROM tache WHERE id_tache in ($arrayParent);";
-    $m = new Models;
-    $data = $m->customQuery($sql)[0]["sumDuree"];
-    if($data != NULL) return $data;
-    else return 0;
-
-}
 // Ajout d'un niveau
-function addLevel($idProjet,$idLevel,$nameLevel){    
+function addLevel($idProjet,$idLevel,$nameLevel,$position){    
     $marginLeft = $idLevel == 0 ? "mx-0" : "";
     $nameLevel = $nameLevel == "" ? "sans nom" : $nameLevel;
     $dropdown = "<ul class='dropdown-menu ' aria-labelledby='taskMenu_$idLevel'>
@@ -173,6 +142,7 @@ function addLevel($idProjet,$idLevel,$nameLevel){
         <li><a class='dropdown-item'  onclick='deleteLevel($idLevel);'>Supprimer</a></li>
     </ul>";
     $html = " <div id='level_".$idLevel."' class='d-flex col-12 h-100 justify-content-center levelStyle $marginLeft'>
+                <div id='levelPosition_$position'></div>
                 <div class='row d-flex justify-content-center levelCol'>
                     <div class='d-flex mt-1 col-10 justify-content-around titleLevel' >
                         <div class=' task-title d-flex col-12 '>
@@ -182,14 +152,55 @@ function addLevel($idProjet,$idLevel,$nameLevel){
                             </a>$dropdown
                         </div>
                     </div>
-                    ".getTaskByLevel($idProjet,$idLevel)."
+                    ".getTaskByLevel($idProjet,$idLevel,$position)."
                 </div>       
             </div>";
     return $html;
 }
+// recuperation des tâches par niveau
+function getTaskByLevel($idProjet,$idLevel,$positionLevel){
+    $html = "";
+    $task = new Tache;
+    $getTask = $task->findBy("*","id_projet=$idProjet and id_niveau_tache=$idLevel");
+    $nbrtask = count($getTask);
+    foreach($getTask as $row){
+        $dataTask = array();
+        array_push($dataTask,$row["nom_tache"]);
+        array_push($dataTask,$row["contenu_tache"]);
+        array_push($dataTask,$row["duree_tache"]);
+        // $parentTask = $positionLevel == 0 ? "" : $row["tacheAnterieur_tache"];
+        array_push($dataTask,$row["tacheAnterieur_tache"]);
+        $dureePlusTot = calculTask($row["tacheAnterieur_tache"]);
+        array_push($dataTask,$dureePlusTot);
+        $html .= addTask($row["id_tache"],$dataTask,$positionLevel);
+    }
+    return $html;
+}
+// calcul des durées
+function calculTask($parentTask){
+    if($parentTask == null) return 0;
+    require_once "models/Models.php";
+    $arrayParent = explode(",",$parentTask);
+    foreach($arrayParent as $key => $value){
+        if($value != ""){
+            $arrayParent[$key] = ltrim($value,"T");
+        }else {
+            $arrayParent[$key] =0;
+        }
+    }
+    $arrayParent = implode(",",$arrayParent);
+    $sql="SELECT MAX(duree_tache) as maxDuree FROM tache WHERE id_tache in ($arrayParent);";
+    $m = new Models;
+    $data = $m->customQuery($sql)[0]["maxDuree"];
+    if($data != NULL) return $data;
+    else return 0;
+
+}
 // Affichage d'une tache
-function addTask($id,$data){
+function addTask($id,$data,$positionLevel){
     $data[0] = $data[0] == "" ? "sans nom" : $data[0];
+    $dureePlusTot = $positionLevel == 0 ? "0" : $data[4];
+    $parentTask = $data[3]!="" ? $data[3] : "-";
     $html="";
     $dropdown = "<ul class='dropdown-menu' aria-labelledby='taskMenu_$id'>
         <li><a class='dropdown-item'  onclick='modifyTask($id)' >Modifier</a></li>
@@ -203,17 +214,19 @@ function addTask($id,$data){
                 <td>".$data[2]."</td>
             </tr>
             <tr>    
-                <td>0</td>
-                <td>0</td>
-            </tr>
-            <tr>    
-                <td>0</td>
+                <td>$dureePlusTot</td>
                 <td>0</td>
             </tr>
             <tr>    
-                <td colspan=2>".$data[3]."</td>
-            </tr>
-        </tbody>
+                <td>0</td>
+                <td>0</td>
+            </tr>";
+    if($positionLevel > 0) {
+        $html .=" <tr>    
+                    <td colspan=2>".$parentTask."</td>
+                </tr>";
+    }
+    $html .=" </tbody>
     </table>
     <div class=' task-title d-flex col-12 align-items-center'><span class='d-flex col-10'>".$data[0]."</span>
     <a class='col-2 d-flex justify-content-end ' id='taskMenu_$id' data-bs-toggle='dropdown' aria-expanded='false'>
