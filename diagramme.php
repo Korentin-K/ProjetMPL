@@ -4,7 +4,7 @@ session_start();
 writeHeaderHtml("diagramme MPM",2);
 // $idUser=$_SESSION['User'];
 $idUser=0;
-$idProjet = "21";
+$idProjet = "1";
 // loadFakeData();
 ?>
 <body >  

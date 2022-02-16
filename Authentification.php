@@ -1,6 +1,6 @@
 <?php
 require_once "models/Utilisateur.php";
-session_start();
+//session_start();
 if(isset($_POST['identifiant'])) $emailId = $_POST['identifiant'];
 else $emailId = "";
 
@@ -55,7 +55,7 @@ if($nomI!="" and $emailId=="")
 		    	$leMotDePasse=password_hash($passwordInscription, PASSWORD_DEFAULT);
 				$User->inscriptionSite($nomI,$email,$leMotDePasse);
 				header('Location: ./dashboard.php');
-				$_SESSION['user']=$nomI;
+				//$_SESSION['user']=$nomI;
   				exit();
 			}
 			else
@@ -78,6 +78,4 @@ if($nomI!="" and $emailId=="")
   		exit();
 
 	}
-	//echo $passwordInscription.",".$passwordInscription2;
-	//echo "test Inscription";
 }
