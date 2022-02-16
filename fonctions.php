@@ -119,6 +119,7 @@ function writeNavBar(){
 //========================================================
 // recuperation des niveaux
 function getLevelByIdProjet($idProjet,$display){
+    $dureeTotale = calculAllData($idProjet);
     $level = new Niveau;
     $getLevel = $level->findBy("id_niveau, nom_niveau","id_projet=".$idProjet);
     $html="";
@@ -128,6 +129,8 @@ function getLevelByIdProjet($idProjet,$display){
             $html .= addLevel($idProjet,$row["id_niveau"],$row["nom_niveau"],$position);
             $position += 1;
         }
+        // $dureeTotale = getTotalDuree($idProjet);        
+        $html.= addLevel($idProjet,"F".$row["id_niveau"],"FIN",($position+1),$dureeTotale);
     }elseif ($display == "select") {
         $html .= "<option value='-1' selected>Choix du niveau...</option>";
         foreach($getLevel as $row){
@@ -137,7 +140,7 @@ function getLevelByIdProjet($idProjet,$display){
     return $html;
 }
 // Ajout d'un niveau
-function addLevel($idProjet,$idLevel,$nameLevel,$position){    
+function addLevel($idProjet,$idLevel,$nameLevel,$position,$total=null){    
     $marginLeft = $idLevel == 0 ? "mx-0" : "";
     $nameLevel = $nameLevel == "" ? "sans nom" : $nameLevel;
     $dropdown = "<ul class='dropdown-menu ' aria-labelledby='taskMenu_$idLevel'>
@@ -154,9 +157,14 @@ function addLevel($idProjet,$idLevel,$nameLevel,$position){
                             <i class='levelIcon fas fa-cog'></i>
                             </a>$dropdown
                         </div>
-                    </div>
-                    ".getTaskByLevel($idProjet,$idLevel,$position)."
-                </div>       
+                    </div>";
+    if($nameLevel != "FIN"){
+        $html.=getTaskByLevel($idProjet,$idLevel,$position);
+    }else{
+        $data = ["FIN",$total];
+        $html.=addTask($idProjet,$data,$position);
+    }
+    $html.="    </div>       
             </div>";
     return $html;
 }
@@ -165,18 +173,79 @@ function getTaskByLevel($idProjet,$idLevel,$positionLevel){
     $html = "";
     $task = new Tache;
     $getTask = $task->findBy("*","id_projet=$idProjet and id_niveau_tache=$idLevel");
-    $nbrtask = count($getTask);
     foreach($getTask as $row){
         $dataTask = array();
         array_push($dataTask,$row["nom_tache"]);
         array_push($dataTask,$row["contenu_tache"]);
         array_push($dataTask,$row["duree_tache"]);
-        // $parentTask = $positionLevel == 0 ? "" : $row["tacheAnterieur_tache"];
         array_push($dataTask,$row["tacheAnterieur_tache"]);
-        $dureePlusTot = calculTask($row["tacheAnterieur_tache"],$row["id_tache"]);
-        array_push($dataTask,$dureePlusTot);
+        array_push($dataTask,$row["debutPlusTot_tache"]);
+        array_push($dataTask,$row["debutPlusTard_tache"]);
+        array_push($dataTask,$row["margeLibre_tache"]);
+        array_push($dataTask,$row["margeTotale_tache"]);
         $html .= addTask($row["id_tache"],$dataTask,$positionLevel);
     }
+    return $html;
+}
+// Affichage d'une tache
+function addTask($id,$data,$positionLevel){
+    $html="";
+    if($data[0]!="FIN"){
+        $data[0] = $data[0] == "" ? "sans nom" : $data[0];
+        $parentTask = $data[3]!="" ? $data[3] : "-";
+        $dureePlusTot = $positionLevel == 0 ? "0" : $data[4];
+        $dureePlusTard = $positionLevel == 0 ? "0" : $data[5];
+        $margeLibre = $positionLevel == 0 ? "0" : $data[6];
+        $margeTotale = $positionLevel == 0 ? "0" : $data[7];
+        $dropdown = "<ul class='dropdown-menu' aria-labelledby='taskMenu_$id'>
+            <li><a class='dropdown-item'  onclick='modifyTask($id)' >Modifier</a></li>
+            <li><a class='dropdown-item'  onclick='deleteTask($id);'>Supprimer</a></li>
+        </ul>";
+        $html .= "<div id='taskItem_$id' class='row d-flex col-10 mt-1 task-item'>
+        <table class='tableTask'>
+            <tbody>
+                <tr >    
+                    <td>T$id</td>
+                    <td>".$data[2]."</td>
+                </tr>
+                <tr>    
+                    <td>$dureePlusTot</td>
+                    <td>$dureePlusTard</td>
+                </tr>
+                <tr>    
+                    <td>$margeLibre</td>
+                    <td>$margeTotale</td>
+                </tr>";
+        if($positionLevel > 0) {
+            $html .=" <tr>    
+                        <td colspan=2>".$parentTask."</td>
+                    </tr>";
+        }
+        $html .=" </tbody>
+                </table>
+                <div class=' task-title d-flex col-12 align-items-center'><span class='d-flex col-10'>".$data[0]."</span>
+                <a class='col-2 d-flex justify-content-end ' id='taskMenu_$id' data-bs-toggle='dropdown' aria-expanded='false'>
+                <i class='fas fa-ellipsis-h'></i></a>$dropdown</div>
+                <div class='task-content w-100'>".$data[1]."</div>
+                </div>";
+    } else {
+        $dureeTotale = $data[1];
+        $html .= "<div id='taskItem_$id' class='row d-flex col-10 mt-1 task-item'>
+        <table class='tableTask'>
+            <tbody>
+                <tr >    
+                    <td colspan=2>FIN</td>
+                </tr>
+                <tr>    
+                    <td>$dureeTotale</td>
+                    <td>$dureeTotale</td>
+                </tr>
+                <tr>    
+                    <td>0</td>
+                    <td>0</td>
+                </tr>";
+       
+    }    
     return $html;
 }
 // calcul des durées
@@ -210,43 +279,83 @@ function calculTask($parentTask,$idTask){
     }
 
 }
-// Affichage d'une tache
-function addTask($id,$data,$positionLevel){
-    $data[0] = $data[0] == "" ? "sans nom" : $data[0];
-    $dureePlusTot = $positionLevel == 0 ? "0" : $data[4];
-    $parentTask = $data[3]!="" ? $data[3] : "-";
-    $html="";
-    $dropdown = "<ul class='dropdown-menu' aria-labelledby='taskMenu_$id'>
-        <li><a class='dropdown-item'  onclick='modifyTask($id)' >Modifier</a></li>
-        <li><a class='dropdown-item'  onclick='deleteTask($id);'>Supprimer</a></li>
-    </ul>";
-    $html .= "<div id='taskItem_$id' class='row d-flex col-10 mt-1 task-item'>
-    <table class='tableTask'>
-        <tbody>
-            <tr >    
-                <td>T$id</td>
-                <td>".$data[2]."</td>
-            </tr>
-            <tr>    
-                <td>$dureePlusTot</td>
-                <td>0</td>
-            </tr>
-            <tr>    
-                <td>0</td>
-                <td>0</td>
-            </tr>";
-    if($positionLevel > 0) {
-        $html .=" <tr>    
-                    <td colspan=2>".$parentTask."</td>
-                </tr>";
+function getTotalDuree($idProjet){
+    require_once "models/Models.php";
+    $n = new Niveau;
+    $idLastLevel = $n->getMaxLevelByProject($idProjet);
+    if($idLastLevel == NULL) return 0;
+    $m = new Models;
+    $sql = "SELECT debutPlusTot_tache, duree_tache FROM tache WHERE id_niveau_tache='$idLastLevel' and id_projet='$idProjet'";
+    $taskInLastLevel = $m->customQuery($sql);
+    if($taskInLastLevel == NULL) return 0;
+    $duree=array();
+    foreach($taskInLastLevel as $task){
+        $sum = intval($task['debutPlusTot_tache']) + intval($task['duree_tache']);
+        array_push($duree,$sum);
     }
-    $html .=" </tbody>
-    </table>
-    <div class=' task-title d-flex col-12 align-items-center'><span class='d-flex col-10'>".$data[0]."</span>
-    <a class='col-2 d-flex justify-content-end ' id='taskMenu_$id' data-bs-toggle='dropdown' aria-expanded='false'>
-    <i class='fas fa-ellipsis-h'></i></a>$dropdown</div>
-    <div class='task-content w-100'>".$data[1]."</div>
-    </div>";
-    
-    return $html;
+    return max($duree);
 }
+// retourne tableau des taches enfant
+function getIdChildTask($idParent){
+    $task = new Tache;
+    $getChild = $task->findBy("id_tache","tacheAnterieur_tache like '%$idParent%'");
+    return $getChild;
+}
+
+function calculAllData($idProjet){
+    $level = new Niveau;
+    $task = new Tache;
+    //------------------------------------------------------------------------------------
+    // CALCUL : DUREE AU PLUS TOT
+    //------------------------------------------------------------------------------------
+    //recuperer tous les niveaux du projet par ordre ASCENDANT
+    $getLevel = $level->findBy("id_niveau, nom_niveau","id_projet=".$idProjet);
+    //recuperer toutes les taches de chaque niveau
+    foreach($getLevel as $row){
+        $getTask = $task->findBy("*","id_projet=$idProjet and id_niveau_tache=".$row["id_niveau"]);
+        foreach($getTask as $row){
+            calculTask($row["tacheAnterieur_tache"],$row["id_tache"]); // MAJ des durees au plus tot de chaque tache
+        }
+    }
+    //------------------------------------------------------------------------------------
+    // CALCUL : DUREE AU PLUS TARD + MARGE LIBRE
+    //------------------------------------------------------------------------------------
+    $dureeTotale = getTotalDuree($idProjet); // recuperation duree total du projet 
+    $idLastLevel = $level->getMaxLevelByProject($idProjet);
+    //recuperer toutes les taches triee par niveaux en ordre DESCENDANT     
+    $getTaskDesc = $task->findBy("*","id_projet=".$idProjet." order by id_niveau_tache DESC");
+    foreach($getTaskDesc as $row){
+        if($row['id_niveau_tache'] == $idLastLevel){
+            $dureePlusTard = intval($dureeTotale) - intval($row['duree_tache']);
+            $margeLibre = intval($dureeTotale) - intval($row['debutPlusTot_tache']) - intval($row['duree_tache']);            
+        }
+        else { // rechercher les taches enfants
+            $dureePlusTardChildAvailable = array();
+            $dureePlusTotChildAvailable = array();
+            $childTask = getIdChildTask($row['id_tache']);
+            foreach($childTask as $array => $content){
+                foreach($content as $key => $idChild){ // pour chaque tache enfant, calculer la duree au plus tard possible
+                    $getDureeChild = $task->findBy("debutPlusTard_tache,debutPlusTot_tache","id_projet=$idProjet and id_tache=".$idChild)[0];
+                    $dureeForThisChild = intval($getDureeChild["debutPlusTard_tache"]) - intval($row['duree_tache']);
+                    array_push($dureePlusTardChildAvailable,$dureeForThisChild);
+                    array_push($dureePlusTotChildAvailable,$getDureeChild["debutPlusTot_tache"]);
+                }
+            }
+            $dureePlusTard = min($dureePlusTardChildAvailable);
+            $dureePlusTotChild = min($dureePlusTotChildAvailable);
+            $margeLibre = intval($dureePlusTotChild) - intval($row['debutPlusTot_tache']) - intval($row['duree_tache']);
+        }
+        $task->update("debutPlusTard_tache","$dureePlusTard","id_tache='".$row['id_tache']."'");
+        $task->update("MargeLibre_tache","$margeLibre","id_tache='".$row['id_tache']."'");
+    }
+    //------------------------------------------------------------------------------------
+    // CALCUL : MARGE TOTALE
+    //------------------------------------------------------------------------------------
+    $getTaskOfProject = $task->findBy("*","id_projet=".$idProjet);
+    foreach($getTaskOfProject as $row){
+        $margeTotale = intval($row['debutPlusTard_tache']) - intval($row['debutPlusTot_tache']);
+        $task->update("MargeTotale_tache","$margeTotale","id_tache='".$row['id_tache']."'");
+    }
+    return $dureeTotale;
+}
+

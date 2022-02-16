@@ -4,15 +4,14 @@ session_start();
 writeHeaderHtml("diagramme MPM",2);
 // $idUser=$_SESSION['User'];
 $idUser=0;
-$idProjet = "1";
+$idProjet = "21";
 // loadFakeData();
 ?>
 <body >  
 <?php   ?>
     <div class="container-fluid mx-0 px-0">
         <?php writeNavBar($idUser); ?>
-     <!-- <?php writeNavBar($_SESSION['User']); ?> !-->
-     <?php writeNavBar(); ?>
+     <!-- <?php //writeNavBar($_SESSION['User']); ?> !-->
 
     </div>
     <div class="row col-12 mx-0 divlevel">
