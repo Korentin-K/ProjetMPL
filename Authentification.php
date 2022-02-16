@@ -1,6 +1,6 @@
 <?php
 require_once "models/Utilisateur.php";
-session_start();
+//session_start();
 if(isset($_POST['identifiant'])) $emailId = $_POST['identifiant'];
 else $emailId = "";
 
@@ -25,19 +25,19 @@ if($emailId!="")
 	if (filter_var($emailID, FILTER_VALIDATE_EMAIL)){
 			$leMotDePasse=password_hash($passwordConnexion, PASSWORD_DEFAULT);
 	 if($User->rechercheConnexion($emailId,$leMotDePasse)==true){
+		 $nameUser=$User->rechercheNom($emailId);
+	 	$_SESSION['User']=$nameUser;
 	 	header('Location: ./dashboard.php');
-	 	$nameUser=$User->rechercheNom($emailId);
-	 	$_SESSION['user']=$nameUser;
-  		// exit();
+		 exit();
 	 }
 	 else{
-	 	// header('Location: ./PageConnexion.php');
-  		// 	exit();
+	 	header('Location: ./PageConnexion.php');
+  			exit();
 	 }
 	}
 	else{
-	 	// header('Location: ./PageConnexion.php');
-  		// 	exit();
+	 	header('Location: ./PageConnexion.php');
+  			exit();
 	 }
 	 //echo "test Connexion";
 	
@@ -62,24 +62,22 @@ if($nomI!="" and $emailId=="")
 			}
 			else
 			{
-				// header('Location: ./PageConnexion.php');
-  				// exit();
+				header('Location: ./PageConnexion.php');
+  				exit();
 
 			}
 		}
 		else
 		{
-			// header('Location: ./PageConnexion.php');
-  			// exit();
+			header('Location: ./PageConnexion.php');
+  			exit();
 		}
 
 	}
 	else
 	{
-		// header('Location: ./PageConnexion.php');
-  		// exit();
+		header('Location: ./PageConnexion.php');
+  		exit();
 
 	}
-	//echo $passwordInscription.",".$passwordInscription2;
-	//echo "test Inscription";
 }

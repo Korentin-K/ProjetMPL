@@ -66,7 +66,7 @@ create table Tache (
 create table Utilisateur (
      id_utilisateur int not null auto_increment,
      nom_utilisateur varchar(20) not null,
-     prenom_utilisateur varchar(20) not null,
+     prenom_utilisateur varchar(20) default null,
      mail_utilisateur varchar(80) not null,
      mdp_utilisateur varchar(20) not null,
      ip_utilisateur char(1) default null,

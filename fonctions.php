@@ -55,9 +55,12 @@ function writeFooterHtml(){
     echo $html;
 }
 // Ecris la barre de navigation de l'application
-function writeNavBar($nomUser){
-    $is_authenticate = $nomUser;
-    if($is_authenticate!=null or $is_authenticate!=''){
+//function writeNavBar($nomUser)
+function writeNavBar(){
+    //$is_authenticate = $nomUser;
+    //if($is_authenticate!=null or $is_authenticate!='')
+    $is_authenticate=false;
+    if($is_authenticate==true){
         $html = "<nav class='navbar navbar-expand-lg navbar-light bg-light py-0'>
                 <div class='container-fluid'>
                     <a class='navbar-brand' href='#'>MPM</a>
