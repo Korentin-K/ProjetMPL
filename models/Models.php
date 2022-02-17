@@ -162,6 +162,7 @@ class Models extends Database {
     protected function query_findBy($table,$column=null,$condition){
         $column = $column == null ? "*" : $column;
         $sql = "select ".strval($column)." from ".strval($table)." where ".strval($condition);
+        // echo $sql;
         $query = self::$pdo->prepare($sql);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);

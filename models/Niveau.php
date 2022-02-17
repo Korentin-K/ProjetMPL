@@ -45,5 +45,8 @@ class Niveau extends Models {
     public function getMaxLevelByProject($idProjet){
         return $this->customQuery($sql="SELECT MAX(id_niveau) as max FROM niveau WHERE id_projet='$idProjet'")[0]['max'];
     }
+    public function getLevelOfProjet($idProjet){
+        return $this->customQuery("SELECT id_niveau FROM niveau WHERE id_projet='$idProjet' order by id_niveau DESC");
+    }
 
 }

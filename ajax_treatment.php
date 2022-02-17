@@ -57,7 +57,7 @@ if(isset($_POST['delete']) && $_POST['delete'] == 1) {
         $level = new Niveau;
         $level->delete("id_niveau='".$idLevel."' and id_projet='".$idProjet."'");
         $task = new Tache;
-        $task->delete("id_tache='".$idTask."' and id_niveau_tache='".$idLevel."'");
+        $task->delete("id_niveau_tache='".$idLevel."'");
         // rafraichissement de l'affichage
         $html = getLevelByIdProjet($idProjet,"view");
         echo $html;
