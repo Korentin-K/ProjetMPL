@@ -11,7 +11,7 @@ writeHeaderHtml("Connexion/Inscription",3);
             <input type="text"  placeholder="Identifiant" arial-label="Identifiant" name="identifiant" required>
           </div>
           <div class="form-connexion">
-            <input type="text"  placeholder="Mot de Passe" arial-label="password" name="passwordC" required>
+            <input type="password"  placeholder="Mot de Passe" arial-label="password" name="passwordC" required>
           </div>
           <div class="form-connexion">
             <input type="submit" value="Connexion">
@@ -30,10 +30,10 @@ writeHeaderHtml("Connexion/Inscription",3);
           <input type="text"  placeholder="E-mail" arial-label="email" name="email" required>
         </div>
          <div class="form-inscription">
-          <input type="text"  placeholder="Mot de Passe" arial-label="password" name="passwordI" required>
+          <input type="password"  placeholder="Mot de Passe" arial-label="password" name="passwordI" required>
         </div>
          <div class="form-inscription">
-          <input type="text"  placeholder="Retaper Mot de Passe" arial-label="passwordI2" name="passwordI2" required>
+          <input type="password"  placeholder="Retaper Mot de Passe" arial-label="passwordI2" name="passwordI2" required>
         </div>
         <div class="form-inscription">
           <input type="submit" value="Inscription">
