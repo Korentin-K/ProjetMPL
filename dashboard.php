@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once "fonctions.php";
+require_once "models/dashboard.php"
 writeHeaderHtml("dashboard",4);
 ?>
 <body >    
@@ -10,12 +11,7 @@ writeHeaderHtml("dashboard",4);
 
         </div>
         <div class="bloc-list col">
-            <table>
-                <tr>
-                    <td>Nom du Projet</td>
-                    <td>Date de création</td>
-                </tr>
-            </table>
+           <?php tableauProjet($_SESSION['User']; ) ?>
         </div>
     </div>
   </body>
