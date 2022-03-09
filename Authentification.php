@@ -1,6 +1,6 @@
 <?php
+session_start();
 require_once "models/Utilisateur.php";
-//session_start();
 if(isset($_POST['identifiant'])) $emailId = $_POST['identifiant'];
 else $emailId = "";
 
