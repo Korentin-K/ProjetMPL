@@ -186,7 +186,7 @@ class Models extends Database {
     //====================================================================================== 
     public function rechercheCompteExiste($email)
     {
-        $sql= "select * from utilisateur where  mail_utilisateur='".strval($email)."'";
+        $sql= "select * from utilisateur where mail_utilisateur='".strval($email)."'";
         $query = self::$pdo->prepare($sql);
         $query->execute();
         $result = $query->fetchAll(PDO::FETCH_ASSOC);

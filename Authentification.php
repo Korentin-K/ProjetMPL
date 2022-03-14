@@ -25,17 +25,19 @@ if($emailId!="")
 	if (filter_var($emailID, FILTER_VALIDATE_EMAIL)){
 			$leMotDePasse=password_hash($passwordConnexion, PASSWORD_DEFAULT);
 	 if($User->rechercheConnexion($emailId,$leMotDePasse)==true){
-		 $nameUser=$User->rechercheNom($emailId);
+		$nameUser=$User->rechercheNom($emailId);
 	 	$_SESSION['User']=$nameUser;
 	 	header('Location: ./dashboard.php');
-		 exit();
+		exit();
 	 }
 	 else{
+	 	$_SESSION['User']=$nameUser;
 	 	header('Location: ./PageConnexion.php');
   			exit();
 	 }
 	}
 	else{
+		$_SESSION['User']=$nameUser;
 	 	header('Location: ./PageConnexion.php');
   			exit();
 	 }

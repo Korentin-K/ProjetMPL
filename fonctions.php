@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 require_once "models/Projet.php";
 require_once "models/Niveau.php";
 require_once "models/Tache.php";
@@ -57,7 +59,8 @@ function writeFooterHtml(){
 // Ecris la barre de navigation de l'application
 //function writeNavBar($nomUser)
 function writeNavBar(){
-    $_SESSION['User'] = "test";
+    //$_SESSION['User'] = "test";
+    $nomPersonne=$_SESSION['User'];
     $is_authenticate=false;
     if(isset($_SESSION['User']) && $_SESSION['User'] != "" ) $is_authenticate=true;
     if($is_authenticate==true){
