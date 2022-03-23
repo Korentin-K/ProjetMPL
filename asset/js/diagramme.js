@@ -1,4 +1,4 @@
-var idProjet = document.getElementsByClassName("idProjet").value;
+var idProjet = document.getElementById("idProjet").value;
 var coll = document.getElementsByClassName("collapsible");
 var i;
 for (i = 0; i < coll.length; i++) {
@@ -290,3 +290,9 @@ $("document").ready(function() {
         }
     })
 }) 
+
+// var line = new LeaderLine(
+//     document.getElementById('taskItem_41'),
+//     document.getElementById('taskItem_42')
+//   );
+  

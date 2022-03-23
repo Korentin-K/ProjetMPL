@@ -15,25 +15,37 @@ function loadFakeData(){
 //========================================================
 // FONCTIONS : généralistes structure HTML
 //========================================================
+$path_lib = "asset/lib";
 // Répertorie les liens CSS
 function getDependances(int $codePage){
+    global $path_lib;
     $path_css = "asset/css";
-    $path_lib = "asset/lib";
     $link = "<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3' crossorigin='anonymous'>";
     $link .= "<link rel=\"stylesheet\" type='text/css' href=\"".$path_lib."/font_icon/css/all.css\">";
     $link .= "<link rel=\"stylesheet\" type='text/css' href=\"".$path_css."/main.css\">";
-    if ($codePage == 2 ) $link .= "<link rel=\"stylesheet\" type='text/css' href=\"".$path_css."/diagramme.css\">";
+    if ($codePage == 2 ){
+        $link .= "<link rel=\"stylesheet\" type='text/css' href=\"".$path_css."/diagramme.css\">";
+        $link .= "<script src=\"".$path_lib."/leader_line/leader-line.min.js\"></script>";
+
+    } 
     if($codePage == 3) $link.= "<link rel=\"stylesheet\" type='text/css' href=\"".$path_css."/pageConnexion.css\">";
     if($codePage == 4) $link.= "<link rel=\"stylesheet\" type='text/css' href=\"".$path_css."/dashboard.css\">";
     return $link;
 }
 // Répertorie les scripts JS
-function getScript($codePage){
+function getScript($codePage=null){
+    global $path_lib;
     $path_js = "asset/js";
-    $script = "<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p\" crossorigin=\"anonymous\"></script>";
-    $script .= "<script src=\"https://code.jquery.com/jquery-3.6.0.js\"></script>";
-    $script .= "<script src=\"https://code.jquery.com/ui/1.13.1/jquery-ui.js\"></script>";
-    if($codePage == 2) $script .= "<script src=\"asset/js/diagramme.js\"></script>";
+    $script="";
+    if($codePage==null){
+        $script = "<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p\" crossorigin=\"anonymous\"></script>";
+        $script .= "<script src=\"https://code.jquery.com/jquery-3.6.0.js\"></script>";
+        $script .= "<script src=\"https://code.jquery.com/ui/1.13.1/jquery-ui.js\"></script>";
+    }
+    if($codePage == 2){
+        $script .= "<script src=\"".$path_js."/diagramme.js\"></script>";
+        $script .= "<script src=\"".$path_lib."/plain_draggable/src/plain-draggable.js\"></script>";
+    }
     return $script;
 }
 // Ecrit l'en-tête HTML de la page
@@ -47,14 +59,15 @@ function writeHeaderHtml(string $title,int $codePage=0){
             <meta name='viewport' content='width=device-width, initial-scale=1.0'>
             <title>".$title."</title>";
     $html .= getDependances($codePage);
-    $html .= getScript($codePage);
+    $html .= getScript();
     $html .= "</head>";
     echo $html;
 }
 // Ecris le pied de la page HTML
-function writeFooterHtml(){
-    // $html = getScript();
-    $html = "</html>";
+function writeFooterHtml($codePage=0){
+    $html="";
+    $html .= getScript($codePage);
+    $html .= "</html>";
     echo $html;
 }
 // Ecris la barre de navigation de l'application
@@ -231,6 +244,19 @@ function addTask($id,$data,$positionLevel){
                 <i class='fas fa-ellipsis-h'></i></a>$dropdown</div>
                 <div class='task-content w-100'>".$data[1]."</div>
                 </div>";
+        if($parentTask != "-"){
+            $taskArray=explode(",",$parentTask);
+            foreach($taskArray as $taskId){
+                $taskId = substr($taskId, 1);
+                $html.= "<script>
+                line = new LeaderLine(
+                    document.getElementById('taskItem_".$taskId."'),
+                    document.getElementById('taskItem_".$id."')
+                  );
+                line.path = 'straight'
+                </script>";
+            }
+        }
     } else {
         $dureeTotale = $data[1];
         $html .= "<div id='taskItem_$id' class='row d-flex col-10 mt-1 task-item'>
