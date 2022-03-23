@@ -1,7 +1,6 @@
 <?php
-session_start();
 require_once "fonctions.php";
-require_once "models/dashboard.php"
+require_once "models/Dashboard.php";
 writeHeaderHtml('dashboard',4);
 $nomPersonne=$_SESSION['User'];
 ?>
@@ -12,9 +11,8 @@ $nomPersonne=$_SESSION['User'];
 
         </div>
         <div class="bloc-list col">
-           <?php tableauProjet($_SESSION['User']; ) ?>
+           <?php tableauProjet($_SESSION['User'] ); ?>
         </div>
     </div>
   </body>
-
 <?php writeFooterHtml(); ?>

@@ -28,11 +28,12 @@ function getDependances(int $codePage){
     return $link;
 }
 // Répertorie les scripts JS
-function getScript(){
+function getScript($codePage){
     $path_js = "asset/js";
     $script = "<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p\" crossorigin=\"anonymous\"></script>";
     $script .= "<script src=\"https://code.jquery.com/jquery-3.6.0.js\"></script>";
     $script .= "<script src=\"https://code.jquery.com/ui/1.13.1/jquery-ui.js\"></script>";
+    if($codePage == 2) $script .= "<script src=\"asset/js/diagramme.js\"></script>";
     return $script;
 }
 // Ecrit l'en-tête HTML de la page
@@ -46,7 +47,7 @@ function writeHeaderHtml(string $title,int $codePage=0){
             <meta name='viewport' content='width=device-width, initial-scale=1.0'>
             <title>".$title."</title>";
     $html .= getDependances($codePage);
-    $html .= getScript();
+    $html .= getScript($codePage);
     $html .= "</head>";
     echo $html;
 }
@@ -106,6 +107,12 @@ function writeNavBar(){
             </nav>";
     }
     echo $html;
+}
+
+function checkAccessPermission(){
+    if(!isset($_SESSION['User'])){
+        header('Location: denied_access.php');
+    }
 }
 
 //========================================================
@@ -392,3 +399,9 @@ function calculAllData($idProjet){
     return $dureeTotale;
 }
 
+//------------------------------------------------------------------------------------
+// FONCTIONS : Dashboard
+//------------------------------------------------------------------------------------
+function tableauProjet($idUser){
+    echo "<h1>Ecris ta fonction stp !</h1> ";
+}

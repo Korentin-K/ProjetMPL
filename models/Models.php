@@ -254,4 +254,11 @@ class Models extends Database {
         
     }
 
+    public function count_element($table){
+        $sql="SELECT count(*) as nb FROM $table;";
+        $query = self::$pdo->prepare($sql);
+        $query->execute();
+        return $query->fetch()['nb'];
+    }
+
 }
