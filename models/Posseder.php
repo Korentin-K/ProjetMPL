@@ -1,28 +1,38 @@
 <?php
 require_once "Models.php";
 
-class Projet extends Models {
-    private $table = "projet";
-    private $columns = ["id_projet", "titre_projet", "dateCreation_projet", "dateModification_projet"];
+class Posseder extends Models {
+    private $table = "posseder";
+    private $columns = ["id_projet", "id_utilisateur"];
     
-    private $titre_diagramme;
-    private $dateCreation_diagramme;
-    private $dateModification_diagramme;
+    private $id_projet;
+    private $id_utilisateur;
 
     public function __construct($reload=false){
         new Models;
         if($this->reloadDataFake === true || $reload) {
             $this->deleteAllData($this->table);
-            $this->addDataFake(10,1);
+            $this->addDataFake(5);
         }
     }
-    //========================================================
-    // DATA : insertion de fausses donnees
-    //======================================================== 
-    private function addDataFake($maxLine,$repetition){
-        $values = ["","Projet $","NOW()",""];
-        $this->insertDataFake($this->table, $this->columns, $values, $maxLine, $repetition);
+
+    private function addDataFake($maxProjectAssigne){    
+        $project = new Projet;
+        $allProject = $project->findAll("id_projet");
+        $countProject = sizeof($allProject);
+        $user = new Utilisateur;
+        $allUser = $user->findAll("id_utilisateur");
+        foreach($allUser as $oneUser){
+            $u = $oneUser["id_utilisateur"];
+            for($r=0;$r<$maxProjectAssigne;$r++){
+                if($r >= $countProject-1) break;
+                $p = $allProject[$r];
+                $value = [$p["id_projet"],$u];
+                $this->insert($value);
+            }
+        }
     }
+    
     //========================================================
     // REQUETE : manipulation de donnees
     //======================================================== 

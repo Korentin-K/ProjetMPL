@@ -4,7 +4,11 @@ writeHeaderHtml("diagramme MPM",2);
 checkAccessPermission();
 $nomUser=$_SESSION['User'];
 $idUser=0;
-$idProjet = "5";
+if(isset($_GET['projet']) && $_GET['projet']!="" ) $idProjet = intval($_GET['projet']);
+else { // juste le temps du dev
+    $p = new Projet;
+    $idProjet = $p->customQuery("select * from projet limit 1")[0]["id_projet"];
+}
 //loadFakeData();
 
 $projet = new Projet();

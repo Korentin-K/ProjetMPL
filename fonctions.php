@@ -4,6 +4,8 @@ session_start();
 require_once "models/Projet.php";
 require_once "models/Niveau.php";
 require_once "models/Tache.php";
+require_once "models/Utilisateur.php";
+require_once "models/Posseder.php";
 require_once "models/Datafaker.php";
 //========================================================
 // FONCTIONS : generations de fausses données
@@ -45,6 +47,9 @@ function getScript($codePage=null){
     if($codePage == 2){
         $script .= "<script src=\"".$path_js."/diagramme.js\"></script>";
         $script .= "<script src=\"".$path_lib."/plain_draggable/src/plain-draggable.js\"></script>";
+    }
+    if($codePage == 4){
+        $script .= "<script src=\"".$path_js."/dashboard.js\"></script>";
     }
     return $script;
 }
@@ -429,5 +434,34 @@ function calculAllData($idProjet){
 // FONCTIONS : Dashboard
 //------------------------------------------------------------------------------------
 function tableauProjet($idUser){
-    echo "<h1>Ecris ta fonction stp !</h1> ";
+    $html="";
+    $posseder = new Posseder;
+    $allIdProjectByIdUser = $posseder->findBy("id_projet","id_utilisateur=$idUser");
+    $project = new Projet;
+    $html="<table width='800px'>
+            <tr>
+              <th>Titre projet</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>";
+    foreach($allIdProjectByIdUser as $idProject){
+        $id = $idProject["id_projet"];
+        $oneProject = $project->findBy(null,"id_projet='$id'");
+        // var_dump($oneProject);
+        if($oneProject!="" && !empty($oneProject)){
+            $title = $oneProject[0]["titre_projet"];
+            $date = $oneProject[0]["dateCreation_projet"];
+            $html.="
+                <tr>
+                <td>$title</td>
+                <td>$date</td>
+                <td class='d-flex justify-content-around py-2'>
+                <a class='btn btn-secondary' href='diagramme.php?projet=$id'>Voir</a>
+                <a class='btn btn-danger' onclick='deleteProject($id)'>Supprimer</a>
+                </td>
+                </tr>";
+        }
+    }
+    $html.="</table>";
+    echo $html;
 }
