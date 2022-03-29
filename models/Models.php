@@ -216,16 +216,22 @@ class Models extends Database {
     //======================================================================
     public function rechercheConnexion($email,$mdp)
     {
-        $sql= "select * from utilisateur where mail_utilisateur='".strval($email)."' and mdp_utilisateur='".strval($mdp)."'";
+        $sql= "select * from utilisateur where mail_utilisateur='".strval($email)."' and mdp_utilisateur='".$mdp."'";
         $query = self::$pdo->prepare($sql);
         $query->execute();
-        if($query!=null)
+        $result=$query->fetchAll(PDO::FETCH_ASSOC);
+        if($result!=null)
         {
+            echo "true";
             //retourne true si cela correspond
             return true;
+            
+            
         }
         else{
+            echo "false";
             return false;
+           
         }
     }
     //======================================================================
