@@ -47,7 +47,7 @@ class Utilisateur extends Models {
     public function findAll($column=null){
         return $this->query_findAll($this->table,$column);
     }
-    public function findBy($column=null,$condition){
+    public function findBy($column,$condition){
         return $this->query_findBy($this->table,$column,$condition);
     }
 
