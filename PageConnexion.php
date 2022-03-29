@@ -1,11 +1,12 @@
 <?php
 require_once "fonctions.php";
 writeHeaderHtml("Connexion/Inscription",3);
+$_SESSION['User']="toto";
 ?>
 <body>
     <div class="d-flex row flex-wrap">
     <div class="bloc-connexion col-6" >
-       <p>DÃ©jÃ  Inscrit ?</p>
+       <p>Déjà Inscrit ?</p>
           <form action="Authentification.php" method="POST" class="form-connexion" >
           <div class="form-connexion">
             <input type="text"  placeholder="Identifiant" arial-label="Identifiant" name="identifiant" required>
@@ -20,7 +21,7 @@ writeHeaderHtml("Connexion/Inscription",3);
     </div>
     <div class="bloc-inscription col-6">
       <p>Vous n'avez pas encore de compte ?
-         Inscrivez vous en complÃ©tant les champs ci-dessous :</p>
+         Inscrivez vous en complétant les champs ci-dessous :</p>
 
         <form  action="Authentification.php" method="POST" class="form-inscription"> 
         <div class="form-inscription">

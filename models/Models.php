@@ -152,9 +152,9 @@ class Models extends Database {
     //======================================================== 
      // requete pour trouver tout les elements
      protected function query_findAll($table,$column=null){
-        $column = $column == null ? "*" : $column;
-        $sql = "select ".strval($column)." from ".strval($table);
-        $query = self::$pdo->prepare($sql);
+         $column = $column == null ? "*" : $column;
+         $sql = "select ".strval($column)." from ".strval($table);
+         $query = self::$pdo->prepare($sql);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }   
@@ -162,7 +162,7 @@ class Models extends Database {
     protected function query_findBy($table,$column=null,$condition){
         $column = $column == null ? "*" : $column;
         $sql = "select ".strval($column)." from ".strval($table)." where ".strval($condition);
-        // echo $sql;
+        //echo $sql;
         $query = self::$pdo->prepare($sql);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
@@ -252,6 +252,13 @@ class Models extends Database {
         $query = self::$pdo->prepare($sql);
         $query->execute();
         
+    }
+
+    public function count_element($table){
+        $sql="SELECT count(*) as nb FROM $table;";
+        $query = self::$pdo->prepare($sql);
+        $query->execute();
+        return $query->fetch()['nb'];
     }
 
 }

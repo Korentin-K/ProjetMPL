@@ -5,7 +5,8 @@ html, body {
 }
 
 .displayDiagramme {
-    background-color: #D8A48F;
+    /* background-color: #D8A48F; */
+    background-color: #DAD4D4;
     /* background-color: #BED3C3; */
     max-width: 100%;
     min-height: 92vh;
