@@ -222,24 +222,20 @@ class Models extends Database {
         $result=$query->fetchAll(PDO::FETCH_ASSOC);
         if($result!=null)
         {
-            echo "true";
             //retourne true si cela correspond
-            return true;
-            
-            
+            return true;         
         }
         else{
-            echo "false";
-            return false;
            
+            return false;   
         }
     }
     //======================================================================
     //REQUETE : Recherche le nom de l'utilisateur grâce à l'email
     //======================================================================
-    public function rechercheNom($email)
+    public function rechercheInfoUtilisateur($email)
     {
-        $sql= "select nom_utilisateur from utilisateur where mail_utilisateur='".strval($email)."'";
+        $sql= "select * from utilisateur where mail_utilisateur='".strval($email)."'";
         $query = self::$pdo->prepare($sql);
         $query->execute();
          return $query->fetch(PDO::FETCH_ASSOC);

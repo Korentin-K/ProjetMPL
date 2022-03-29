@@ -25,8 +25,9 @@ if($emailId!="")
 	$leMDP=md5($passwordConnexion);
 	if(filter_var($emailId,FILTER_VALIDATE_EMAIL) and $User->rechercheConnexion($emailId,$leMDP)==true)
 	{ 
-			$nameUser=$User->rechercheNom($emailId);
-	 		$_SESSION['User']=$nameUser['nom_utilisateur'];
+			$infoUser=$User->rechercheInfoUtilisateur($emailId);
+	 		$_SESSION['User']=$infoUser['nom_utilisateur'];
+	 		$_SESSION['idUser']=$infoUser['id_utilisateur'];
 	 		header('Location: ./dashboard.php');
 			exit();	
 	}
@@ -48,7 +49,9 @@ if($nomI!="" and $emailId=="")
 			{
 		    	$leMotDePasse=md5($passwordInscription);
 				$User->inscriptionSite($nomI,$email,$leMotDePasse);
-				$_SESSION['User']=$nomI;
+				$infoUser=$User->rechercheInfoUtilisateur($email);
+				$_SESSION['User']=$infoUser['nom_utilisateur'];
+	 			$_SESSION['idUser']=$infoUser['id_utilisateur'];
 				header('Location: ./dashboard.php');
   				exit();
 			}
