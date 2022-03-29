@@ -23,7 +23,7 @@ $User = new Utilisateur;
 if($emailId!="")
 {
 	if (filter_var($emailID, FILTER_VALIDATE_EMAIL)){
-			$leMotDePasse=password_hash($passwordConnexion, PASSWORD_DEFAULT);
+		$leMotDePasse=password_hash($passwordConnexion, PASSWORD_DEFAULT);
 	 if($User->rechercheConnexion($emailId,$leMotDePasse)==true){
 		$nameUser=$User->rechercheNom($emailId);
 	 	$_SESSION['User']=$nameUser;
