@@ -45,6 +45,8 @@ function getScript($codePage=null){
         $script .= "<script src=\"https://code.jquery.com/ui/1.13.1/jquery-ui.js\"></script>";
     }
     if($codePage == 2){
+        $script .= "<script src='https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js'></script>";
+        // $script .= "<script src=\"".$path_js."/diagramme_effect.js\"></script>";
         $script .= "<script src=\"".$path_js."/diagramme.js\"></script>";
         $script .= "<script src=\"".$path_lib."/plain_draggable/src/plain-draggable.js\"></script>";
     }
@@ -138,25 +140,29 @@ function checkAccessPermission(){
 //========================================================
 // recuperation des niveaux
 function getLevelByIdProjet($idProjet,$display){
+    $html="";$getLevel="";
     calculAllData($idProjet);
     // exit;
     // $dureeTotale = calculAllData($idProjet);
     $level = new Niveau;
     $getLevel = $level->findBy("id_niveau, nom_niveau","id_projet=".$idProjet);
-    $html="";
-    if($display == "view") {
-        $position=0;
-        foreach($getLevel as $row){
-            $html .= addLevel($idProjet,$row["id_niveau"],$row["nom_niveau"],$position);
-            $position += 1;
+    if($getLevel!="" && !empty($getLevel)){
+        if($display == "view") {
+            $position=0;
+            foreach($getLevel as $row){
+                $html .= addLevel($idProjet,$row["id_niveau"],$row["nom_niveau"],$position);
+                $position += 1;
+            }
+            $dureeTotale = getTotalDuree($idProjet);        
+            $html.= addLevel($idProjet,"F".$row["id_niveau"],"FIN",($position+1),$dureeTotale);
+        }elseif ($display == "select") {
+            $html .= "<option value='-1' selected>Choix du niveau...</option>";
+            foreach($getLevel as $row){
+                $html .= "<option value=".$row['id_niveau'].">".$row['nom_niveau']."</option>";
+            }
         }
-        $dureeTotale = getTotalDuree($idProjet);        
-        $html.= addLevel($idProjet,"F".$row["id_niveau"],"FIN",($position+1),$dureeTotale);
-    }elseif ($display == "select") {
-        $html .= "<option value='-1' selected>Choix du niveau...</option>";
-        foreach($getLevel as $row){
-            $html .= "<option value=".$row['id_niveau'].">".$row['nom_niveau']."</option>";
-        }
+    }else {
+        $html .= "<h1>Projet vide...</h1>";
     }
     return $html;
 }
@@ -168,9 +174,9 @@ function addLevel($idProjet,$idLevel,$nameLevel,$position,$total=null){
         <li><a class='dropdown-item'  onclick='modifyLevel($idLevel)' >Modifier</a></li>
         <li><a class='dropdown-item'  onclick='deleteLevel($idLevel);'>Supprimer</a></li>
     </ul>";
-    $html = " <div id='level_".$idLevel."' class='d-flex col-12 h-100 justify-content-center levelStyle $marginLeft'>
+    $html = " <div id='level_".$idLevel."' class=' d-flex col-12 h-100 justify-content-center levelStyle $marginLeft'>
                 <div id='levelPosition_$position'></div>
-                <div class='row d-flex justify-content-center levelCol'>
+                <div class='row d-flex justify-content-center levelCol dropzone'>
                     <div class='d-flex mt-1 col-10 justify-content-around titleLevel' >
                         <div class=' task-title d-flex col-12 '>
                             <span class='d-flex col-10 '>".strval($nameLevel)."</span>
@@ -222,7 +228,7 @@ function addTask($id,$data,$positionLevel){
             <li><a class='dropdown-item'  onclick='modifyTask($id)' >Modifier</a></li>
             <li><a class='dropdown-item'  onclick='deleteTask($id);'>Supprimer</a></li>
         </ul>";
-        $html .= "<div id='taskItem_$id' class='row d-flex col-10 mt-1 task-item'>
+        $html .= "<div id='taskItem_$id' class='row d-flex col-10 mt-1 task-item draggable'>
         <table class='tableTask'>
             <tbody>
                 <tr >    
@@ -251,16 +257,20 @@ function addTask($id,$data,$positionLevel){
                 </div>";
         if($parentTask != "-"){
             $taskArray=explode(",",$parentTask);
+            $parentValue="";
             foreach($taskArray as $taskId){
                 $taskId = substr($taskId, 1);
-                $html.= "<script>
-                line = new LeaderLine(
-                    document.getElementById('taskItem_".$taskId."'),
-                    document.getElementById('taskItem_".$id."')
-                  );
-                line.path = 'straight'
-                </script>";
+                $parentValue.=$taskId.",";
+                // $html.= "<script>
+                // line = new LeaderLine(
+                //     document.getElementById('taskItem_".$taskId."'),
+                //     document.getElementById('taskItem_".$id."')
+                //   );
+                // line.path = 'straight'
+                // </script>";
             }
+            $parentValue = rtrim($parentValue,',');
+            $html .= "<input id='parent_$id' type='text' value='$parentValue' hidden>";
         }
     } else {
         $dureeTotale = $data[1];

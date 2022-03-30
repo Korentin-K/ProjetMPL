@@ -3,10 +3,10 @@ require_once "fonctions.php";
 require_once "models/Dashboard.php";
 writeHeaderHtml('dashboard',4);
 $nomPersonne=$_SESSION['User'];
-//$u = new Utilisateur;
-//$idUser = $u->customQuery("select * from utilisateur limit 1")[0]["id_utilisateur"];
-//$_SESSION['id']=$idUser;
-$idUser=$_SESSION['idUser'];
+$u = new Utilisateur;
+$idUser = $u->customQuery("select * from utilisateur limit 1")[0]["id_utilisateur"];
+$_SESSION['id']=$idUser;
+// $idUser=$_SESSION['idUser'];
 echo $idUser;
 ?>
 <body >    

@@ -137,6 +137,9 @@ a {
     background-color: #f1f1f1;
     border-bottom: solid 1px black;
 }
+#taskContent.content{
+    display: block;
+}
 
 .form-label{
     display: flex;
@@ -164,3 +167,48 @@ a {
     color: white;
     background-color: #d8a48f;
 }
+
+
+  
+
+  
+  .dropzone {
+    /* background-color: #bfe4ff;
+    border: dashed 4px transparent;
+    border-radius: 4px;
+    margin: 10px auto 30px;
+    padding: 10px;
+    width: 80%;  */
+    transition: background-color 0.3s;
+  }
+  
+  .drop-active {
+    border-color: #aaa;
+  }
+  
+  .drop-target {
+    background-color: #29e;
+    border-color: #fff;
+    border-style: solid;
+  }
+  
+   .draggable {
+    display: inline-block;
+    min-width: 40px;
+    /* padding: 2em 0.5em;
+    margin: 1rem 0 0 1rem; */
+  
+    color: #fff;
+    background-color: #29e;
+    /* border: solid 2px #fff; */
+  
+    touch-action: none;
+    transform: translate(0px, 0px);
+  
+    transition: background-color 0.3s;
+  } 
+  
+  .draggable.can-drop {
+    color: #000;
+    background-color: #4e4;
+  }

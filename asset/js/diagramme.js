@@ -1,5 +1,6 @@
 var idProjet = document.getElementById("idProjet").value;
 var coll = document.getElementsByClassName("collapsible");
+// var taskMenu = document.getElementsById("taskContent");
 var i;
 for (i = 0; i < coll.length; i++) {
     coll[i].addEventListener("click", function() {
@@ -12,6 +13,7 @@ for (i = 0; i < coll.length; i++) {
         }
     });
 }
+// taskMenu.style.displ
 function reloadLevelSelect(){
     $.ajax({
         url : 'ajax_treatment.php',
@@ -116,7 +118,7 @@ function modifyTask(id){
         }
     });
 }
-// Enregistrement changement tache
+// Enregistrement changement tache depuis interface
 function updateTask(id){ 
     var idLevel = document.getElementById('idLevelAddTask')
     var name = document.getElementById('nameTask')
@@ -141,6 +143,29 @@ function updateTask(id){
             document.getElementById('projetView').innerHTML = "";
             document.getElementById('projetView').innerHTML = data; 
             resetMenuAddTask()  
+        },
+        error : function(resultat, statut, erreur){
+            console.log("error :")
+            console.log(erreur)
+        }
+    });
+}
+// Enregistrement changement tache depuis interface
+function switchTaskLevel(idLevel,idTask){     
+    $.ajax({
+        url : 'ajax_treatment.php',
+        type : 'POST',
+        data : {
+            modify : 1,
+            update : 1,
+            idTask : idTask,
+            idTaskLevel : idLevel,             
+            projet : idProjet} ,
+        success : function(data){ 
+            document.getElementById('projetView').innerHTML = "";
+            document.getElementById('projetView').innerHTML = data; 
+            getParentAndDrawLine()
+
         },
         error : function(resultat, statut, erreur){
             console.log("error :")
@@ -262,37 +287,169 @@ function deleteTask(id){
         }
     });   
 } 
+
+
+function drawLine(start,end){
+    parent = "taskItem_"+start
+    child = "taskItem_"+end
+    line = new LeaderLine(
+            document.getElementById(parent),
+            document.getElementById(child)
+          );
+    line.path = 'fluid'
+    line.setOptions({startSocket: 'right', endSocket: 'left'});
+}
+
+function getParentAndDrawLine(){
+    var lines = document.querySelectorAll("[class='leader-line']")
+    lines.forEach((line)=>{
+        console.log(line)
+        line.remove()
+    })
+    var elms = document.querySelectorAll("[id^='parent_']")
+    elms.forEach((el)=>{
+        id = el.id
+        idTask = id.substr(id.indexOf('_')+1,id.length)
+        console.log("el : "+idTask)
+        idParent = el.value.split(',')
+        console.log("idParent array : "+idParent)
+        idParent.forEach((p)=>{
+            console.log("p: "+p+" idTask: "+idTask)
+            drawLine(p,idTask)
+        })
+        // console.log(idTask)
+        // console.log(idParent)
+    })
+}
+
 $("document").ready(function() {
-    $(".task-item").draggable({
-        revert: true,
-        revertDuration:0,
-        zIndex: 100,
-        refreshPositions: true,
-        helper: "clone",
-        helper: function(e) {
-            var original = $(e.target).hasClass("ui-draggable") ? $(e.target) :  $(e.target).closest(".ui-draggable");
-            return original.clone().css({
-            width: original.width()
-            });                
-        },
-        start: function( event, ui ) {
-            $(".ui-draggable").not(ui.helper.css("z-index", "1")).css("z-index", "0");
-        },
+    // $(".task-item").draggable({
+    //     revert: true,
+    //     revertDuration:0,
+    //     zIndex: 100,
+    //     refreshPositions: true,
+    //     helper: "clone",
+    //     helper: function(e) {
+    //         var original = $(e.target).hasClass("ui-draggable") ? $(e.target) :  $(e.target).closest(".ui-draggable");
+    //         return original.clone().css({
+    //         width: original.width()
+    //         });                
+    //     },
+    //     start: function( event, ui ) {
+    //         $(".ui-draggable").not(ui.helper.css("z-index", "1")).css("z-index", "0");
+    //     },
     
 
-    })
-    $(".levelCol").droppable({
-        accept: '.task-item',
-        activeClass: "ui-hover",
-        hoverClass: "ui-active",
-        drop: function(event, ui) {
-        $(this).append($(ui.draggable));
-        }
-    })
-}) 
+    // })
+    // $(".levelCol").droppable({
+    //     accept: '.task-item',
+    //     activeClass: "ui-hover",
+    //     hoverClass: "ui-active",
+    //     drop: function(event, ui) {
+    //     $(this).append($(ui.draggable));
+    //     }
+    // })
+    // target elements with the "draggable" class
+// interact('.draggable')
+// .draggable({
+//   // enable inertial throwing
+//   inertia: true,
+//   // keep the element within the area of it's parent
+//   modifiers: [
+//     interact.modifiers.restrictRect({
+//       restriction: 'parent',
+//       endOnly: true
+//     })
+//   ],
+//   // enable autoScroll
+//   autoScroll: true,
+//   listeners: {
+//     // call this function on every dragmove event
+//     move: dragMoveListener,
+//   }
+// })
 
+getParentAndDrawLine()
+
+function dragMoveListener (event) {
+var target = event.target
+// keep the dragged position in the data-x/data-y attributes
+var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
+var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy
+// translate the element
+target.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
+// update the posiion attributes
+target.setAttribute('data-x', x)
+target.setAttribute('data-y', y)
+}
+
+// enable draggables to be dropped into this
+interact('.dropzone').dropzone({
+    // only accept elements matching this CSS selector
+    //accept: '#yes-drop',
+    // Require a 75% element overlap for a drop to be possible
+   // overlap: 0.75,
+  
+    // listen for drop related events:
+  
+    ondropactivate: function (event) {
+      // add active dropzone feedback
+      event.target.classList.add('drop-active')
+    },
+    ondragenter: function (event) {
+      var draggableElement = event.relatedTarget
+      var dropzoneElement = event.target
+  
+      // feedback the possibility of a drop
+      dropzoneElement.classList.add('drop-target')
+      draggableElement.classList.add('can-drop')
+      draggableElement.textContent = 'Dragged in'
+    },
+    ondragleave: function (event) {
+      // remove the drop feedback style
+      console.log("drag leave")
+      event.target.classList.remove('drop-target')
+      event.relatedTarget.classList.remove('can-drop')
+      event.relatedTarget.textContent = 'Dragged out'
+    },
+    ondrop: function (event) {
+      console.log("on drop")
+      idLevel = event.target.parentElement.id
+      idTask = event.relatedTarget.id
+      idLevel = idLevel.substr(idLevel.indexOf("_")+1,idLevel.length)
+      idTask = idTask.substr(idTask.indexOf("_")+1,idTask.length)
+    //   console.log(idLevel)
+    //   console.log(idTask)
+      switchTaskLevel(idLevel,idTask)
+      event.relatedTarget.textContent = 'Dropped'
+    },
+    ondropdeactivate: function (event) {
+      // remove active dropzone feedback
+      event.target.classList.remove('drop-active')
+      event.target.classList.remove('drop-target')
+    }
+  })
+  
+  interact('.draggable')
+    .draggable({
+      inertia: true,
+      modifiers: [
+        interact.modifiers.restrictRect({
+          //restriction: 'parent',
+          endOnly: true
+        })
+      ],
+      autoScroll: true,
+      // dragMoveListener from the dragging demo above
+      listeners: { move: dragMoveListener }
+    })
+  
+  //Snapping 
+
+  //console.log(document.getElementById('taskItem_3872'))
+}) 
 // var line = new LeaderLine(
-//     document.getElementById('taskItem_41'),
-//     document.getElementById('taskItem_42')
+//     document.getElementById('taskItem_3877'),
+//     document.getElementById('taskItem_3878')
 //   );
   

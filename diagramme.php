@@ -27,7 +27,7 @@ if($dataAvailable){
         <input id="idProjet" type="text" value="<?php echo $idProjet;?>" hidden>
         <div class="d-flex flex-wrap align-content-start col-2 px-0"> 
             <!-- Ajouter un niveau au projet -->
-            <button id="buttonAddLevelMenu" type="button" class="d-flex col-12 collapsible" >
+            <!-- <button id="buttonAddLevelMenu" type="button" class="d-flex col-12 collapsible" >
                 <div id="titleMenuLevel" class="col-10 ps-4">Ajouter un niveau</div>
                 <div class="col-2 d-flex justify-content-end align-items-center pe-4"><i class="iconLeftMenu far fa-plus-square"></i></div>
             </button>                
@@ -40,7 +40,7 @@ if($dataAvailable){
                     <button id="btnCancelLevel" onclick="resetMenuAddLevel();" class="btn btnCancelForm" hidden>Annuler</button>
                     <button id="btnSubmitLevel" onclick="addLevel();" class="btn btnSubmitForm">Ajouter</button>
                 </div>
-            </div>
+            </div> -->
             <!-- Ajouter une tache à un niveau -->
             <button id="buttonAddTaskMenu" type="button" class="d-flex col-12 collapsible" >
                 <div id="titleMenuTask" class="col-10 ps-4">Ajouter une tâche</div>
@@ -49,7 +49,7 @@ if($dataAvailable){
             <div id="taskContent" class="content">
                 <div class="mb-3 col-12">    
                     <label for="idLevelAddTask" class="form-label">Niveau</label>                   
-                    <select class="form-select" id="idLevelAddTask" name="idLevelAddTask" >
+                    <select class="form-select" id="idLevelAddTask" name="idLevelAddTask" disabled>
                         <?php 
                         echo getLevelByIdProjet($idProjet,"select");                            
                         ?>                        

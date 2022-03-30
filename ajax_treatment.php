@@ -117,7 +117,7 @@ if(isset($_POST['modify']) && $_POST['modify'] == 1) {
         if(isset($_POST['idLevel'])) {
             $idLevel="";
             if(isset($_POST['idLevel']) && $_POST['idLevel'] != "") $idLevel = htmlspecialchars($_POST['idLevel']);
-            // recup�ration des données
+            // recupération des données
             $level = new Niveau;
             $result = $level->findBy("nom_niveau","id_niveau='".$idLevel."' and id_projet='".$idProjet."'");
             $data = array();
@@ -131,7 +131,7 @@ if(isset($_POST['modify']) && $_POST['modify'] == 1) {
         if(isset($_POST['idTask'])) {
             $idTask="";
             if(isset($_POST['idTask']) && $_POST['idTask'] != "") $idTask = htmlspecialchars($_POST['idTask']);
-            // recup�ration des données
+            // recupération des données
             $task = new Tache;
             $result = $task->findBy("*","id_tache='".$idTask."' and id_projet='".$idProjet."'");
             $data = array();
@@ -143,7 +143,7 @@ if(isset($_POST['modify']) && $_POST['modify'] == 1) {
         }
     }
     elseif ((isset($_POST['update']) && $_POST['update'] == 1)) {
-        // Modification tache
+        // Modification niveau
         if(isset($_POST['idLevel'])) {
             $idLevel="";$nameLevel="";
             if(isset($_POST['idLevel']) && $_POST['idLevel'] != "") $idLevel = htmlspecialchars($_POST['idLevel']);                        
@@ -175,6 +175,10 @@ if(isset($_POST['modify']) && $_POST['modify'] == 1) {
                 $task->update("id_niveau_tache","$idTaskLevel","id_tache='".$idTask."' and id_projet='".$idProjet."'");
                 $task->update("duree_tache","$dureeTask","id_tache='".$idTask."' and id_projet='".$idProjet."'");
                 $task->update("tacheAnterieur_tache","$parentTask","id_tache='".$idTask."' and id_projet='".$idProjet."'");
+            }
+            elseif($idTask!="" && $idTaskLevel!=""){
+                $task = new Tache;
+                $task->update("id_niveau_tache","$idTaskLevel","id_tache='".$idTask."' and id_projet='".$idProjet."'");
             }
            // rafraichissement de l'affichage
             $html = getLevelByIdProjet($idProjet,"view");
