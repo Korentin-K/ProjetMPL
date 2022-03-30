@@ -17,17 +17,17 @@ if(isset($_POST['reload']) && $_POST['reload'] == 1) {
 if(isset($_POST['add']) && $_POST['add'] == 1) {
     $html="";
     //  Ajout niveau
-    if(isset($_POST['level'])) {
-        $idLevel="";
-        if(isset($_POST['level']) && $_POST['level'] != "") $nameLevel = htmlspecialchars($_POST['level']);
-        // perssistance des données
-        $lvl = new Niveau;
-        $lvl->insert(["",$nameLevel,$idProjet]);
-        // rafraichissement de l'affichage
-        $html = getLevelByIdProjet($idProjet,"view");
-        echo $html;
-        exit;
-    }
+    // if(isset($_POST['level'])) {
+    //     $idLevel="";
+    //     if(isset($_POST['level']) && $_POST['level'] != "") $nameLevel = htmlspecialchars($_POST['level']);
+    //     // perssistance des données
+    //     $lvl = new Niveau;
+    //     $lvl->insert(["",$nameLevel,$idProjet]);
+    //     // rafraichissement de l'affichage
+    //     $html = getLevelByIdProjet($idProjet,"view");
+    //     echo $html;
+    //     exit;
+    // }
     // Ajout tache
     if(isset($_POST['task'])) {
         $nameTask="";$descTask="";$idLevel="";$dureeTask="";$parentTask="";
@@ -36,6 +36,16 @@ if(isset($_POST['add']) && $_POST['add'] == 1) {
         if(isset($_POST['time']) && $_POST['time'] != "") $dureeTask = htmlspecialchars($_POST['time']);
         if(isset($_POST['parent']) && $_POST['parent'] != "") $parentTask = htmlspecialchars($_POST['parent']);
         if(isset($_POST['idLevel']) && $_POST['idLevel'] != "") $idLevel = htmlspecialchars($_POST['idLevel']);
+        if($parentTask!=""){
+            $lvl = new Niveau;
+            $idLevel = $lvl->customQuery("select max(id_niveau) as last from niveau where id_projet=$idProjet")[0]["last"];
+            $lvl->insert(["","niveau",$idProjet]);
+        }
+        else if($idLevel==""){
+            $lvl = new Niveau;
+            $lvl->insert(["","niveau 0",$idProjet]);
+            $idLevel = $lvl->customQuery("select max(id_niveau) as last from niveau where id_projet=$idProjet")[0]["last"];
+        } 
         // perssistance des données
         $task = new Tache;
         $values = ["",$nameTask,$idLevel,"$dureeTask",$descTask,"","","","","$parentTask",$idProjet];

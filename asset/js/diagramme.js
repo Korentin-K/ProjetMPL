@@ -1,6 +1,5 @@
 var idProjet = document.getElementById("idProjet").value;
 var coll = document.getElementsByClassName("collapsible");
-// var taskMenu = document.getElementsById("taskContent");
 var i;
 for (i = 0; i < coll.length; i++) {
     coll[i].addEventListener("click", function() {
@@ -13,7 +12,6 @@ for (i = 0; i < coll.length; i++) {
         }
     });
 }
-// taskMenu.style.displ
 function reloadLevelSelect(){
     $.ajax({
         url : 'ajax_treatment.php',
@@ -54,6 +52,7 @@ function addLevel(){
         }
     });     
 }   
+
 // Ajout tache asynchrone
 function addTask(){
     var idLevel = document.getElementById('idLevelAddTask')
@@ -452,4 +451,53 @@ interact('.dropzone').dropzone({
 //     document.getElementById('taskItem_3877'),
 //     document.getElementById('taskItem_3878')
 //   );
-  
+function choiceParentTask(){
+
+}
+var choice = false
+  $(document).ready(function () {
+    var fieldParent = document.getElementById("parentTask")
+    var tasks = document.querySelectorAll("[id^='taskItem_']")
+
+    $("#btnAddParent").on('click', function (e) {
+        choice = choice==false ? true : false;
+        console.log(choice)
+        if(choice){
+            $(this).removeClass("btn-primary");
+            $(this).addClass("isParent");
+            $(this).html("<i class='fas fa-mouse-pointer'></i>");
+            tasks.forEach((t)=>{
+                $(t).addClass("choice")
+            })
+        }
+        else {
+            $(this).removeClass("isParent");
+            $(this).addClass("btn-primary");
+            $(this).html("<i class='fas fa-plus-circle'></i>");
+            tasks.forEach((t)=>{
+                $(t).removeClass("choice")
+                $(t).off("click")
+            })
+        }
+        $("[id^='taskItem_']").on('click', function (e) {
+            if(choice == true){
+                idTask = this.id
+                idTask = idTask.substr(idTask.indexOf("_")+1,idTask.length)
+                newValues = fieldParent.value
+                if(!this.classList.contains("isParent")){
+                    $(this).addClass('isParent');
+                    if(newValues != "") newValues += ","
+                    newValues += idTask
+                }
+                else {
+                    $(this).removeClass('isParent');
+                    newValues = newValues.replace(idTask,'')
+                    newValues = newValues.replace(',,',',')
+                }
+                if(newValues.substr(newValues.length-1) == ",") newValues = newValues.slice(0,-1);
+                if(newValues.substr(0,1) == ",") newValues = newValues.substr(1);
+                fieldParent.value = newValues
+            }
+        });
+    });
+});

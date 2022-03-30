@@ -49,14 +49,14 @@ if($dataAvailable){
             <div id="taskContent" class="content">
                 <div class="mb-3 col-12">    
                     <label for="idLevelAddTask" class="form-label">Niveau</label>                   
-                    <select class="form-select" id="idLevelAddTask" name="idLevelAddTask" disabled>
+                    <select class="form-select" id="idLevelAddTask" name="idLevelAddTask" >
                         <?php 
                         echo getLevelByIdProjet($idProjet,"select");                            
                         ?>                        
                     </select>
                     <label for="nameTask" class="form-label">Nom</label>
                     <input type="text" class="form-control" id="nameTask" name="nameTask" >
-                    <div class="d-flex col-12 justify-content-between">
+                    <div class="d-flex col-12 justify-content-between align-items-end">
                          <div class="col-5 d-flex flex-wrap">
                             <label for="letterTask" class="form-label">Réf.</label>
                             <input type="text" class="form-control" id="letterTask" name="letterTask" placeholder="auto" disabled>
@@ -66,8 +66,16 @@ if($dataAvailable){
                             <input type="text" class="form-control" id="dureeTask" name="dureeTask" >
                         </div>                        
                     </div>
-                    <label for="parentTask" class="form-label">Tache antérieur (TXX,..)</label>
-                    <input type="text" class="form-control" id="parentTask" name="parentTask" >
+                    <div class="d-flex col-12 justify-content-between">
+                        <div class="col-10 d-flex flex-wrap">                     
+                            <label for="parentTask" class="form-label">Tache antérieur (TXX,..)</label>
+                            <input type="text" class="form-control" id="parentTask" name="parentTask" >
+                        </div>
+                        <div class="d-flex align-items-end">                     
+                            <a id="btnAddParent" class="btn btn-primary" onclick="choiceParentTask()"><i class="fas fa-plus-circle"></i></a>
+                        </div>
+                    </div>
+                        
                     <!-- <div class="d-flex col-12 justify-content-between">
                         <div class="col-5 d-flex flex-wrap">
                             <label for="plusTotTask" class="form-label">Plus tôt</label>
@@ -94,6 +102,12 @@ if($dataAvailable){
         </div>
     </div>
 </body>
+<script>
+    var select = document.getElementById("idLevelAddTask")
+    if(select.options.length == 0){
+        select.disabled = true
+    }
+</script>
 <?php }else { ?>
     <div class="row col-12 mx-0 divlevel">
             <h1>Pas de données...</h1>
