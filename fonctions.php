@@ -446,7 +446,7 @@ function tableauProjet($idUser){
             </tr>";
     foreach($allIdProjectByIdUser as $idProject){
         $id = $idProject["id_projet"];
-        $oneProject = $project->findBy(null,"id_projet='$id'");
+        $oneProject = $project->findBy("*","id_projet='$id'");
         // var_dump($oneProject);
         if($oneProject!="" && !empty($oneProject)){
             $title = $oneProject[0]["titre_projet"];

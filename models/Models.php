@@ -159,7 +159,7 @@ class Models extends Database {
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }   
     // requete pour trouver un element 
-    protected function query_findBy($table,$column=null,$condition){
+    protected function query_findBy($table,$column,$condition){
         $column = $column == null ? "*" : $column;
         $sql = "select ".strval($column)." from ".strval($table)." where ".strval($condition);
         //echo $sql;
