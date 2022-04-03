@@ -4,8 +4,9 @@ require_once "Models.php";
 class Niveau extends Models {
     private $table = "niveau";
     private $columns = ["id_niveau","nom_niveau","id_projet"];
-    private $id_niveu = "";
+    private $id_niveau = "";
     private $nom_niveau = "";
+    private $id_projet = "";
 
     public function __construct($reload=false){
         new Models;
@@ -49,4 +50,64 @@ class Niveau extends Models {
         return $this->customQuery("SELECT id_niveau FROM niveau WHERE id_projet='$idProjet' order by id_niveau DESC");
     }
 
+
+    /**
+     * Get the value of id_niveau
+     */ 
+    public function getId_niveau()
+    {
+        return $this->id_niveau;
+    }
+
+    /**
+     * Set the value of id_niveau
+     *
+     * @return  self
+     */ 
+    public function setId_niveau($id_niveau)
+    {
+        $this->id_niveau = $id_niveau;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of nom_niveau
+     */ 
+    public function getNom_niveau()
+    {
+        return $this->nom_niveau;
+    }
+
+    /**
+     * Set the value of nom_niveau
+     *
+     * @return  self
+     */ 
+    public function setNom_niveau($nom_niveau)
+    {
+        $this->nom_niveau = $nom_niveau;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of id_projet
+     */ 
+    public function getId_projet()
+    {
+        return $this->id_projet;
+    }
+
+    /**
+     * Set the value of id_projet
+     *
+     * @return  self
+     */ 
+    public function setId_projet($id_projet)
+    {
+        $this->id_projet = $id_projet;
+
+        return $this;
+    }
 }

@@ -135,13 +135,14 @@ function updateTask(id){
             desc : desc.value,
             time : duree.value,
             parent : parent.value,
-            idTaskLevel : idLevel.value,             
             projet : idProjet} ,
         success : function(data){ 
             document.getElementById('buttonAddTaskMenu').click()               
             document.getElementById('projetView').innerHTML = "";
             document.getElementById('projetView').innerHTML = data; 
             resetMenuAddTask()  
+            getParentAndDrawLine()
+
         },
         error : function(resultat, statut, erreur){
             console.log("error :")
@@ -295,7 +296,8 @@ function drawLine(start,end){
             document.getElementById(parent),
             document.getElementById(child)
           );
-    line.path = 'fluid'
+    line.path = 'magnet'
+    // line.path = 'fluid'
     line.setOptions({startSocket: 'right', endSocket: 'left'});
 }
 
@@ -322,51 +324,6 @@ function getParentAndDrawLine(){
 }
 
 $("document").ready(function() {
-    // $(".task-item").draggable({
-    //     revert: true,
-    //     revertDuration:0,
-    //     zIndex: 100,
-    //     refreshPositions: true,
-    //     helper: "clone",
-    //     helper: function(e) {
-    //         var original = $(e.target).hasClass("ui-draggable") ? $(e.target) :  $(e.target).closest(".ui-draggable");
-    //         return original.clone().css({
-    //         width: original.width()
-    //         });                
-    //     },
-    //     start: function( event, ui ) {
-    //         $(".ui-draggable").not(ui.helper.css("z-index", "1")).css("z-index", "0");
-    //     },
-    
-
-    // })
-    // $(".levelCol").droppable({
-    //     accept: '.task-item',
-    //     activeClass: "ui-hover",
-    //     hoverClass: "ui-active",
-    //     drop: function(event, ui) {
-    //     $(this).append($(ui.draggable));
-    //     }
-    // })
-    // target elements with the "draggable" class
-// interact('.draggable')
-// .draggable({
-//   // enable inertial throwing
-//   inertia: true,
-//   // keep the element within the area of it's parent
-//   modifiers: [
-//     interact.modifiers.restrictRect({
-//       restriction: 'parent',
-//       endOnly: true
-//     })
-//   ],
-//   // enable autoScroll
-//   autoScroll: true,
-//   listeners: {
-//     // call this function on every dragmove event
-//     move: dragMoveListener,
-//   }
-// })
 
 getParentAndDrawLine()
 
@@ -461,7 +418,7 @@ var choice = false
 
     $("#btnAddParent").on('click', function (e) {
         choice = choice==false ? true : false;
-        console.log(choice)
+        // console.log(choice)
         if(choice){
             $(this).removeClass("btn-primary");
             $(this).addClass("isParent");
@@ -479,25 +436,73 @@ var choice = false
                 $(t).off("click")
             })
         }
-        $("[id^='taskItem_']").on('click', function (e) {
-            if(choice == true){
-                idTask = this.id
-                idTask = idTask.substr(idTask.indexOf("_")+1,idTask.length)
-                newValues = fieldParent.value
-                if(!this.classList.contains("isParent")){
-                    $(this).addClass('isParent');
-                    if(newValues != "") newValues += ","
-                    newValues += idTask
-                }
-                else {
-                    $(this).removeClass('isParent');
-                    newValues = newValues.replace(idTask,'')
-                    newValues = newValues.replace(',,',',')
-                }
-                if(newValues.substr(newValues.length-1) == ",") newValues = newValues.slice(0,-1);
-                if(newValues.substr(0,1) == ",") newValues = newValues.substr(1);
-                fieldParent.value = newValues
+    });
+    $("[id^='taskItem_']").on('click', function (e) {
+        if(choice == true){
+            idTask = this.id
+            idTask = idTask.substr(idTask.indexOf("_")+1,idTask.length)
+            newValues = fieldParent.value
+            console.log(!this.classList.contains("isParent"))
+            if(!this.classList.contains("isParent")){
+                $(this).addClass('isParent');
+                if(newValues != "") newValues += ","
+                newValues += idTask
             }
-        });
+            else {
+                $(this).removeClass('isParent');
+                newValues = newValues.replace(idTask,'')
+                newValues = newValues.replace(',,',',')
+            }
+            if(newValues.substr(newValues.length-1) == ",") newValues = newValues.slice(0,-1);
+            if(newValues.substr(0,1) == ",") newValues = newValues.substr(1);
+            fieldParent.value = newValues
+        }
     });
 });
+
+
+// $(".task-item").draggable({
+    //     revert: true,
+    //     revertDuration:0,
+    //     zIndex: 100,
+    //     refreshPositions: true,
+    //     helper: "clone",
+    //     helper: function(e) {
+    //         var original = $(e.target).hasClass("ui-draggable") ? $(e.target) :  $(e.target).closest(".ui-draggable");
+    //         return original.clone().css({
+    //         width: original.width()
+    //         });                
+    //     },
+    //     start: function( event, ui ) {
+    //         $(".ui-draggable").not(ui.helper.css("z-index", "1")).css("z-index", "0");
+    //     },
+    
+
+    // })
+    // $(".levelCol").droppable({
+    //     accept: '.task-item',
+    //     activeClass: "ui-hover",
+    //     hoverClass: "ui-active",
+    //     drop: function(event, ui) {
+    //     $(this).append($(ui.draggable));
+    //     }
+    // })
+    // target elements with the "draggable" class
+// interact('.draggable')
+// .draggable({
+//   // enable inertial throwing
+//   inertia: true,
+//   // keep the element within the area of it's parent
+//   modifiers: [
+//     interact.modifiers.restrictRect({
+//       restriction: 'parent',
+//       endOnly: true
+//     })
+//   ],
+//   // enable autoScroll
+//   autoScroll: true,
+//   listeners: {
+//     // call this function on every dragmove event
+//     move: dragMoveListener,
+//   }
+// })

@@ -29,29 +29,49 @@ if(isset($_POST['add']) && $_POST['add'] == 1) {
     //     exit;
     // }
     // Ajout tache
-    if(isset($_POST['task'])) {
+    if(isset($_POST['task']) && $idProjet!="") {
+        $getLevelId = false;
         $nameTask="";$descTask="";$idLevel="";$dureeTask="";$parentTask="";
         if(isset($_POST['task']) && $_POST['task'] != "") $nameTask = htmlspecialchars($_POST['task']);
         if(isset($_POST['desc']) && $_POST['desc'] != "") $descTask = htmlspecialchars($_POST['desc']);
         if(isset($_POST['time']) && $_POST['time'] != "") $dureeTask = htmlspecialchars($_POST['time']);
         if(isset($_POST['parent']) && $_POST['parent'] != "") $parentTask = htmlspecialchars($_POST['parent']);
-        if(isset($_POST['idLevel']) && $_POST['idLevel'] != "") $idLevel = htmlspecialchars($_POST['idLevel']);
-        if($parentTask!=""){
-            $lvl = new Niveau;
-            $idLevel = $lvl->customQuery("select max(id_niveau) as last from niveau where id_projet=$idProjet")[0]["last"];
-            $lvl->insert(["","niveau",$idProjet]);
-        }
-        else if($idLevel==""){
-            $lvl = new Niveau;
+        // if(isset($_POST['idLevel']) && $_POST['idLevel'] != "") $idLevel = htmlspecialchars($_POST['idLevel']);
+        // Verifier si projet est vide
+        $task = new Tache;
+        $nbrTask = $task->customQuery("select count(*) as count from niveau where id_projet=$idProjet")[0]["count"];
+        $lvl = new Niveau;
+        if($nbrTask == 0){
             $lvl->insert(["","niveau 0",$idProjet]);
+        }
+        else if($parentTask!=""){
+            $maxLevelIdFromParentTask = $task->customQuery("select max(id_niveau_tache) as max from tache where id_tache in ($parentTask);")[0]["max"];
+            $maxLevelIdFromProject = $lvl->customQuery("select max(id_niveau) as last from niveau where id_projet=$idProjet")[0]["last"];
+            if($maxLevelIdFromParentTask == $maxLevelIdFromProject){
+                $lvl->insert(["","niveau",$idProjet]);
+            }
+            else {
+                $list=array();
+                $allLevelOfProject = $lvl->findBy("id_niveau","id_projet=$idProjet");
+                foreach($allLevelOfProject as $project){
+                    array_push($list,$project["id_niveau"]);
+                }
+                $maxLevelIdFromParentTaskPos = array_search($maxLevelIdFromParentTask,$list);
+                $idLevel = $list[$maxLevelIdFromParentTaskPos+1];
+                $getLevelId = true;
+            }
+        }
+        else {
+            $parentTask = "null";
+        }
+        if($getLevelId == false) {
             $idLevel = $lvl->customQuery("select max(id_niveau) as last from niveau where id_projet=$idProjet")[0]["last"];
         } 
         // perssistance des données
-        $task = new Tache;
         $values = ["",$nameTask,$idLevel,"$dureeTask",$descTask,"","","","","$parentTask",$idProjet];
         $task->insert($values);
         // rafraichissement de l'affichage
-        $html = getLevelByIdProjet($idProjet,"view");
+        $html = updateDiagrammeProjet($idProjet);
         echo $html;
         exit;
     }
@@ -87,7 +107,7 @@ if(isset($_POST['delete']) && $_POST['delete'] == 1) {
         $task = new Tache;
         $task->delete("id_niveau_tache='".$idLevel."'");
         // rafraichissement de l'affichage
-        $html = getLevelByIdProjet($idProjet,"view");
+        $html = updateDiagrammeProjet($idProjet);
         echo $html;
         exit;
     }
@@ -99,7 +119,7 @@ if(isset($_POST['delete']) && $_POST['delete'] == 1) {
         $task = new Tache;
         $task->delete("id_tache='".$idTask."' and id_projet='".$idProjet."'");
         // rafraichissement de l'affichage
-        $html = getLevelByIdProjet($idProjet,"view");
+        $html = updateDiagrammeProjet($idProjet);
         echo $html;
         exit;
     }
@@ -164,7 +184,7 @@ if(isset($_POST['modify']) && $_POST['modify'] == 1) {
                 $level->update("nom_niveau","$nameLevel","id_niveau='".$idLevel."' and id_projet='".$idProjet."'");
             }
            // rafraichissement de l'affichage
-            $html = getLevelByIdProjet($idProjet,"view");
+            $html = updateDiagrammeProjet($idProjet);
             echo $html;
             exit;
         }
@@ -191,7 +211,7 @@ if(isset($_POST['modify']) && $_POST['modify'] == 1) {
                 $task->update("id_niveau_tache","$idTaskLevel","id_tache='".$idTask."' and id_projet='".$idProjet."'");
             }
            // rafraichissement de l'affichage
-            $html = getLevelByIdProjet($idProjet,"view");
+            $html = updateDiagrammeProjet($idProjet);
             echo $html;
             exit;
         }
