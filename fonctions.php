@@ -163,25 +163,80 @@ function getAllData($idProjet){
         $l = new Niveau;
         $l->setId_niveau($lvlOfProjet['id_niveau']);
         $l->setNom_niveau($lvlOfProjet['nom_niveau']);
+        $contentTask = array();
+        foreach($data_task as $task){
+            $idLvlTask = $task->getId_niveau_tache();
+            if($idLvlTask == $lvlOfProjet['id_niveau']){
+                $idTask = $task->getId_tache();
+                array_push($contentTask,$idTask);
+            }
+        }
+        $l->setArrayTask($contentTask);
         array_push($data_level,$l);
     }
     $data = [$data_level,$data_task];
     return $data;
 }
-//Compter nombre de taches par niveau
-function countTaskByLevel($data){
-    $result = array();
-    $data_level= $data[0];
-    $data_task = $data[1];
-    foreach($data_level as $lvl){
-        $lvlId = $lvl->getId_niveau();
-        $result[$lvlId] = 0;
+// Attriué chaque tache à son niveau
+function mergeTaskInLevel($data_level,$data_task){
+    $data = array();
+    foreach($data_level as $level){
+        $level->setArrayTask($data);            
     }
     foreach($data_task as $task){
-        $lvlIdOfTask = $task->getId_niveau_tache();
-        if(isset($result[$lvlIdOfTask])) $result[$lvlIdOfTask] += 1 ;
+        $levelTask_id = $task->getId_niveau_tache();
+        foreach($data_level as $level){
+            $level_id = $level->getId_niveau();
+            if($levelTask_id == $level_id){
+                $level_col = $level->getArrayTask();
+                array_push($level_col,$task);
+                $level->setArrayTask($level_col);
+            }
+        }
+    }
+    return $data_level;
+}
+//Compter nombre de taches par niveau
+function countTaskByLevel($data_level){
+    $result = array();
+    foreach($data_level as $lvl){
+        $lvlId = $lvl->getId_niveau();
+        $count = sizeof($lvl->getArrayTask());
+        $result[$lvlId] = $count;
     }
     return $result;
+}
+//Trie ordre des tache du niveau
+function setOrderTask($previous_order,$level){
+    $newOrder = array();
+    $priority = array();
+    $collection = $level->getArrayTask();
+    if($collection != null && !empty($collection)){
+        foreach($previous_order as $idTaskLastLevel){
+            foreach($collection as $task){
+                $idTask = $task->getId_tache();
+                $parent = $task->getTacheAnterieur_tache();
+                if(strpos($parent,',') === false){
+                    if($parent == $idTaskLastLevel){
+                        array_push($newOrder,$idTask);
+                        array_push($priority,1);
+                    }
+                }
+                else {
+                    $parent = explode(',',$parent);
+                    if( in_array($idTaskLastLevel,$parent) ){
+                        if(!in_array($idTask,$newOrder)){
+                            array_push($newOrder,$idTask);
+                            array_push($priority,2);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    $order = [$newOrder,$priority];
+
+    return $order;
 }
 // Gestion affichage diagramme
 // retourne html
@@ -189,7 +244,7 @@ function updateDiagrammeProjet($idProjet){
     $html="";$allData=null;
     $allData = getAllData($idProjet);
     if($allData!=null){
-        $countTaskByLvl = countTaskByLevel($allData);
+        //$countTaskByLvl = countTaskByLevel($allData[0]);
         //calculAllData($idProjet);
         //Creation rendu html pour chaque tache
         $content_level = array();
@@ -197,21 +252,42 @@ function updateDiagrammeProjet($idProjet){
             $render = render_task($task);
             $task->setHtml($render);
         }
-        foreach($allData[0] as $level){
-            $render = render_level($level, $countTaskByLvl, $allData[1]);
+        $mainData = mergeTaskInLevel($allData[0],$allData[1]);
+        $position=0;
+        $previousOrder = array();$order=null;
+        foreach($mainData as $level){
+            // if($position > 1 ) continue;
+            // print("pos: ".$position." ");
+            // print("previous: ");
+            // print_r($previousOrder);
+            if($position > 0 && !empty($previousOrder)){
+                $order = setOrderTask($previousOrder,$level);
+                $previousOrder = $order[0];
+            }
+            else {
+                $collection = $level->getArrayTask();
+                foreach($collection as $task){
+                    $task_id = $task->getId_tache();
+                    array_push($previousOrder,$task_id);
+                }
+                
+            }
+            // print("order: ");
+            // print_r($order);
+            $render = render_level($level, $position, $order);
             $html .= $render;
+            $position ++;
         }
-        $levelEnd = new Niveau;
-        $levelEnd->setNom_niveau("FIN");      
-        $levelEnd->setNom_niveau("FIN");      
-        $html .= render_level($levelEnd);
+        // $levelEnd = new Niveau;
+        // $levelEnd->setNom_niveau("FIN");      
+        // $html .= render_level($levelEnd);
     }
     return $html;
 }
 function getLevelByIdProjet($idProjet,$display){
     $html="";$getLevel="";$data=null;
-    $allData = getAllData($idProjet);
-    $countTaskByLvl = countTaskByLevel($allData);
+    //$allData = getAllData($idProjet);
+   // $countTaskByLvl = countTaskByLevel($allData);
     calculAllData($idProjet);
     $level = new Niveau;
     $getLevel = $level->findBy("id_niveau, nom_niveau","id_projet=".$idProjet);
@@ -285,13 +361,12 @@ function getTaskByLevel($idProjet,$idLevel,$positionLevel){
     return $html;
 }
 // Ajout d'un niveau
-function render_level($level,$countTask=null,$taskData=null){  
-    $isEnd=false;$dropdown="";
+function render_level($level,$position=1,$order=null){  
+    $isEnd=false;$dropdown="";$marginLeft="";
     $nameLevel = $level->getNom_niveau();
     if($nameLevel == "FIN") $isEnd = true;
-    if($isEnd) $idLevel = "end";
-    else $idLevel = $level->getId_niveau();
-    $marginLeft = $idLevel == 0 ? "mx-0" : "";
+    $idLevel = $isEnd ? "end" : $level->getId_niveau();
+    $marginLeft = $position == 0 ? "mx-0" : "";
     $nameLevel = $nameLevel == "" ? "sans nom" : $nameLevel;
     if(!$isEnd){
         $dropdown = "<ul class='dropdown-menu ' aria-labelledby='taskMenu_$idLevel'>
@@ -308,18 +383,37 @@ function render_level($level,$countTask=null,$taskData=null){
         $html.= "<a class='col-2 d-flex justify-content-end ' id='levelMenu_$idLevel' data-bs-toggle='dropdown' aria-expanded='false' data-toggle='dropdown' aria-haspopup='true' data-offset='10,20'><i class='levelIcon fas fa-cog'></i></a>$dropdown";
     }
     $html.="</div></div>";
-    if($nameLevel != "FIN"){
-        $nbrtask = $countTask[$idLevel];
-        $count=0;
-        foreach($taskData as $task){
-            if($task->getId_niveau_tache() == $idLevel){
-                if($task->getTacheAnterieur_tache() == null) $html.="<div class='d-flex px-0 mx-0 justify-content-center border'>";
-                $html.=$task->getHtml();
-                if($task->getTacheAnterieur_tache() == null) $html.="</div>";
-                $count ++;
+    if($nameLevel != "FIN"){ // completion niveau
+        $previousOrder=null;$priority=null;
+        $collection = $level->getArrayTask();
+        if($order != null){
+            $orderOfTask = $order[0];
+            $priority = $order[1]; 
+            // print_r($priority);
+            $i=0; $isClose=false;
+            foreach($orderOfTask as $taskOrder_id){
+                if($i==0 || $isClose) $html.="<div class='d-flex px-0 mx-0 flex-wrap justify-content-center border'>";
+                foreach($collection as $task){
+                    $task_id = $task->getId_tache();                    
+                    if( $task_id == $taskOrder_id ){
+                        $priorityOfTask = $priority[$i];
+                        if($i>0 && $priorityOfTask != $priority[$i-1]){
+                            $html.="</div>";
+                            $isClose = true;
+                        } 
+                        $html.=$task->getHtml();
+                    }
+                }                
+                $i++;
             }
         }
-    }else{
+        else {
+            foreach($collection as $task){                
+                // $html.="<div class='d-flex px-0 mx-0 justify-content-center border'>";
+                $html.=$task->getHtml();
+            }
+        }
+    }else{ // tache finale
         $dureeTotale = getTotalDuree($level->getId_projet()); 
         $taskEnd = new Tache;
         $taskEnd->setNom_tache("FIN");

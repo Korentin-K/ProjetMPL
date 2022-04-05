@@ -7,6 +7,7 @@ class Niveau extends Models {
     private $id_niveau = "";
     private $nom_niveau = "";
     private $id_projet = "";
+    private $arrayTask = array();
 
     public function __construct($reload=false){
         new Models;
@@ -107,6 +108,28 @@ class Niveau extends Models {
     public function setId_projet($id_projet)
     {
         $this->id_projet = $id_projet;
+
+        return $this;
+    }
+
+   
+
+    /**
+     * Get the value of arrayTask
+     */ 
+    public function getArrayTask()
+    {
+        return $this->arrayTask;
+    }
+
+    /**
+     * Set the value of arrayTask
+     *
+     * @return  self
+     */ 
+    public function setArrayTask($arrayTask)
+    {
+        $this->arrayTask = $arrayTask;
 
         return $this;
     }
