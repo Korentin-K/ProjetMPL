@@ -75,6 +75,17 @@ create table Utilisateur (
      id_organisation int default null,
      constraint ID_Utilisateur_ID primary key (id_utilisateur));
 
+--
+-- Structure de la table `rapporterreur`
+--
+
+CREATE TABLE rapporterreur (
+  idRapport int NOT NULL auto_increment,
+  objetRapport varchar(258) NOT NULL,
+  descriptionRapport varchar(258) NOT NULL,
+  dateRapport date NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
 
 -- Constraints Section
 -- ___________________ 
