@@ -1,7 +1,7 @@
 <?php
 require_once "Models.php";
 
-class Utilisateur extends Models {
+class rapport extends Models {
     private $table = "rapporterreur";
     private $columns = ["idRapport", "objetRapport", "descriptionRapport", "dateRapport"];
     
