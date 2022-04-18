@@ -263,4 +263,11 @@ class Models extends Database {
         return $query->fetch()['nb'];
     }
 
+    public function creationRapportErreur($objetErreur,$descErreur)
+    {
+        $laDate=date("Y-m-d");
+        $sql="insert into rapporterreur ('idRapport','objetRapport','descriptionRapport','dateRapport') values (NULL,'".$objetErreur."','".$descErreur."','".$laDate."')";
+        $query=self::$pdo->prepare($sql);
+        return $query->execute();
+    }
 }
