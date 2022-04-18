@@ -206,37 +206,280 @@ function countTaskByLevel($data_level){
     }
     return $result;
 }
+
 //Trie ordre des tache du niveau
-function setOrderTask($previous_order,$level){
+function setOrderTask($level,$recapLevel,$indexOfThisLevel,$mainData){
+    $recapLevelContent = $recapLevel[0];
+    $recapLevelId = $recapLevel[1];
     $newOrder = array();
-    $priority = array();
+    $priority = array(); // init 4 types de priorités possible
+    for($i=0;$i<=4;$i++){
+        $priority[$i] = array();
+    }
+    $dataByTask = array();
     $collection = $level->getArrayTask();
-    if($collection != null && !empty($collection)){
-        foreach($previous_order as $idTaskLastLevel){
-            foreach($collection as $task){
-                $idTask = $task->getId_tache();
-                $parent = $task->getTacheAnterieur_tache();
-                if(strpos($parent,',') === false){
-                    if($parent == $idTaskLastLevel){
-                        array_push($newOrder,$idTask);
-                        array_push($priority,1);
+    if($collection != null && !empty($collection)){ 
+        // -------------------------------------------------------------------
+        // attribuer une priorité à chaque tâche suivant leurs tâche parentes
+        // -------------------------------------------------------------------
+        foreach($collection as $taskOfThisLevel){ 
+            $idTask = $taskOfThisLevel->getId_tache();
+            $parent = $taskOfThisLevel->getTacheAnterieur_tache();
+            $taskOfLastLevel = $recapLevelContent[$indexOfThisLevel-1];
+            $dataByTask[$idTask] = $parent;
+            if(strpos($parent,',') === false){ // Si un seul parent                
+                if( in_array($parent,$taskOfLastLevel) ) array_push($priority[1],$idTask); // Si le parent est présent dans le niveau précédent
+                else array_push($priority[3],$idTask);
+            }
+            else { 
+                $parent = explode(',',$parent);
+                $hadDirectGrandParent = true;
+                foreach($parent as $idParentTask){                    
+                    if( !in_array($idParentTask,$taskOfLastLevel) ){ // si une tache hérite d'un parent d'un niveau éloigné
+                        $hadDirectGrandParent = false;                       
                     }
                 }
-                else {
-                    $parent = explode(',',$parent);
-                    if( in_array($idTaskLastLevel,$parent) ){
-                        if(!in_array($idTask,$newOrder)){
-                            array_push($newOrder,$idTask);
-                            array_push($priority,2);
+                if($hadDirectGrandParent) array_push($priority[2],$idTask);
+                else array_push($priority[3],$idTask);
+            }
+        }
+        // trier les ids de chaque priorité dans le même ordre que l'affichage des taches parentes
+        for($i=1;$i<=4;$i++){ 
+            $new_priority = array();
+            foreach($taskOfLastLevel as $grandParentTaskId){
+                foreach($priority[$i] as $directChildrenTaskId){
+                    if(isset($dataByTask[$directChildrenTaskId])){
+                        $parent = explode(',',$dataByTask[$directChildrenTaskId]);
+                        if( in_array($grandParentTaskId,$parent) ){
+                            if( $i==1 || ($i > 1  && !in_array($directChildrenTaskId,$new_priority)) ){
+                                array_push($new_priority,$directChildrenTaskId);
+                            }
                         }
+                    }
+                }
+            }
+            $priority[$i] = $new_priority;
+        }
+        // pour chaque grand parent définir ordre d'affichage des enfants suivant leurs priorité
+        foreach($taskOfLastLevel as $grandParentTaskId){
+            foreach($dataByTask as $idTask => $grandParentOfOneTask){
+                $parent = explode(",",$grandParentOfOneTask);
+                if( in_array($grandParentTaskId,$parent) ){
+                    foreach($priority as $valuePriority => $arrayTaskId){
+                        if( in_array($idTask,$arrayTaskId) ){
+                            $double = false;
+                            if($valuePriority == 2){
+                                foreach($newOrder as $taskObject){
+                                    $idTaskObject = $taskObject->getId_tache();
+                                    if($idTask == $idTaskObject){
+                                        $double = true;
+                                    }
+                                }
+                            }
+                            if(!$double){ 
+                                foreach($collection as $taskOfThisLevel){
+                                    $idTaskOfThisLevel = $taskOfThisLevel->getId_tache();
+                                    if($idTaskOfThisLevel == $idTask){
+                                        array_push($newOrder,$taskOfThisLevel);
+                                    }
+                                }
+                            }
+                        }
+                    }                        
+                }
+            }
+        }
+        $level->setArrayTask(null);
+        $level->setArrayTask($newOrder);
+        return $level;
+    }
+    return false;
+}
+// creer referentiel de tache de transition
+// return array()
+function setTransitTask($oneLevel,$recapLevel,$indexOfThisLevel,$mainData,$arrayTransit){
+    $recapLevelContent = $recapLevel[0];
+    $recapLevelId = $recapLevel[1];
+    $transitTop = array(); // [ idParent,... ]
+    $transitBottom = array(); // [ idParent,... ]
+    $collection = $oneLevel->getArrayTask();
+    if($collection != null && !empty($collection)){ 
+        $idLevel = $oneLevel->getId_niveau();
+        // -------------------------------------------------------------------
+        // rechercher les tâches ayant des parents éloignés
+        // -------------------------------------------------------------------
+        foreach($collection as $taskOfThisLevel){ 
+            $parent = $taskOfThisLevel->getTacheAnterieur_tache();
+             if(strpos($parent,',') !== false){ // Si plusieurs parents uniquement               
+                $idTask = $taskOfThisLevel->getId_tache();
+                $parent = explode(',',$parent);
+                $taskOfLastLevel = $recapLevelContent[$indexOfThisLevel-1];
+                foreach($parent as $idParentTask){                    
+                    if( in_array($idParentTask,$taskOfLastLevel) === false ){ // si une tache hérite d'un parent d'un niveau éloigné
+                        foreach($recapLevelContent as $previousLevelPosition => $arrayPreviousTaskId){ // Chercher id du niveau contenant la tache parente
+                            if( in_array($idParentTask,$arrayPreviousTaskId) ){
+                                $indexOfGrandParent = $previousLevelPosition;
+                                $delta = ($indexOfThisLevel-1) - $previousLevelPosition; // nombre de niveau intermédiaire
+                                $nbrTaskContent = count($arrayPreviousTaskId);
+                                // parent situé en haut ou bas de la colonne du niveau ?
+                                $isOnTop = true; 
+                                if($nbrTaskContent > 1){
+                                    if($nbrTaskContent == 2){
+                                        if( end($arrayPreviousTaskId) == $idParentTask) $isOnTop = false;
+                                    }
+                                    else {
+                                        $secondHalfArray = array_slice($arrayPreviousTaskId,$nbrTaskContent/2,true);
+                                        if( in_array($idParentTask,$secondHalfArray) == $idParentTask) $isOnTop = false;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                        $starter = $indexOfGrandParent + 1;
+                        for($i=$starter;$i<$indexOfThisLevel;$i++){ // parcourir les niveaux intermédiaire
+                            $interLevelId = $recapLevelId[$i];
+                            if(!isset($arrayTransit[$interLevelId])) $arrayTransit[$interLevelId] = array($transitTop,$transitBottom);
+                            if($isOnTop) array_push($arrayTransit[$interLevelId][0],$idParentTask);
+                            else array_push($arrayTransit[$interLevelId][1],$idParentTask);
+                        }                       
                     }
                 }
             }
         }
     }
-    $order = [$newOrder,$priority];
+    return $arrayTransit; // [ idInterLevel => [transitTop,transitBottom] ]
+}
+//Creation tache de transition
+function createTransitTask($idLevel,$parentTask,$isOnTop,$position){
+    $transitCase = new Tache;
+    $transitCase->setNom_tache("Transit");
+    $transit_id = "T_".$position;
+    $transit_id .= $isOnTop ? "_t" : "_b";
+    $transitCase->setId_tache($transit_id);
+    $transitCase->setId_niveau_tache($idLevel);
+    // if($hadParentTransitTask == true){
+    //     $transit_id = "T_".$position;
+    //     $transit_id .= $isOnTop ? "_t" : "_b";
+    //      $transitCase->setFrom();
+    // }
+    $parent="";
+    foreach($parentTask as $idParent){
+        $parent .= $idParent.",";
+    }
+    $parent = rtrim($parent,",");
+    $transitCase->setTacheAnterieur_tache($idParent);
+    $render = render_task($transitCase);
+    $transitCase->setHtml($render);
 
-    return $order;
+    return $transitCase;
+}
+// Vérifier si la tache de transition en cours possède un parent tache de transition
+function checkIfHasDirectParent($idLevel,$arrayTransit,$arrayTaskOfThisLevelTransit){
+    $hadDirectGrandParent = false;
+    foreach($arrayTransit as $idLevelTransit => $arrayContentTransit){
+        if($idLevel == $idLevelTransit) break;
+        foreach($arrayTaskOfThisLevelTransit as $idTaskParentOfTransit){
+            if( in_array($idTaskParentOfTransit,$arrayContentTransit) ){
+                $hadDirectGrandParent = true;
+                break;
+            }
+        }
+    }
+    return $hadDirectGrandParent;
+}
+// ajouter les tâche de transition dans un niveau
+function pushTransitTaskInLevel($level,$arrayTransit,$position){
+    $idLevel = $level->getId_niveau();
+    $arrayTaskOfThisLevel = $level->getArrayTask();
+    foreach($arrayTransit as $idLevelTransit => $arrayContentTransit){
+        if($idLevelTransit == $idLevel){
+            $transitOnTop = $arrayContentTransit[0];
+            $transitOnBottom = $arrayContentTransit[1];
+            if(!empty($transitOnTop)){
+                $result = checkIfHasDirectParent($idLevel,$arrayTransit,$transitOnTop);
+                $transitCase = createTransitTask($idLevel,$transitOnTop,true,$position,$result);
+                array_unshift($arrayTaskOfThisLevel,$transitCase);
+            }
+            if(!empty($transitOnBottom)){
+                $result = checkIfHasDirectParent($idLevel,$arrayTransit,$transitOnBottom);
+                $transitCase = createTransitTask($idLevel,$transitOnBottom,false,$position,$result);
+                array_push($arrayTaskOfThisLevel,$transitCase);
+            }
+        }
+    }
+    $level->setArrayTask(null);
+    $level->setArrayTask($arrayTaskOfThisLevel);
+    return $level;
+    // $starter = $indexOfGrandParent + 1;
+    // for($i=$starter;$i<$indexOfThisLevel;$i++){ // parcourir les niveaux intermédiaire
+    //     $interLevelId = $recapLevelId[$i];
+    //     $transitCase = new Tache;
+    //     $transitCase->setNom_tache("Transit");
+    //     $transit_id = "T_".$interLevelId;
+    //     $transit_id .= $isOnTop ? "_top" : "_bottom";
+    //     $transitCase->setId_tache($transit_id);
+    //     $transitCase->setId_niveau_tache($interLevelId);
+    //     if($i == $starter) {
+    //         $transitCase->setTacheAnterieur_tache($idParentTask);
+    //     }
+    //     else {
+    //         foreach($recapLevelContent[$i-1] as $lastContentTask){
+    //             var_dump($lastContentTask);                    
+    //             $firstChar = substr($lastContentTask,0,1);
+    //             if($firstChar == "T"){
+    //                 $transitCase->setTacheAnterieur_tache($lastContentTask);                                        
+    //                 break;
+    //             }
+    //         }
+    //     }
+    //     $transitCase->setTo($idParentTask);
+    //     $transitCase->setFrom($idParentTask);
+    //     $render = render_task($transitCase);
+    //     $transitCase->setHtml($render);
+    //     $isAlreadyInside = false;
+    //     foreach($priority[0] as $transitElement){
+    //         $transitElement_id = $transitElement->getId_tache();
+    //         if( $transitElement_id == $transit_id ){
+    //             $isAlready = true;
+    //         } 
+    //     }
+    //     if(!$isAlreadyInside) array_push($priority[0],$transitCase); 
+    //     break;
+    // }
+
+    // $level->setArrayTask(null);
+    // $level->setArrayTask($newOrder);
+    // return $level;
+
+    // Ajouter des tache de transite pour les parents éloignés
+    // $countTransit=count($priority[0]);
+    // if($countTransit < 3 && $countTransit > 0){
+    //     $i=0;
+    //     foreach($priority[0] as $transitCase){
+    //         $idTransit = $transitCase->getId_tache();
+    //         $idTransit=explode('_',$idTransit);
+    //         $idTransit=$idTransit[1];
+    //         foreach($mainData as $oneLevel){
+    //             $idLevel = $oneLevel->getId_niveau();
+    //             if($idLevel == $idTransit){
+    //                 // var_dump($idTransit);
+    //                 // var_dump($idLevel);
+    //                 $contentLevel = $oneLevel->getArrayTask();
+    //                 // foreach($contentLevel as $task){
+    //                 //     var_dump($level->getId_niveau());
+    //                 // }
+    //                 if($i == 0) array_push($contentLevel,$transitCase);
+    //                 if($i == 1) array_unshift($contentLevel,$transitCase);
+    //                 // foreach($contentLevel as $task){
+    //                 //     var_dump($task->getId_tache());
+    //                 // }
+    //                 $oneLevel->setArrayTask($contentLevel);
+    //                 break;
+    //             }
+    //         }
+    //         $i++;
+    //     }
+    // }
 }
 // Gestion affichage diagramme
 // retourne html
@@ -248,33 +491,62 @@ function updateDiagrammeProjet($idProjet){
         //calculAllData($idProjet);
         //Creation rendu html pour chaque tache
         $content_level = array();
-        foreach($allData[1] as $task){
+        // creer le rendu html de chaque tache
+        foreach($allData[1] as $task){ 
             $render = render_task($task);
             $task->setHtml($render);
         }
         $mainData = mergeTaskInLevel($allData[0],$allData[1]);
-        $position=0;
-        $previousOrder = array();$order=null;
-        foreach($mainData as $level){
-            // if($position > 1 ) continue;
-            // print("pos: ".$position." ");
-            // print("previous: ");
-            // print_r($previousOrder);
-            if($position > 0 && !empty($previousOrder)){
-                $order = setOrderTask($previousOrder,$level);
-                $previousOrder = $order[0];
+        // reordonner les taches de chaque niveau
+        $recapLevelContent=array();$recapLevelId=array();
+        $recapLevel = [$recapLevelContent,$recapLevelId];
+        $position=0;$newMainData=array();
+        foreach($mainData as $level){ 
+            $recapLevel[0][$position] = array();
+            $recapLevel[1][$position] = $level->getId_niveau();
+            if($position > 0){
+                $level = setOrderTask($level,$recapLevel,$position,$mainData);
+                if($level == false) break;
+                $collection = $level->getArrayTask();
+                foreach($collection as $task){
+                    $task_id = $task->getId_tache();
+                    array_push($recapLevel[0][$position],$task_id);
+                }
             }
             else {
                 $collection = $level->getArrayTask();
                 foreach($collection as $task){
                     $task_id = $task->getId_tache();
-                    array_push($previousOrder,$task_id);
+                    array_push($recapLevel[0][$position],$task_id);
                 }
                 
             }
-            // print("order: ");
-            // print_r($order);
-            $render = render_level($level, $position, $order);
+            array_push($newMainData,$level);
+            $position ++;
+        }
+        // ajouter tache de transition pour les parents éloignés
+        // éviter que les flèches se superposent
+        $arrayTransit=array();
+        $position=0;
+        foreach($newMainData as $newLevel){
+            if($position > 0 ){
+                $arrayTransit = setTransitTask($newLevel,$recapLevel,$position,$newMainData,$arrayTransit);
+            }
+            $position++;
+        }
+        // $position=0;$mainData=array();
+        // foreach($newMainData as $level){
+        //     if($position > 0 ){
+        //         $level = pushTransitTaskInLevel($level,$arrayTransit,$position);
+        //     }
+        //     array_push($mainData,$level);
+        //     $position++;
+        // }
+        // générer le rendu html de chaque niveau
+        $position=0;
+        foreach($mainData as $level){
+            // if($position > 2 ) break;
+            $render = render_level($level, $position);
             $html .= $render;
             $position ++;
         }
@@ -384,35 +656,39 @@ function render_level($level,$position=1,$order=null){
     }
     $html.="</div></div>";
     if($nameLevel != "FIN"){ // completion niveau
-        $previousOrder=null;$priority=null;
         $collection = $level->getArrayTask();
-        if($order != null){
-            $orderOfTask = $order[0];
-            $priority = $order[1]; 
-            // print_r($priority);
-            $i=0; $isClose=false;
-            foreach($orderOfTask as $taskOrder_id){
-                if($i==0 || $isClose) $html.="<div class='d-flex px-0 mx-0 flex-wrap justify-content-center border'>";
-                foreach($collection as $task){
-                    $task_id = $task->getId_tache();                    
-                    if( $task_id == $taskOrder_id ){
-                        $priorityOfTask = $priority[$i];
-                        if($i>0 && $priorityOfTask != $priority[$i-1]){
-                            $html.="</div>";
-                            $isClose = true;
-                        } 
-                        $html.=$task->getHtml();
-                    }
-                }                
-                $i++;
-            }
+        foreach($collection as $key => $task){                
+            // $html.="<div class='d-flex px-0 mx-0 justify-content-center border'>";
+            $var = $task->getHtml();
+            $html.=$var;
+            // var_dump($var);
         }
-        else {
-            foreach($collection as $task){                
-                // $html.="<div class='d-flex px-0 mx-0 justify-content-center border'>";
-                $html.=$task->getHtml();
-            }
-        }
+            // $orderOfTask = $order[0];
+            // $priority = $order[1]; 
+            // // print_r($priority);
+            // $i=0; $isClose=false;
+            // foreach($orderOfTask as $taskOrder_id){
+            //     if($i==0 || $isClose) $html.="<div class='d-flex px-0 mx-0 flex-wrap justify-content-center border'>";
+            //     foreach($collection as $task){
+            //         $task_id = $task->getId_tache();                    
+            //         if( $task_id == $taskOrder_id ){
+            //             $priorityOfTask = $priority[$i];
+            //             if($i>0 && $priorityOfTask != $priority[$i-1]){
+            //                 $html.="</div>";
+            //                 $isClose = true;
+            //             } 
+            //             $html.=$task->getHtml();
+            //         }
+            //     }    
+            //     $i++;
+            // }
+        // }
+        // else {
+        //     foreach($collection as $task){                
+        //         // $html.="<div class='d-flex px-0 mx-0 justify-content-center border'>";
+        //         $html.=$task->getHtml();
+        //     }
+        // }
     }else{ // tache finale
         $dureeTotale = getTotalDuree($level->getId_projet()); 
         $taskEnd = new Tache;
@@ -442,7 +718,10 @@ function render_task($task){
             <li><a class='dropdown-item'  onclick='modifyTask($id)' >Modifier</a></li>
             <li><a class='dropdown-item'  onclick='deleteTask($id);'>Supprimer</a></li>
         </ul>";
-        $html .= "<div id='taskItem_$id' class='row d-flex col-10 mt-1 task-item draggable'>
+        $idname = "taskItem_$id";
+        $firstChar = substr($name,0,1);
+        if($firstChar == "T") $idname = "transit_$id";
+        $html .= "<div id='$idname' class='row d-flex col-10 mt-1 task-item draggable'>
         <table class='tableTask'>
             <tbody>
                 <tr >    
@@ -476,7 +755,12 @@ function render_task($task){
                 $parentValue.=$taskId.",";
             }
             $parentValue = rtrim($parentValue,',');
-            $html .= "<input id='parent_$id' type='text' value='$parentValue' hidden>";
+            if($firstChar == "T"){
+                $html .= "<input id='parentTransit_$id' type='text' value='$parentValue' hidden>";
+                $html .= "<input id='parentTransit_from_$id' type='text' value='$parentValue' hidden>";
+                $html .= "<input id='parentTransit_$id' type='text' value='$parentValue' hidden>";
+            }
+            else $html .= "<input id='parent_$id' type='text' value='$parentValue' hidden>";
         }
     } else {
         $dureeTotale = $task->getDuree_tache();
