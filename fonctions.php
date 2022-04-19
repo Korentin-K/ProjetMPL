@@ -32,6 +32,7 @@ function getDependances(int $codePage){
     } 
     if($codePage == 3) $link.= "<link rel=\"stylesheet\" type='text/css' href=\"".$path_css."/pageConnexion.css\">";
     if($codePage == 4) $link.= "<link rel=\"stylesheet\" type='text/css' href=\"".$path_css."/dashboard.css\">";
+    if($codePage == 5) $link.= "<link rel=\"stylesheet\" type='text/css' href=\"".$path_css."/dashboard.css\">";
     return $link;
 }
 // Répertorie les scripts JS
@@ -52,6 +53,9 @@ function getScript($codePage=null){
     }
     if($codePage == 4){
         $script .= "<script src=\"".$path_js."/dashboard.js\"></script>";
+    }
+    if ($codePage==5) {
+        $script .="<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js'></script>";
     }
     return $script;
 }
