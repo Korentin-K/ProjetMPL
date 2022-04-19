@@ -7,7 +7,7 @@ writeHeaderHtml('dashboard',4);
     	<form action="envoieRapport.php" method="POST">
     		<input type="text" name="objetRapport">
     		<input type="text" name="descriptionRapport">
-    		<input type="submit" name="buttonEnvoieRapport" value="">
+    		<input type="submit" name="buttonEnvoieRapport" value="Envoyer">
     	</form>
     </div>
 </div>

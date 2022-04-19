@@ -262,12 +262,22 @@ class Models extends Database {
         $query->execute();
         return $query->fetch()['nb'];
     }
+    //======================================================================
+    //REQUETE : Récupération et créations des rapports
+    //======================================================================
 
     public function creationRapportErreur($objetErreur,$descErreur)
     {
         $laDate=date("Y-m-d");
-        $sql="insert into rapporterreur ('idRapport','objetRapport','descriptionRapport','dateRapport') values (NULL,'".$objetErreur."','".$descErreur."','".$laDate."')";
+        $sql="insert into rapporterreur ('idRapport','objetRapport','descriptionRapport','dateRapport') values (NULL,'".$objetErreur."','".$descErreur."',true,'".$laDate."')";
         $query=self::$pdo->prepare($sql);
         return $query->execute();
+    }
+
+    public function recuperationRapport()
+    {
+        $sql="select * from rapporterreur";
+        $query=self::$pdo->prepare($sql);
+        $query->execute();
     }
 }

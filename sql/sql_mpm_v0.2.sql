@@ -83,8 +83,10 @@ CREATE TABLE rapporterreur (
   idRapport int NOT NULL auto_increment,
   objetRapport varchar(258) NOT NULL,
   descriptionRapport varchar(258) NOT NULL,
-  dateRapport date NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  dateRapport date NOT NULL,
+  statutRapport boolean NOT NULL,
+  constraint idRapport primary key (idRapport)
+)
 
 
 -- Constraints Section
