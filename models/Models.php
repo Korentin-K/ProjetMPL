@@ -269,9 +269,10 @@ class Models extends Database {
     public function creationRapportErreur($objetErreur,$descErreur)
     {
         $laDate=date("Y-m-d");
-        $sql="insert into rapporterreur ('idRapport','objetRapport','descriptionRapport','dateRapport') values (NULL,'".$objetErreur."','".$descErreur."',true,'".$laDate."')";
+        $sql="insert into rapporterreur ('idRapport','objetRapport','descriptionRapport','dateRapport','statutRapport') values (NULL,'".$objetErreur."','".$descErreur."','".$laDate."','true')";
+        echo $sql;
         $query=self::$pdo->prepare($sql);
-        return $query->execute();
+        $query->execute();
     }
 
     public function recuperationRapport()

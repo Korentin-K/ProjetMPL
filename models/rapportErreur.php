@@ -3,12 +3,13 @@ require_once "Models.php";
 
 class rapport extends Models {
     private $table = "rapporterreur";
-    private $columns = ["idRapport", "objetRapport", "descriptionRapport","statutRapport","dateRapport"];
+    private $columns = ["idRapport", "objetRapport", "descriptionRapport","dateRapport","statutRapport"];
     
     private $idRapport;
     private $objetRapport;
     private $descriptionRapport;
     private $dateRapport;
+    private $statutRapport;
 
 
     //========================================================
