@@ -140,6 +140,17 @@ if(isset($_POST['delete']) && $_POST['delete'] == 1) {
         echo $html;
         exit;
     }
+    //  Suppression risque
+    if(isset($_POST['risque']) && $_POST['risque'] == 1) {
+        $idRisque="";
+        if(isset($_POST['idRisque']) && $_POST['idRisque'] !="") $idRisque = $_POST['idRisque'];
+        if($idRisque != ""){
+            $model = new Models;
+            $model->customQuery("delete from risque where id_risque=$idRisque;");
+        }     
+        echo displayTableRisque();
+        exit;
+    }
 }
 //-------------------------------Modification d'un élément-------------------------------
 if(isset($_POST['modify']) && $_POST['modify'] == 1) {

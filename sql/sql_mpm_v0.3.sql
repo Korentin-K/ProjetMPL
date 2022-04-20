@@ -80,7 +80,7 @@ create table Utilisateur (
 --
 
 CREATE TABLE rapporterreur (
-  idRapport int NOT NULL auto_increment,
+  idRapport int primary key NOT NULL auto_increment,
   objetRapport varchar(258) NOT NULL,
   descriptionRapport varchar(258) NOT NULL,
   dateRapport date NOT NULL

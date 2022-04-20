@@ -101,7 +101,7 @@ function writeNavBar(){
                         <a class='nav-link active' aria-current='page' href='dashboard.php'>Tableau de bord</a>
                         </li>
                         <li class='nav-item'>
-                        <a class='nav-link' href='#'>Mon compte</a>
+                        <a class='nav-link' href='pageRapportErreur.php'>Rapport</a>
                         </li>
                         <li class='nav-item'>
                         <a class='nav-link' href='risque.php'>Risque</a>
@@ -799,6 +799,7 @@ function addTask($id,$data,$positionLevel){
         $dureePlusTard = $positionLevel == 0 ? "0" : $data[5];
         $margeLibre = $positionLevel == 0 ? "0" : $data[6];
         $margeTotale = $positionLevel == 0 ? "0" : $data[7];
+        var_dump($data[4]);
         $dropdown = "<ul class='dropdown-menu' aria-labelledby='taskMenu_$id'>
             <li><a class='dropdown-item'  onclick='modifyTask($id)' >Modifier</a></li>
             <li><a class='dropdown-item'  onclick='deleteTask($id);'>Supprimer</a></li>
@@ -866,7 +867,7 @@ function calculTask($parentTask,$idTask){
     // recuperation ids taches antérieures
     $arrayParent = explode(",",$parentTask);
     foreach($arrayParent as $key => $value){
-        if($value != ""){
+        if($value != "" && $value!="null"){
             $arrayParent[$key] = ltrim($value,"T");
         }else {
             $arrayParent[$key] =0;
@@ -883,6 +884,7 @@ function calculTask($parentTask,$idTask){
             $sum = intval($row["debutPlusTot_tache"]) + intval($row["duree_tache"]);
             array_push($duree,$sum);
         }
+        // var_dump($duree);
         $dureePlusTot = max($duree);
         $t = new Tache;
         $t->update("debutPlusTot_tache","$dureePlusTot","id_tache='".$idTask."'");
@@ -1041,4 +1043,32 @@ function tableauProjet($idUser){
     }
     $html.="</table>";
     echo $html;
+}
+//------------------------------------------------------------------------------------
+// FONCTIONS : Risque
+//------------------------------------------------------------------------------------
+function displayTableRisque(){
+    $model = new Models;
+    $data =  $model->customQuery("select * from risque order by date_risque"); 
+    $body="";$i=1;
+    foreach($data as $row){    
+        $body .= "<tr>
+                    <th scope='row'>$i</th>
+                    <td>".$row['type_risque']."</td>
+                    <td>".$row['message_risque']."</td>
+                    <td>".$row['date_risque']."</td>
+                    <td><button class='btn btn-danger' onclick='deleteRisque(".$row['id_risque'].")' >Supprimer</button></td>
+                    </tr>";
+        $i++;
+    }
+    if($body==""){
+        $body .= "<tr>
+                    <th scope='row'>-</th>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    </tr>";
+    }
+    return $body;
 }
