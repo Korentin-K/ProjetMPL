@@ -7,7 +7,7 @@ $u = new Utilisateur;
 $idUser = $u->customQuery("select * from utilisateur limit 1")[0]["id_utilisateur"];
 $_SESSION['id']=$idUser;
 // $idUser=$_SESSION['idUser'];
-echo $idUser;
+// echo $idUser;
 ?>
 <body >    
     <?php writeNavBar($nomPersonne); ?>

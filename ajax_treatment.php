@@ -31,6 +31,7 @@ if(isset($_POST['add']) && $_POST['add'] == 1) {
     // Ajout tache
     if(isset($_POST['task']) && $idProjet!="") {
         $getLevelId = false;
+        
         $nameTask="";$descTask="";$idLevel="";$dureeTask="";$parentTask="";
         if(isset($_POST['task']) && $_POST['task'] != "") $nameTask = htmlspecialchars($_POST['task']);
         if(isset($_POST['desc']) && $_POST['desc'] != "") $descTask = htmlspecialchars($_POST['desc']);
@@ -69,6 +70,7 @@ if(isset($_POST['add']) && $_POST['add'] == 1) {
         } 
         // perssistance des données
         $values = ["",$nameTask,$idLevel,"$dureeTask",$descTask,"","","","","$parentTask",$idProjet];
+        
         $task->insert($values);
         // rafraichissement de l'affichage
         $html = updateDiagrammeProjet($idProjet);
@@ -198,13 +200,35 @@ if(isset($_POST['modify']) && $_POST['modify'] == 1) {
             if(isset($_POST['parent']) && $_POST['parent'] != "") $parentTask = htmlspecialchars($_POST['parent']);
             if(isset($_POST['idTaskLevel']) && $_POST['idTaskLevel'] != "") $idTaskLevel = htmlspecialchars($_POST['idTaskLevel']);
             // perssistance des données
-            if($nameTask!="" && $descTask!="" && $idTaskLevel!="" && $dureeTask!=""){
+            if($nameTask!="" && $descTask!="" && $dureeTask!=""){
                 $task = new Tache;
                 $task->update("nom_tache","$nameTask","id_tache='".$idTask."' and id_projet='".$idProjet."'");
                 $task->update("contenu_tache","$descTask","id_tache='".$idTask."' and id_projet='".$idProjet."'");
-                $task->update("id_niveau_tache","$idTaskLevel","id_tache='".$idTask."' and id_projet='".$idProjet."'");
                 $task->update("duree_tache","$dureeTask","id_tache='".$idTask."' and id_projet='".$idProjet."'");
+                if($parentTask == "" || $parentTask == null){
+                    $parentTask="null";
+                    $idTaskLevel = $task->customQuery("select min(id_niveau_tache) as min from tache where id_projet='$idProjet';")[0]["min"];                    
+                }
+                else {
+                    $lvl = new Niveau;
+                    $maxLevelIdFromParentTask = $task->customQuery("select max(id_niveau_tache) as max from tache where id_tache in ($parentTask);")[0]["max"];
+                    $maxLevelIdFromProject = $lvl->customQuery("select max(id_niveau) as last from niveau where id_projet=$idProjet")[0]["last"];
+                    if($maxLevelIdFromParentTask == $maxLevelIdFromProject){
+                        $lvl->insert(["","niveau",$idProjet]);
+                        $idTaskLevel = $lvl->customQuery("select max(id_niveau) as last from niveau where id_projet=$idProjet")[0]["last"];
+                    }
+                    else {
+                        $list=array();
+                        $allLevelOfProject = $lvl->findBy("id_niveau","id_projet=$idProjet");
+                        foreach($allLevelOfProject as $project){
+                            array_push($list,$project["id_niveau"]);
+                        }
+                        $maxLevelIdFromParentTaskPos = array_search($maxLevelIdFromParentTask,$list);
+                        $idTaskLevel = $list[$maxLevelIdFromParentTaskPos+1];
+                    }
+                }
                 $task->update("tacheAnterieur_tache","$parentTask","id_tache='".$idTask."' and id_projet='".$idProjet."'");
+                if($idTaskLevel!="") $task->update("id_niveau_tache","$idTaskLevel","id_tache='".$idTask."' and id_projet='".$idProjet."'");
             }
             elseif($idTask!="" && $idTaskLevel!=""){
                 $task = new Tache;

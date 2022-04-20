@@ -10,7 +10,7 @@ else { // juste le temps du dev
     $idProjet = $p->customQuery("select * from projet limit 1")[0]["id_projet"];
 }
 //loadFakeData();
-echo $idProjet;
+// echo $idProjet;
 $projet = new Projet();
 $nbProjet = $projet->count_element("projet");
 $dataAvailable = true;
@@ -68,11 +68,12 @@ if($dataAvailable){
                     </div>
                     <div class="d-flex col-12 justify-content-between">
                         <div class="col-10 d-flex flex-wrap">                     
-                            <label for="parentTask" class="form-label">Tache antérieur (TXX,..)</label>
+                            <label for="parentTask" class="form-label">Tache antérieur
+                            <a id="btnDeleteParent" class=" ps-2" >| Vider</label>
                             <input type="text" class="form-control" id="parentTask" name="parentTask" readonly>
                         </div>
                         <div class="d-flex align-items-end">                     
-                            <a id="btnAddParent" class="btn btn-primary" onclick="choiceParentTask()"><i class="fas fa-plus-circle"></i></a>
+                            <a id="btnAddParent" class="btn btn-primary" ><i class="fas fa-plus-circle"></i></a>
                         </div>
                     </div>
                         

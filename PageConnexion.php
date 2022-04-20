@@ -1,7 +1,7 @@
 <?php
 require_once "fonctions.php";
 writeHeaderHtml("Connexion/Inscription",3);
-$_SESSION['User']="toto";
+// $_SESSION['User']="toto";
 ?>
 <body>
     <div class="d-flex row flex-wrap">

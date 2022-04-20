@@ -124,6 +124,7 @@ function updateTask(id){
     var desc = document.getElementById('descTask')
     var duree = document.getElementById('dureeTask')
     var parent = document.getElementById('parentTask')
+    console.log("update")
     $.ajax({
         url : 'ajax_treatment.php',
         type : 'POST',
@@ -311,17 +312,15 @@ function getParentAndDrawLine(){
     elms.forEach((el)=>{
         id = el.id
         idTask = id.substr(id.indexOf('_')+1,id.length)
-        console.log("el : "+idTask)
         idParent = el.value.split(',')
-        console.log("idParent array : "+idParent)
-        idParent.forEach((p)=>{
-            console.log("p: "+p+" idTask: "+idTask)
-            drawLine(p,idTask)
-        })
-        // console.log(idTask)
-        // console.log(idParent)
+        if(idParent != null && idParent != 'null' && idParent != ''){
+            idParent.forEach((p)=>{
+                drawLine(p,idTask)
+            })
+        }
     })
 }
+
 
 $("document").ready(function() {
 
@@ -408,13 +407,15 @@ interact('.dropzone').dropzone({
 //     document.getElementById('taskItem_3877'),
 //     document.getElementById('taskItem_3878')
 //   );
-function choiceParentTask(){
 
-}
 var choice = false
-  $(document).ready(function () {
+$(document).ready(function () {
     var fieldParent = document.getElementById("parentTask")
     var tasks = document.querySelectorAll("[id^='taskItem_']")
+
+    $("#btnDeleteParent").on('click', function () {
+        fieldParent.value="";
+    });
 
     $("#btnAddParent").on('click', function (e) {
         choice = choice==false ? true : false;
