@@ -503,10 +503,10 @@ function updateDiagrammeProjet($idProjet){
         //Creation rendu html pour chaque tache
         $content_level = array();
         // creer le rendu html de chaque tache
-        foreach($allData[1] as $task){ 
-            $render = render_task($task);
-            $task->setHtml($render);
-        }
+        // foreach($allData[1] as $task){ 
+        //     $render = render_task($task);
+        //     $task->setHtml($render);
+        // }
         $mainData = mergeTaskInLevel($allData[0],$allData[1]);
         // reordonner les taches de chaque niveau
         $recapLevelContent=array();$recapLevelId=array();
@@ -670,6 +670,7 @@ function render_level($idProjet,$level,$position=1,$order=null){
         $collection = $level->getArrayTask();
         foreach($collection as $key => $task){                
             // $html.="<div class='d-flex px-0 mx-0 justify-content-center border'>";
+            // var_dump($position);
             $var = render_task($task,$position);
             // $var = $task->getHtml();
             $html.=$var;
@@ -722,17 +723,19 @@ function render_task($task,$position=null){
         $content = $task->getContenu_tache();
         $parentTask = $task->getTacheAnterieur_tache();
         $duree = $task->getDuree_tache();
-        if($position>0){
-            $dureePlusTot = $task->getDebutPlusTot_tache();
-            $dureePlusTard = $task->getDebutPlusTard_tache();
-            $margeLibre = $task->getMargeLibre_tache();
-            $margeTotale = $task->getMargeTotale_tache();
-        }
-        else {
+        // var_dump($position);
+        if($position == 0){
             $dureePlusTot = 0;
             $dureePlusTard = 0;
             $margeLibre = 0;
             $margeTotale = 0;
+        }
+        else {
+            $dureePlusTot = $task->getDebutPlusTot_tache();
+            $dureePlusTard = $task->getDebutPlusTard_tache();
+            $margeLibre = $task->getMargeLibre_tache();
+            $margeTotale = $task->getMargeTotale_tache();
+            
         }
         $dropdown = "<ul class='dropdown-menu' aria-labelledby='taskMenu_$id'>
             <li><a class='dropdown-item'  onclick='modifyTask($id)' >Modifier</a></li>
@@ -896,7 +899,6 @@ function calculTask($parentTask,$idTask){
             $sum = intval($row["debutPlusTot_tache"]) + intval($row["duree_tache"]);
             array_push($duree,$sum);
         }
-        // var_dump($duree);
         $dureePlusTot = max($duree);
         $t = new Tache;
         $t->update("debutPlusTot_tache","$dureePlusTot","id_tache='".$idTask."'");
@@ -908,7 +910,7 @@ function getLastLevelNotEmpty($idProjet){
     require_once "models/Models.php";
     $n = new Niveau;
     $idAllLevel = $n->getLevelOfProjet($idProjet);
-    if($idAllLevel == NULL) return 0;
+    if($idAllLevel == NULL) return false;
     $m = new Models;
     foreach($idAllLevel as $oneLevel){
         $sql = "SELECT id_niveau_tache FROM tache WHERE id_niveau_tache='".$oneLevel['id_niveau']."' and id_projet='$idProjet'";
@@ -921,7 +923,7 @@ function getLastLevelNotEmpty($idProjet){
 function getTotalDuree($idProjet){
     require_once "models/Models.php";
     $idLevelNotEmpty = getLastLevelNotEmpty($idProjet);
-    if($idLevelNotEmpty == NULL) return 0;
+    if($idLevelNotEmpty == false) return 0;
     $m = new Models;
     $sql = "SELECT debutPlusTot_tache, duree_tache FROM tache WHERE id_niveau_tache='".$idLevelNotEmpty."' and id_projet='$idProjet'";
     $taskInLastLevel = $m->customQuery($sql);
@@ -984,7 +986,8 @@ function calculAllData($idProjet){
                 $dureePlusTardChildAvailable = array();
                 $dureePlusTotChildAvailable = array();
                 $childTask = getIdChildTask($row['id_tache']);
-                if($childTask != NULL){
+                // var_dump($childTask);
+                if($childTask != NULL && !empty($childTask)){
                     foreach($childTask as $array => $content){
                         foreach($content as $key => $idChild){ // pour chaque tache enfant, calculer la duree au plus tard possible
                             $getDureeChild = $task->findBy("debutPlusTard_tache,debutPlusTot_tache","id_projet=$idProjet and id_tache=".$idChild)[0];
