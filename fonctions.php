@@ -670,7 +670,8 @@ function render_level($idProjet,$level,$position=1,$order=null){
         $collection = $level->getArrayTask();
         foreach($collection as $key => $task){                
             // $html.="<div class='d-flex px-0 mx-0 justify-content-center border'>";
-            $var = $task->getHtml();
+            $var = render_task($task,$position);
+            // $var = $task->getHtml();
             $html.=$var;
             // var_dump($var);
         }
@@ -712,7 +713,7 @@ function render_level($idProjet,$level,$position=1,$order=null){
     return $html;
 }
 // Affichage d'une tache
-function render_task($task){
+function render_task($task,$position=null){
     $html="";
     $name = $task->getNom_tache();
     if($name!="FIN" && $name!=""){
@@ -721,10 +722,18 @@ function render_task($task){
         $content = $task->getContenu_tache();
         $parentTask = $task->getTacheAnterieur_tache();
         $duree = $task->getDuree_tache();
-        $dureePlusTot = $task->getDebutPlusTot_tache();
-        $dureePlusTard = $task->getDebutPlusTard_tache();
-        $margeLibre = $task->getMargeLibre_tache();
-        $margeTotale = $task->getMargeTotale_tache();
+        if($position>0){
+            $dureePlusTot = $task->getDebutPlusTot_tache();
+            $dureePlusTard = $task->getDebutPlusTard_tache();
+            $margeLibre = $task->getMargeLibre_tache();
+            $margeTotale = $task->getMargeTotale_tache();
+        }
+        else {
+            $dureePlusTot = 0;
+            $dureePlusTard = 0;
+            $margeLibre = 0;
+            $margeTotale = 0;
+        }
         $dropdown = "<ul class='dropdown-menu' aria-labelledby='taskMenu_$id'>
             <li><a class='dropdown-item'  onclick='modifyTask($id)' >Modifier</a></li>
             <li><a class='dropdown-item'  onclick='deleteTask($id);'>Supprimer</a></li>
