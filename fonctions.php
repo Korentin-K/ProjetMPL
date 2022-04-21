@@ -671,8 +671,9 @@ function render_level($idProjet,$level,$position=1,$order=null){
         foreach($collection as $key => $task){                
             // $html.="<div class='d-flex px-0 mx-0 justify-content-center border'>";
             // var_dump($position);
-            // $var = render_task($task,$position);
-            $var = $task->getHtml();
+            $var = render_task($task,$position);
+            // var_dump($task->getId_tache());
+            // $var = $task->getHtml();
             $html.=$var;
             // var_dump($var);
         }
