@@ -151,6 +151,17 @@ if(isset($_POST['delete']) && $_POST['delete'] == 1) {
         echo displayTableRisque();
         exit;
     }
+    //  Suppression risque
+    if(isset($_POST['anomalie']) && $_POST['anomalie'] == 1) {
+        $idAnomalie="";
+        if(isset($_POST['idAnomalie']) && $_POST['idAnomalie'] !="") $idAnomalie = $_POST['idAnomalie'];
+        if($idAnomalie != ""){
+            $model = new Models;
+            $model->customQuery("delete from rapporterreur where idRapport=$idAnomalie;");
+        }     
+        echo displayTableAnomalie();
+        exit;
+    }
 }
 //-------------------------------Modification d'un élément-------------------------------
 if(isset($_POST['modify']) && $_POST['modify'] == 1) {

@@ -83,8 +83,9 @@ CREATE TABLE rapporterreur (
   idRapport int primary key NOT NULL auto_increment,
   objetRapport varchar(258) NOT NULL,
   descriptionRapport varchar(258) NOT NULL,
-  dateRapport date NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  dateRapport date NOT NULL,
+  statutRapport varchar(255) NOT NULL
+);
 
 --
 -- Structure de la table `risque`

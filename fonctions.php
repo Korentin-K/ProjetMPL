@@ -1088,3 +1088,33 @@ function displayTableRisque(){
     }
     return $body;
 }
+
+//------------------------------------------------------------------------------------
+// FONCTIONS : Anomalie
+//------------------------------------------------------------------------------------
+function displayTableAnomalie(){
+    $model = new Models;
+    $data =  $model->customQuery("select * from rapporterreur order by dateRapport"); 
+    $body="";$i=1;
+    foreach($data as $row){    
+        $body .= "<tr>
+                    <th scope='row'>$i</th>
+                    <td>".$row['objetRapport']."</td>
+                    <td>".$row['descriptionRapport']."</td>
+                    <td>".$row['dateRapport']."</td>
+                    <td>".$row['statutRapport']."</td>
+                    <td><button class='btn btn-danger' onclick='deleteAnomalie(".$row['idRapport'].")' >Supprimer</button></td>
+                    </tr>";
+        $i++;
+    }
+    if($body==""){
+        $body .= "<tr>
+                    <th scope='row'>-</th>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    </tr>";
+    }
+    return $body;
+}

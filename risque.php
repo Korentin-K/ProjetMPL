@@ -19,7 +19,6 @@ $_POST=null;
 
 ?>
 <body >  
-<?php   ?>
     <div class="container-fluid mx-0 px-0">
         <?php writeNavBar($nomUser); ?>
     </div>
