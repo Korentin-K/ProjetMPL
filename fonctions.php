@@ -1096,13 +1096,14 @@ function displayTableAnomalie(){
     $model = new Models;
     $data =  $model->customQuery("select * from rapporterreur order by dateRapport"); 
     $body="";$i=1;
-    foreach($data as $row){    
+    foreach($data as $row){  
+        $statut = $row['statutRapport'] == 0 ? "ouvert" : "fermé";
         $body .= "<tr>
                     <th scope='row'>$i</th>
                     <td>".$row['objetRapport']."</td>
                     <td>".$row['descriptionRapport']."</td>
                     <td>".$row['dateRapport']."</td>
-                    <td>".$row['statutRapport']."</td>
+                    <td>$statut</td>
                     <td><button class='btn btn-danger' onclick='deleteAnomalie(".$row['idRapport'].")' >Supprimer</button></td>
                     </tr>";
         $i++;
