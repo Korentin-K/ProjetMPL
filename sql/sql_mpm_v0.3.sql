@@ -19,26 +19,26 @@ use MPM;
 -- Tables Section
 -- _____________ 
 
-create table Projet (
+create table projet (
      id_projet int not null auto_increment,
      titre_projet varchar(30) not null,
      dateCreation_projet datetime not null,
      dateModification_projet datetime default null,
      constraint ID_Projet_ID primary key (id_projet));
 
-create table Droit (
+create table droit (
      id_droit int not null auto_increment,
      nom_droit varchar(20) not null,
      description_droit varchar(50) default null,
      constraint ID_Droit_ID primary key (id_droit));
 
-create table Niveau (
+create table niveau (
      id_niveau int not null auto_increment,
      nom_niveau varchar(10) not null,
      id_projet int not null,
      constraint ID_Niveau_ID primary key (id_niveau));
 
-create table Organisation (
+create table organisation (
      id_organisation int not null auto_increment,
      nom_organisation varchar(30) not null,
      description_organisation varchar(50) default null,
@@ -49,7 +49,7 @@ create table posseder (
      id_utilisateur int not null,
      constraint ID_posseder_ID primary key (id_projet, id_utilisateur));
 
-create table Tache (
+create table tache (
      id_tache int not null auto_increment,
      nom_tache varchar(20) not null,
      id_niveau_tache int default null,
@@ -63,7 +63,7 @@ create table Tache (
      id_projet int not null,
      constraint ID_Tache_ID primary key (id_tache));
 
-create table Utilisateur (
+create table utilisateur (
      id_utilisateur int not null auto_increment,
      nom_utilisateur varchar(20) not null,
      prenom_utilisateur varchar(20) default null,

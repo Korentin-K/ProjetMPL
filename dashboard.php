@@ -1,6 +1,6 @@
 <?php
 require_once "fonctions.php";
-require_once "models/Dashboard.php";
+require_once "models/dashboard.php";
 writeHeaderHtml('dashboard',4);
 $nomPersonne=$_SESSION['User'];
 $u = new Utilisateur;

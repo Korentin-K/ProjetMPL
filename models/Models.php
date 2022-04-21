@@ -186,7 +186,7 @@ class Models extends Database {
     //====================================================================================== 
     public function rechercheCompteExiste($email)
     {
-        $sql= "select * from Utilisateur where mail_utilisateur='".strval($email)."'";
+        $sql= "select * from utilisateur where mail_utilisateur='".strval($email)."'";
         $query = self::$pdo->prepare($sql);
         $query->execute();
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -204,7 +204,7 @@ class Models extends Database {
     //======================================================== 
     public function inscriptionSite($nomUser,$email,$mdp)
     {
-        $sql = "insert into Utilisateur (nom_utilisateur,mail_utilisateur,mdp_utilisateur) VALUES ('".strval($nomUser)."','".strval($email)."','".$mdp."')";
+        $sql = "insert into utilisateur (nom_utilisateur,mail_utilisateur,mdp_utilisateur) VALUES ('".strval($nomUser)."','".strval($email)."','".$mdp."')";
         echo $sql;
         $query = self::$pdo->prepare($sql);
         $query->execute();
@@ -216,7 +216,7 @@ class Models extends Database {
     //======================================================================
     public function rechercheConnexion($email,$mdp)
     {
-        $sql= "select * from Utilisateur where mail_utilisateur='".strval($email)."' and mdp_utilisateur='".$mdp."'";
+        $sql= "select * from utilisateur where mail_utilisateur='".strval($email)."' and mdp_utilisateur='".$mdp."'";
         $query = self::$pdo->prepare($sql);
         $query->execute();
         $result=$query->fetchAll(PDO::FETCH_ASSOC);
@@ -235,7 +235,7 @@ class Models extends Database {
     //======================================================================
     public function rechercheInfoUtilisateur($email)
     {
-        $sql= "select * from Utilisateur where mail_utilisateur='".strval($email)."'";
+        $sql= "select * from utilisateur where mail_utilisateur='".strval($email)."'";
         $query = self::$pdo->prepare($sql);
         $query->execute();
          return $query->fetch(PDO::FETCH_ASSOC);
@@ -249,8 +249,8 @@ class Models extends Database {
     {
         //passage par la table posséder
         $sql= "select * from `projet` inner join posseder on projet.id_projet=posseder.id_projet
-        inner join Utilisateur on posseder.id_utilisateur=Utilisateur.id_utilisateur 
-        WHERE Utilisateur.nom_utilisateur=".strval($nomUser) ;
+        inner join utilisateur on posseder.id_utilisateur=utilisateur.id_utilisateur 
+        WHERE utilisateur.nom_utilisateur=".strval($nomUser) ;
         $query = self::$pdo->prepare($sql);
         $query->execute();
         
@@ -269,7 +269,7 @@ class Models extends Database {
     public function creationRapportErreur($objetErreur,$descErreur)
     {
         $laDate=date("Y-m-d");
-        $sql="INSERT INTO `rapporterreur` (`idRapport`, `objetRapport`, `descriptionRapport`, `dateRapport`, `statutRapport`) VALUES (NULL,'".$objetErreur."','".$descErreur."','".$laDate."',0)";
+        $sql="INSERT INTO rapporterreur (idRapport, objetRapport, descriptionRapport, dateRapport, statutRapport) VALUES (NULL,'".$objetErreur."','".$descErreur."','".$laDate."',0)";
         echo $sql;
         $query=self::$pdo->prepare($sql);
         $query->execute();
