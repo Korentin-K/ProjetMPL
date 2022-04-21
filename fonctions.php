@@ -160,6 +160,10 @@ function getAllData($idProjet){
         $t->setContenu_tache($taskOfProjet['contenu_tache']);
         $t->setTacheAnterieur_tache($taskOfProjet['tacheAnterieur_tache']);
         $t->setId_projet($taskOfProjet['id_projet']);
+        $t->setDebutPlusTot_tache($taskOfProjet['debutPlusTot_tache']);
+        $t->setDebutPlusTard_tache($taskOfProjet['debutPlusTard_tache']);
+        $t->setMargeLibre_tache($taskOfProjet['margeLibre_tache']);
+        $t->setMargeTotale_tache($taskOfProjet['margeTotale_tache']);
         array_push($data_task,$t);
     }
     $task = null;
@@ -492,10 +496,10 @@ function setOrderTask($level,$recapLevel,$indexOfThisLevel,$mainData){
 // retourne html
 function updateDiagrammeProjet($idProjet){
     $html="";$allData=null;
+    calculAllData($idProjet);
     $allData = getAllData($idProjet);
     if($allData[0]!=null && $allData[1]!=null){
         //$countTaskByLvl = countTaskByLevel($allData[0]);
-        calculAllData($idProjet);
         //Creation rendu html pour chaque tache
         $content_level = array();
         // creer le rendu html de chaque tache
@@ -553,13 +557,13 @@ function updateDiagrammeProjet($idProjet){
         $position=0;
         foreach($mainData as $level){
             // if($position > 2 ) break;
-            $render = render_level($level, $position);
+            $render = render_level($idProjet,$level, $position);
             $html .= $render;
             $position ++;
         }
         $levelEnd = new Niveau;
         $levelEnd->setNom_niveau("FIN");      
-        $html .= render_level($levelEnd);
+        $html .= render_level($idProjet,$levelEnd);
     }
     return $html;
 }
@@ -640,7 +644,7 @@ function getTaskByLevel($idProjet,$idLevel,$positionLevel){
     return $html;
 }
 // Ajout d'un niveau
-function render_level($level,$position=1,$order=null){  
+function render_level($idProjet,$level,$position=1,$order=null){  
     $isEnd=false;$dropdown="";$marginLeft="";
     $nameLevel = $level->getNom_niveau();
     if($nameLevel == "FIN") $isEnd = true;
@@ -697,10 +701,10 @@ function render_level($level,$position=1,$order=null){
         //     }
         // }
     }else{ // tache finale
-        $dureeTotale = getTotalDuree($level->getId_projet()); 
+        $dureeTotale = getTotalDuree($idProjet);
         $taskEnd = new Tache;
         $taskEnd->setNom_tache("FIN");
-        $taskEnd->getDuree_tache($dureeTotale); 
+        $taskEnd->setDuree_tache($dureeTotale); 
         $html.=render_task($taskEnd);
     }
     $html.="    </div>       
@@ -799,7 +803,6 @@ function addTask($id,$data,$positionLevel){
         $dureePlusTard = $positionLevel == 0 ? "0" : $data[5];
         $margeLibre = $positionLevel == 0 ? "0" : $data[6];
         $margeTotale = $positionLevel == 0 ? "0" : $data[7];
-        var_dump($data[4]);
         $dropdown = "<ul class='dropdown-menu' aria-labelledby='taskMenu_$id'>
             <li><a class='dropdown-item'  onclick='modifyTask($id)' >Modifier</a></li>
             <li><a class='dropdown-item'  onclick='deleteTask($id);'>Supprimer</a></li>
