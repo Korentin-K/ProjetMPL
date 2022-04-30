@@ -1050,7 +1050,7 @@ function tableauProjet($idUser){
                 <tr>
                 <td>$title</td>
                 <td>$date</td>
-                <td class='d-flex justify-content-around py-2'>
+                <td class='justify-content-around py-2'>
                 <a class='btn btn-secondary' href='diagramme.php?projet=$id'>Voir</a>
                 <a class='btn btn-danger' onclick='deleteProject($id)'>Supprimer</a>
                 </td>

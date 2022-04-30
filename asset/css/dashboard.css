@@ -16,8 +16,8 @@ body
 {
 	border-radius: 20px 20px 20px 20px;
 	border: 3px black solid;
-	margin: 1%;
 	height: 80vh;
+	margin-top: 1%;
 	background-color: white !important;
 }
 
@@ -27,5 +27,9 @@ table
 }
 td
 {
-    border: 1px solid black;
+    border: 2px solid black;
+}
+th
+{
+	border: 2px solid black;
 }

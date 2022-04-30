@@ -15,10 +15,10 @@ $_SESSION['id']=$idUser;
       <input id="newProjectName" name="newProjectName" type="text"  placeholder="nom nouveau projet">
       <a class="btn btn-light" onclick="addProject()">Creer un projet</a>
     </div>
-    <div class="d-flex row flex-wrap">
+    <div class="d-flex justify-content-center">
      
-      <div id="list_project" class="bloc-list">
-          <?php tableauProjet($idUser); ?>
+      <div id="list_project" class="bloc-list col-auto">
+         <div style="padding: 4px;"> <?php tableauProjet($idUser); ?> </div>
     </div>
   </div>
   </body>
