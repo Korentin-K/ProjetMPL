@@ -16,8 +16,8 @@ $_SESSION['id']=$idUser;
       <a class="btn btn-light" onclick="addProject()">Creer un projet</a>
     </div>
     <div class="d-flex row flex-wrap">
-      <div class="bloc-panel col-4"></div>
-      <div id="list_project" class="bloc-list col-6">
+     
+      <div id="list_project" class="bloc-list">
           <?php tableauProjet($idUser); ?>
     </div>
   </div>
