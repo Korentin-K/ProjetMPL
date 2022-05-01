@@ -93,7 +93,13 @@ CREATE TABLE rapporterreur (
 create table risque (
      id_risque int primary key not null auto_increment,
      type_risque varchar(255) not null,
-     message_risque varchar(255) not null,
+     nom_risque varchar(255) not null,
+     probabilite_risque varchar(255) not null,
+     severite_risque varchar(255) not null,
+     cout_risque varchar(255) not null,
+     proprietaire_risque varchar(255) not null,
+     detection_risque varchar(255) not null,
+     correction_risque varchar(255) not null,
      date_risque datetime default null
 );
 

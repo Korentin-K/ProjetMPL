@@ -31,27 +31,27 @@ function reloadLevelSelect(){
     });     
 }
 // Ajout niveau asynchrone
-function addLevel(){
-    var name = document.getElementById('nameLevel')
-    $.ajax({
-        url : 'ajax_treatment.php',
-        type : 'POST',
-        data : {
-            add : 1,
-            level : name.value,
-            projet : idProjet
-            } ,
-        success : function(data){
-            name.value = "";
-            document.getElementById('projetView').innerHTML = "";
-            document.getElementById('projetView').innerHTML = data;    
-            reloadLevelSelect()           
-        },
-        error : function(resultat, statut, erreur){
-            console.log(erreur)
-        }
-    });     
-}   
+// function addLevel(){
+//     var name = document.getElementById('nameLevel')
+//     $.ajax({
+//         url : 'ajax_treatment.php',
+//         type : 'POST',
+//         data : {
+//             add : 1,
+//             level : name.value,
+//             projet : idProjet
+//             } ,
+//         success : function(data){
+//             name.value = "";
+//             document.getElementById('projetView').innerHTML = "";
+//             document.getElementById('projetView').innerHTML = data;    
+//             reloadLevelSelect()           
+//         },
+//         error : function(resultat, statut, erreur){
+//             console.log(erreur)
+//         }
+//     });     
+// }   
 
 // Ajout tache asynchrone
 function addTask(){
@@ -358,7 +358,7 @@ interact('.dropzone').dropzone({
       // feedback the possibility of a drop
       dropzoneElement.classList.add('drop-target')
       draggableElement.classList.add('can-drop')
-      draggableElement.textContent = 'Dragged in'
+      draggableElement.textContent = 'Déposer dans un niveau'
     },
     ondragleave: function (event) {
       // remove the drop feedback style
