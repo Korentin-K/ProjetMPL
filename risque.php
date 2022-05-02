@@ -51,7 +51,7 @@ foreach($severite as $value){
                 </div>
                 <div class="flex-nowrap d-flex col-12 justify-content-between mt-2">
                     <span class="col-5"><span class="fw-bolder">Probabilité</span><input name="probabilité_risque" class="form-control" type="text" required></span>
-                    <span class="col-5"><span class="fw-bolder">Sévérité</span><select name="type_risque" class="form-select" type="text"><?= $selectSeverite ?></select></span>
+                    <span class="col-5"><span class="fw-bolder">Sévérité</span><select name="severite_risque" class="form-select" type="text"><?= $selectSeverite ?></select></span>
                 </div>
                 <div class="flex-nowrap d-flex col-12 justify-content-between mt-2">
                     <span class="col-5"><span class="fw-bolder">Coût</span><input name="cout_risque" class="form-control" type="text" required></span>
@@ -65,7 +65,7 @@ foreach($severite as $value){
             </form>
         </div>
         <div class="col-8 mx-0 d-flex flex-wrap justify-content-center risque mt-4 p-2">
-            <div class="col-12 d-flex fw-bold h4">Historique</div>
+            <div class="col-12 d-flex fw-bold h4 justify-content-between"><span>Historique</span><a class="btn btn-secondary" href="pdf.php?page=risque" target="_blank">Télécharger le rapport</a></div>
             <div class="col-10 d-flex justify-content-center flex-wrap">
             <table class="table">
                 <thead>

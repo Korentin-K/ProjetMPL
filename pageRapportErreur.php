@@ -20,7 +20,7 @@ $nomUser=$_SESSION['User'];
             </form>
         </div>
         <div class="col-8 mx-0 d-flex flex-wrap justify-content-center risque mt-4 p-2">
-            <div class="col-12 d-flex fw-bold h4">Historique</div>
+        <div class="col-12 d-flex fw-bold h4 justify-content-between"><span>Historique</span><a class="btn btn-secondary" href="pdf.php?page=anomalie" target="_blank" >Télécharger le rapport</a></div>
             <div class="col-10 d-flex justify-content-center flex-wrap">
             <table class="table">
                 <thead>
