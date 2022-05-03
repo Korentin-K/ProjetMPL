@@ -18,7 +18,7 @@ $_SESSION['id']=$idUser;
     <div class="d-flex justify-content-center">
      
       <div id="list_project" class="bloc-list col-auto">
-         <div style="padding: 4px;"> <?php tableauProjet($idUser); ?> </div>
+         <div id="tableauScroll" style="padding: 4px;"> <?php tableauProjet($idUser); ?> </div>
     </div>
   </div>
   </body>
