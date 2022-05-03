@@ -165,6 +165,7 @@ function getAllData($idProjet){
         $t->setMargeLibre_tache($taskOfProjet['margeLibre_tache']);
         $t->setMargeTotale_tache($taskOfProjet['margeTotale_tache']);
         array_push($data_task,$t);
+
     }
     $task = null;
     $data_level = array();
@@ -233,10 +234,10 @@ function setOrderTask($level,$recapLevel,$indexOfThisLevel,$mainData){
         // -------------------------------------------------------------------
         // attribuer une priorité à chaque tâche suivant leurs tâche parentes
         // -------------------------------------------------------------------
+        $taskOfLastLevel = $recapLevelContent[$indexOfThisLevel-1];
         foreach($collection as $taskOfThisLevel){ 
             $idTask = $taskOfThisLevel->getId_tache();
             $parent = $taskOfThisLevel->getTacheAnterieur_tache();
-            $taskOfLastLevel = $recapLevelContent[$indexOfThisLevel-1];
             $dataByTask[$idTask] = $parent;
             if(strpos($parent,',') === false){ // Si un seul parent                
                 if( in_array($parent,$taskOfLastLevel) ) array_push($priority[1],$idTask); // Si le parent est présent dans le niveau précédent
@@ -255,6 +256,7 @@ function setOrderTask($level,$recapLevel,$indexOfThisLevel,$mainData){
             }
         }
         // trier les ids de chaque priorité dans le même ordre que l'affichage des taches parentes
+        $savePriority = $priority;
         for($i=1;$i<=4;$i++){ 
             $new_priority = array();
             foreach($taskOfLastLevel as $grandParentTaskId){
@@ -268,7 +270,7 @@ function setOrderTask($level,$recapLevel,$indexOfThisLevel,$mainData){
                         }
                     }
                 }
-            }
+            }       
             $priority[$i] = $new_priority;
         }
         // pour chaque grand parent définir ordre d'affichage des enfants suivant leurs priorité
@@ -300,6 +302,26 @@ function setOrderTask($level,$recapLevel,$indexOfThisLevel,$mainData){
                 }
             }
         }
+        foreach($savePriority as $valuePriority => $taskArrayId){// Pour les taches restantes
+            foreach($taskArrayId as $taskSavedId){
+                $taskNotAdd = true;
+                foreach($newOrder as $taskObjectNewOrder){
+                    $idTaskOfNewOrder = $taskObjectNewOrder->getId_tache();
+                    if($idTaskOfNewOrder == $taskSavedId){
+                        $taskNotAdd = false;
+                        break;
+                    } 
+                }  
+                if($taskNotAdd){
+                    foreach($collection as $taskOfThisLevel){
+                        $idTaskOfThisLevel = $taskOfThisLevel->getId_tache();
+                        if($idTaskOfThisLevel == $taskSavedId){
+                            array_push($newOrder,$taskOfThisLevel);
+                        }
+                    }
+                }                 
+            }
+        }  
         $level->setArrayTask(null);
         $level->setArrayTask($newOrder);
         return $level;
@@ -1071,7 +1093,13 @@ function displayTableRisque(){
         $body .= "<tr>
                     <th scope='row'>$i</th>
                     <td>".$row['type_risque']."</td>
-                    <td>".$row['message_risque']."</td>
+                    <td>".$row['nom_risque']."</td>
+                    <td>".$row['probabilite_risque']."</td>
+                    <td>".$row['severite_risque']."</td>
+                    <td>".$row['cout_risque']."</td>
+                    <td>".$row['proprietaire_risque']."</td>
+                    <td>".$row['detection_risque']."</td>
+                    <td>".$row['correction_risque']."</td>
                     <td>".$row['date_risque']."</td>
                     <td><button class='btn btn-danger' onclick='deleteRisque(".$row['id_risque'].")' >Supprimer</button></td>
                     </tr>";
