@@ -101,7 +101,7 @@ function writeNavBar(){
                         <a class='nav-link active' aria-current='page' href='dashboard.php'>Tableau de bord</a>
                         </li>
                         <li class='nav-item'>
-                        <a class='nav-link' href='pageRapportErreur.php'>Rapport</a>
+                        <a class='nav-link' href='pageRapportErreur.php'>Anomalie</a>
                         </li>
                         <li class='nav-item'>
                         <a class='nav-link' href='risque.php'>Risque</a>
